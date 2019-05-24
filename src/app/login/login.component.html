@@ -1,0 +1,45 @@
+<div class="background-color dark-primary-color">
+  <div class="background-image"></div>
+</div>
+
+<mat-card class="default-primary-color mat-elevation-z8">
+  <mat-card-title>
+    <img src="../../assets/pictures/logo.png" />
+    <p class="text-primary-color">LOGIN</p>
+  </mat-card-title>
+  <mat-card-content>
+    <mat-form-field color="accent" appearance="fill">
+      <mat-label>Email</mat-label>
+      <input
+        class="primary-text-color"
+        matInput
+        id="email-input"
+        type="text"
+        [(ngModel)]="email"
+      />
+    </mat-form-field>
+    <br />
+    <br />
+    <mat-form-field color="accent" appearance="fill">
+      <mat-label>Password</mat-label>
+      <input
+        class="primary-text-color"
+        matInput
+        id="pw-input"
+        type="password"
+        [(ngModel)]="password"
+      />
+    </mat-form-field>
+    <br />
+    <br />
+    <button
+      mat-raised-button
+      class="light-primary-color"
+      (click)="onLoginClick()"
+    >
+      SUBMIT
+    </button>
+    <br />
+    <br />
+  </mat-card-content>
+</mat-card>

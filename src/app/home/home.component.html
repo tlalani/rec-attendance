@@ -1,0 +1,11 @@
+<gridster [options]="options">
+  <gridster-item
+    [item]="item"
+    *ngFor="let item of dashboard"
+    class="mat-elevation-z1"
+  >
+    <div class="body">
+      <ng-container *ngComponentOutlet="item.component"></ng-container>
+    </div>
+  </gridster-item>
+</gridster>

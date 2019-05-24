@@ -1,0 +1,74 @@
+<div class="container-dates">
+  <mat-form-field>
+    <input
+      matInput
+      [matDatepicker]="picker"
+      placeholder="Select a Date"
+      (dateInput)="addEvent($event)"
+      [(ngModel)]="currentDate"
+    />
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+
+  <mat-table #table [dataSource]="dataSource">
+    <!--- Note that these columns can be defined in any order.
+            The actual rendered columns are set as a property on the row definition" -->
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef> Student Name </mat-header-cell>
+      <mat-cell ngClass="{'absent': student.isAbsent()}" *matCellDef="let student">
+        {{ student.Name }}
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="grade">
+      <mat-header-cell *matHeaderCellDef> Student Grade </mat-header-cell>
+      <mat-cell *matCellDef="let student">
+        {{ student.Grade }}
+      </mat-cell>
+    </ng-container>
+
+    <!-- Weight Column -->
+    <ng-container matColumnDef="status">
+      <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
+      <mat-cell *matCellDef="let student">
+        {{ student.Status }}
+      </mat-cell>
+    </ng-container>
+
+    <!-- Symbol Column -->
+    <ng-container matColumnDef="reason">
+      <mat-header-cell *matHeaderCellDef> Reason </mat-header-cell>
+      <mat-cell *matCellDef="let student">
+        <mat-form-field
+          class="reasons"
+          *ngIf="!student.isPresent()"
+          appearance="outline"
+        >
+          <mat-select [(ngModel)]="student.Reason" placeholder="Select Reason">
+            <mat-option
+              *ngFor="let reason of reasons; let i = index"
+              [value]="reason"
+            >
+              {{ reason }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="comments">
+      <mat-header-cell *matHeaderCellDef> Comments </mat-header-cell>
+      <mat-cell *matCellDef="let student">
+        <mat-form-field *ngIf="!student.isPresent()">
+          <input matInput [value]="student.Comments || ''" />
+        </mat-form-field>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+  </mat-table>
+</div>

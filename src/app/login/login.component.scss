@@ -1,0 +1,35 @@
+.background-color {
+  height: 100%;
+}
+
+.background-image {
+  height: inherit;
+  background: url("../../assets/pictures/login-screen.jpg");
+  opacity: 0.3;
+}
+mat-card {
+  position: absolute;
+  width: 400px;
+  top: 12%;
+  right: 35%;
+  // border: black 1px solid;
+}
+
+mat-card-title {
+  .fa-fingerprint {
+    color: black;
+  }
+  text-align: center;
+  p {
+    font-weight: normal;
+    font-size: 40px;
+  }
+}
+
+mat-card-content {
+  text-align: center;
+  mat-form-field {
+    width: 80%;
+    display: inline-block;
+  }
+}

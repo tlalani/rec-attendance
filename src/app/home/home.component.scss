@@ -1,0 +1,17 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+gridster {
+  background: transparent;
+  gridster-item {
+    border-radius: 10px;
+    overflow: auto;
+    padding: 30px;
+  }
+  gridster-item::-webkit-scrollbar {
+    background: transparent;
+  }
+}

@@ -1,0 +1,12 @@
+.reasons {
+  ::ng-deep {
+    div.mat-form-field-wrapper {
+      padding-top: 10px !important;
+      padding-bottom: 10px !important;
+    }
+  }
+}
+
+.absent {
+  color: red;
+}
