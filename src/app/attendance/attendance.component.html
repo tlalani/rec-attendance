@@ -18,7 +18,10 @@
     <!-- Name Column -->
     <ng-container matColumnDef="name">
       <mat-header-cell *matHeaderCellDef> Student Name </mat-header-cell>
-      <mat-cell ngClass="{'absent': student.isAbsent()}" *matCellDef="let student">
+      <mat-cell
+        ngClass="{'absent': student.isAbsent()}"
+        *matCellDef="let student"
+      >
         {{ student.Name }}
       </mat-cell>
     </ng-container>
@@ -65,6 +68,19 @@
         <mat-form-field *ngIf="!student.isPresent()">
           <input matInput [value]="student.Comments || ''" />
         </mat-form-field>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="edit">
+      <mat-header-cell *matHeaderCellDef> Edit </mat-header-cell>
+      <mat-cell *matCellDef="let student">
+        <button
+          *ngIf="!student.isPresent() && student.isBeingEdited()"
+          mat-raised-button
+          color="primary"
+        >
+          Edit
+        </button>
       </mat-cell>
     </ng-container>
 

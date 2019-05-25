@@ -8,10 +8,12 @@
   opacity: 0.3;
 }
 mat-card {
+  border-radius: 15px;
   position: absolute;
   width: 400px;
   top: 12%;
   right: 35%;
+  opacity: 0.9;
   // border: black 1px solid;
 }
 

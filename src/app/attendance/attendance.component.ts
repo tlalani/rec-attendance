@@ -1,11 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { MatDatepickerInputEvent } from "@angular/material";
-import * as moment from "moment";
 import { AttendanceService } from "./attendance.service";
-import { Observable } from "rxjs";
-import { AngularFireDatabase } from "angularfire2/database";
 import { Person, PersonDTO, reasonsArray } from "src/constants";
-import { get } from "lodash";
 
 @Component({
   selector: "app-attendance",
@@ -18,81 +14,113 @@ export class AttendanceComponent implements OnInit {
     "grade",
     "status",
     "reason",
-    "comments"
+    "comments",
+    "edit"
   ];
+  public result: any[];
   public reasons = reasonsArray;
   public dataSource: Person[];
   public currentDate: Date;
-  public people: any[] = [];
-  constructor(
-    private attendanceService: AttendanceService,
-    private db: AngularFireDatabase
-  ) {}
+  public people: PersonDTO[] = [];
+  constructor(private attendanceService: AttendanceService) {}
 
   ngOnInit() {
-    this.currentDate = new Date();
-    this.doQuery();
+    let date = new Date();
+    if (date.getDay() < 6) {
+      let sub = 6 - date.getDay();
+      date.setDate(date.getDate() - sub);
+    } else if (date.getDay() > 6) {
+      date.setDate(date.getDate() - 1);
+    } else if (date.getHours() < 10) {
+      date.setDate(date.getDate() - 7);
+    }
+    this.currentDate = date;
+    this.getPeopleQuery();
+    this.queryDailyAttendance();
   }
 
   public addEvent(event: MatDatepickerInputEvent<Date>) {
     this.currentDate = event.value;
-    this.doQuery();
+    this.queryDailyAttendance();
   }
 
-  public doQuery() {
-    let result = [];
-    let resultDTO = [];
-    this.attendanceService.getPeople().then(items => {
-      const peoplekeys = Object.keys(items);
-      peoplekeys.forEach(grade => {
-        for (let i = 0; i < items[grade].length; i++) {
-          let name = items[grade][i];
-          this.people.push(new PersonDTO({ Name: name, Grade: grade }));
-        }
-      });
-      this.attendanceService
-        .queryAttendanceForSpecificDay(this.currentDate)
-        .then((items: any) => {
-          const keys = Object.keys(items);
-          keys.forEach(key => {
-            const keys1 = Object.keys(items[key]);
-            keys1.forEach(key1 => {
-              let p = new Person(items[key][key1]);
-              p.Name = key1;
-              p.Grade = key;
-              p.setStatus();
-              result.push(p);
-              resultDTO.push(new PersonDTO({ Name: p.Name, Grade: p.Grade }));
-            });
+  public getPeopleQuery() {
+    this.attendanceService
+      .getPeople()
+      .then(items => {
+        Object.entries(items).forEach(grades => {
+          let grade = grades[0];
+          Object.entries(grades[1]).forEach(person => {
+            this.people.push(new PersonDTO({ Name: person[1], Grade: grade }));
           });
-          for (let res of this.people) {
-            let contains = false;
-            for (let res1 of resultDTO) {
-              if (res.Name === res1.Name && res.Grade === res1.Grade) {
-                contains = true;
-                break;
-              }
-            }
-            if (!contains) {
-              result.push(new Person(res));
+        });
+      })
+      .catch(error => {
+        console.error("People doesn't exist.");
+      });
+  }
+
+  public queryDailyAttendance() {
+    let result: Set<Person> = new Set();
+    let resultDTO: PersonDTO[] = [];
+    this.attendanceService
+      .queryAttendanceForSpecificDay(this.currentDate)
+      .then((items: Object) => {
+        Object.entries(items).forEach(grades => {
+          let grade = grades[0];
+          if (grades.length > 1) {
+            Object.entries(grades[1]).forEach(person => {
+              let name = person[0];
+              let p = new Person(person[1]);
+              p.Name = name;
+              p.Grade = grade;
+              p.setStatus();
+              result.add(p);
+              resultDTO.push(new PersonDTO(p.toDTO()));
+            });
+          }
+        });
+        for (let res of this.people) {
+          let contains = false;
+          for (let res1 of resultDTO) {
+            if (
+              res.Name.replace(/ /g, "") == res1.Name.replace(/ /g, "") &&
+              res.Grade.replace(/ /g, "") == res1.Grade.replace(/ /g, "")
+            ) {
+              contains = true;
+              break;
             }
           }
-          result.sort((a, b) => {
-            if (a.Grade < b.Grade) {
-              return -1;
-            }
-            if (a.Grade > b.Grade) {
-              return 1;
-            }
-            if (a.Name < b.Name) {
-              return -1;
-            }
-            if (a.Name > b.Name) {
-              return 1;
-            }
-          });
-          this.dataSource = result;
+          if (!contains) {
+            result.add(new Person(res));
+          }
+        }
+        let res = Array.from(result);
+        res.sort((a, b) => {
+          if (a.Grade < b.Grade) {
+            return -1;
+          }
+          if (a.Grade > b.Grade) {
+            return 1;
+          }
+          if (a.Name < b.Name) {
+            return -1;
+          }
+          if (a.Name > b.Name) {
+            return 1;
+          }
         });
-    });
+        res.map((item: Person) => {
+          item.editable = !item.isPresent();
+        });
+        this.dataSource = res;
+      })
+      .catch(error => {
+        console.error(
+          "This day",
+          this.currentDate.toDateString(),
+          "doesn't have any attendance."
+        );
+      });
   }
 }

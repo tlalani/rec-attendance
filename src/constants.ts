@@ -45,6 +45,8 @@ export class Person {
   Comments: string;
   Grade: string;
   Status: string;
+  editing: boolean;
+  editable: boolean = false;
   constructor(obj) {
     obj && Object.assign(this, obj).setStatus();
   }
@@ -55,6 +57,14 @@ export class Person {
 
   public isAbsent() {
     return this.Status === Statuses.Absent ? true : false;
+  }
+
+  public isEditable() {
+    return this.editable;
+  }
+
+  public isBeingEdited() {
+    return this.editable;
   }
 
   public hasComments() {
@@ -80,6 +90,10 @@ export class Person {
     } else {
       this.Status = Statuses.Absent;
     }
+  }
+
+  public toDTO() {
+    return { Name: this.Name, Grade: this.Grade };
   }
 }
 

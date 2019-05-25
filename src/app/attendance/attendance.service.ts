@@ -26,7 +26,6 @@ export class AttendanceService {
     const schoolYear = getSchoolYearFromDate(date);
     const queryString =
       schoolYear + "/" + formatDate(date, "MMM d, y", "en-US") + "/Student";
-    console.log(queryString);
     return this.db
       .object(queryString)
       .valueChanges()
