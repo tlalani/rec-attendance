@@ -26,13 +26,25 @@ import {
   MatTableModule,
   MatNativeDateModule,
   MatCardModule,
-  MatButtonModule
+  MatButtonModule,
+  MatProgressSpinnerModule,
+  MatToolbarModule,
+  MatTabsModule
 } from "@angular/material";
 import { AttendanceComponent } from "./attendance/attendance.component";
 import { HomeComponent } from "./home/home.component";
 import { LoginComponent } from "./login/login.component";
+import { QrCreatorComponent } from "./qr-creator/qr-creator.component";
+import { AttendanceHomeComponent } from "./attendance-home/attendance-home.component";
+import { ManualEntryComponent } from "./manual-entry/manual-entry.component";
 @NgModule({
-  declarations: [AppComponent, routingModules],
+  declarations: [
+    AppComponent,
+    routingModules,
+    QrCreatorComponent,
+    AttendanceHomeComponent,
+    ManualEntryComponent
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -57,10 +69,20 @@ import { LoginComponent } from "./login/login.component";
     MatButtonModule,
     AngularFireModule.initializeApp(normalize(environment.firebase)),
     AngularFireDatabaseModule,
-    AngularFireAuthModule
+    AngularFireAuthModule,
+    MatProgressSpinnerModule,
+    MatToolbarModule,
+    MatTabsModule
   ],
   providers: [MatDatepickerModule, MatNativeDateModule],
   bootstrap: [AppComponent],
-  entryComponents: [HomeComponent, AttendanceComponent, LoginComponent]
+  entryComponents: [
+    HomeComponent,
+    AttendanceComponent,
+    LoginComponent,
+    QrCreatorComponent,
+    AttendanceHomeComponent,
+    ManualEntryComponent
+  ]
 })
 export class AppModule {}

@@ -9,6 +9,12 @@ const grades = [
   "5th Grade",
   "6th Grade"
 ];
+interface Roles {
+  Student: "Student";
+  Teacher: "Teacher";
+  Management: "Management";
+  Intern: "Intern";
+}
 const offset = -13;
 
 export function normalize(config) {
@@ -45,7 +51,7 @@ export class Person {
   Comments: string;
   Grade: string;
   Status: string;
-  editing: boolean;
+  editing: boolean = false;
   editable: boolean = false;
   constructor(obj) {
     obj && Object.assign(this, obj).setStatus();
@@ -64,7 +70,7 @@ export class Person {
   }
 
   public isBeingEdited() {
-    return this.editable;
+    return this.editing;
   }
 
   public hasComments() {
@@ -76,7 +82,7 @@ export class Person {
   }
 
   public setStatus() {
-    if (this.Time) {
+    if (this.Time && this.Time !== "-1") {
       const timearr = this.Time.split(" ")[0].split(":");
       if (
         parseInt(timearr[0]) > 10 ||

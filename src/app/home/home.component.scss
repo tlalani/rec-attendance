@@ -9,9 +9,6 @@ gridster {
   gridster-item {
     border-radius: 10px;
     overflow: auto;
-    padding: 30px;
-  }
-  gridster-item::-webkit-scrollbar {
-    background: transparent;
+    padding: 20px;
   }
 }

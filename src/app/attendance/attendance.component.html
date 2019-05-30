@@ -1,17 +1,23 @@
 <div class="container-dates">
-  <mat-form-field>
-    <input
-      matInput
-      [matDatepicker]="picker"
-      placeholder="Select a Date"
-      (dateInput)="addEvent($event)"
-      [(ngModel)]="currentDate"
-    />
-    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-datepicker #picker></mat-datepicker>
-  </mat-form-field>
+  <ng-container>
+    <mat-form-field>
+      <input
+        matInput
+        [matDatepicker]="picker"
+        placeholder="Select a Date"
+        (dateInput)="addEvent($event)"
+        [(ngModel)]="currentDate"
+      />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  </ng-container>
 
-  <mat-table #table [dataSource]="dataSource">
+  <mat-table
+    #table
+    [dataSource]="dataSource"
+    *ngIf="dataSource.length > 0 && !this.loading"
+  >
     <!--- Note that these columns can be defined in any order.
             The actual rendered columns are set as a property on the row definition" -->
 
@@ -50,10 +56,16 @@
           *ngIf="!student.isPresent()"
           appearance="outline"
         >
-          <mat-select [(ngModel)]="student.Reason" placeholder="Select Reason">
+          <mat-select
+            [(ngModel)]="student.Reason"
+            [disabled]="!student.editing"
+            placeholder="Select Reason"
+            (selectionChange)="makeChange()"
+          >
             <mat-option
               *ngFor="let reason of reasons; let i = index"
               [value]="reason"
+              [disabled]="student.Reason === reason"
             >
               {{ reason }}
             </mat-option>
@@ -66,7 +78,12 @@
       <mat-header-cell *matHeaderCellDef> Comments </mat-header-cell>
       <mat-cell *matCellDef="let student">
         <mat-form-field *ngIf="!student.isPresent()">
-          <input matInput [value]="student.Comments || ''" />
+          <input
+            matInput
+            [(ngModel)]="student.Comments"
+            [disabled]="!student.editing"
+            (input)="makeChange()"
+          />
         </mat-form-field>
       </mat-cell>
     </ng-container>
@@ -75,11 +92,20 @@
       <mat-header-cell *matHeaderCellDef> Edit </mat-header-cell>
       <mat-cell *matCellDef="let student">
         <button
-          *ngIf="!student.isPresent() && student.isBeingEdited()"
+          *ngIf="!student.isPresent() && !student.editing"
           mat-raised-button
           color="primary"
+          (click)="startEditing(student)"
         >
           Edit
+        </button>
+        <button
+          *ngIf="!student.isPresent() && student.editing"
+          mat-raised-button
+          color="warn"
+          (click)="saveEdits(student)"
+        >
+          Finish
         </button>
       </mat-cell>
     </ng-container>
@@ -87,4 +113,8 @@
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
   </mat-table>
+  <div *ngIf="dataSource.length < 1 && !this.loading">
+    No Records Found for The Date: {{ currentDate.toDateString() }}
+  </div>
+  <mat-spinner *ngIf="this.loading"> </mat-spinner>
 </div>

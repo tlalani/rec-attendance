@@ -19,18 +19,19 @@ export class AttendanceComponent implements OnInit {
   ];
   public result: any[];
   public reasons = reasonsArray;
-  public dataSource: Person[];
+  public dataSource: Person[] = [];
   public currentDate: Date;
   public people: PersonDTO[] = [];
+  public loading: boolean = false;
+  public changesMade: boolean = false;
   constructor(private attendanceService: AttendanceService) {}
 
   ngOnInit() {
+    this.loading = true;
     let date = new Date();
     if (date.getDay() < 6) {
-      let sub = 6 - date.getDay();
+      let sub = date.getDay() + 1;
       date.setDate(date.getDate() - sub);
-    } else if (date.getDay() > 6) {
-      date.setDate(date.getDate() - 1);
     } else if (date.getHours() < 10) {
       date.setDate(date.getDate() - 7);
     }
@@ -40,6 +41,7 @@ export class AttendanceComponent implements OnInit {
   }
 
   public addEvent(event: MatDatepickerInputEvent<Date>) {
+    this.loading = true;
     this.currentDate = event.value;
     this.queryDailyAttendance();
   }
@@ -61,6 +63,7 @@ export class AttendanceComponent implements OnInit {
   }
 
   public queryDailyAttendance() {
+    this.dataSource = [];
     let result: Set<Person> = new Set();
     let resultDTO: PersonDTO[] = [];
     this.attendanceService
@@ -113,14 +116,34 @@ export class AttendanceComponent implements OnInit {
         res.map((item: Person) => {
           item.editable = !item.isPresent();
         });
+        this.loading = false;
         this.dataSource = res;
       })
       .catch(error => {
+        this.loading = false;
         console.error(
           "This day",
           this.currentDate.toDateString(),
           "doesn't have any attendance."
         );
       });
+  }
+
+  public makeChange() {
+    this.changesMade = true;
+  }
+
+  public startEditing(student: Person) {
+    student.editing = true;
+  }
+
+  public saveEdits(student: Person) {
+    const res = this.attendanceService.sendToDatabase(
+      this.currentDate,
+      student,
+      this.changesMade
+    );
+    this.changesMade = false;
+    student.editing = false;
   }
 }
