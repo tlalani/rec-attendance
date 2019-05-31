@@ -10,7 +10,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { LayoutModule } from "@angular/cdk/layout";
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { GridsterModule } from "angular-gridster2";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { environment } from "./../environments/environment";
 import { normalize } from "../constants";
 import {
@@ -35,14 +35,12 @@ import { AttendanceComponent } from "./attendance/attendance.component";
 import { HomeComponent } from "./home/home.component";
 import { LoginComponent } from "./login/login.component";
 import { QrCreatorComponent } from "./qr-creator/qr-creator.component";
-import { AttendanceHomeComponent } from "./attendance-home/attendance-home.component";
 import { ManualEntryComponent } from "./manual-entry/manual-entry.component";
 @NgModule({
   declarations: [
     AppComponent,
     routingModules,
     QrCreatorComponent,
-    AttendanceHomeComponent,
     ManualEntryComponent
   ],
   imports: [
@@ -72,7 +70,8 @@ import { ManualEntryComponent } from "./manual-entry/manual-entry.component";
     AngularFireAuthModule,
     MatProgressSpinnerModule,
     MatToolbarModule,
-    MatTabsModule
+    MatTabsModule,
+    ReactiveFormsModule
   ],
   providers: [MatDatepickerModule, MatNativeDateModule],
   bootstrap: [AppComponent],
@@ -81,7 +80,6 @@ import { ManualEntryComponent } from "./manual-entry/manual-entry.component";
     AttendanceComponent,
     LoginComponent,
     QrCreatorComponent,
-    AttendanceHomeComponent,
     ManualEntryComponent
   ]
 })

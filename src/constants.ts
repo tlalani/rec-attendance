@@ -9,12 +9,7 @@ const grades = [
   "5th Grade",
   "6th Grade"
 ];
-interface Roles {
-  Student: "Student";
-  Teacher: "Teacher";
-  Management: "Management";
-  Intern: "Intern";
-}
+export const Roles = ["Student", "Teacher", "Management", "Intern"];
 const offset = -13;
 
 export function normalize(config) {

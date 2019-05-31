@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { GridsterConfig, GridsterItem } from "angular-gridster2";
 import { AttendanceComponent } from "../attendance/attendance.component";
-import { AttendanceHomeComponent } from "../attendance-home/attendance-home.component";
+import { ManualEntryComponent } from "../manual-entry/manual-entry.component";
 
 @Component({
   selector: "app-home",
@@ -11,6 +11,7 @@ import { AttendanceHomeComponent } from "../attendance-home/attendance-home.comp
 export class HomeComponent implements OnInit {
   public options: GridsterConfig;
   public dashboard;
+  public tabActive;
   constructor() {}
 
   itemChange(item, itemComponent) {
@@ -28,7 +29,16 @@ export class HomeComponent implements OnInit {
         y: 0,
         rows: 4,
         cols: 3,
-        component: AttendanceHomeComponent
+        headers: [
+          {
+            label: "Attendance",
+            component: AttendanceComponent
+          },
+          {
+            label: "Manual Entry",
+            component: ManualEntryComponent
+          }
+        ]
       }
     ];
 

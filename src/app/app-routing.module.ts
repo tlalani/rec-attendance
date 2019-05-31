@@ -8,7 +8,8 @@ const routes: Routes = [
   { path: "login", component: LoginComponent },
   { path: "home", component: HomeComponent },
   { path: "", redirectTo: "login", pathMatch: "full" },
-  { path: "createqr", component: QrCreatorComponent }
+  { path: "createqr", component: QrCreatorComponent },
+  { path: "attendance", component: AttendanceComponent }
 ];
 
 @NgModule({

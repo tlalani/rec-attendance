@@ -4,8 +4,12 @@
     *ngFor="let item of dashboard"
     class="mat-elevation-z1"
   >
-    <div class="body">
-      <ng-container *ngComponentOutlet="item.component"></ng-container>
-    </div>
+    <mat-tab-group>
+      <mat-tab *ngFor="let c of item.headers" [label]="c.label">
+        <div class="bodys">
+          <ng-container *ngComponentOutlet="c.component"></ng-container>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
   </gridster-item>
 </gridster>

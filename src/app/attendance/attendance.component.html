@@ -1,6 +1,6 @@
 <div class="container-dates">
   <ng-container>
-    <mat-form-field>
+    <mat-form-field class="date">
       <input
         matInput
         [matDatepicker]="picker"
@@ -12,11 +12,11 @@
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
   </ng-container>
-
   <mat-table
     #table
     [dataSource]="dataSource"
     *ngIf="dataSource.length > 0 && !this.loading"
+    class="table"
   >
     <!--- Note that these columns can be defined in any order.
             The actual rendered columns are set as a property on the row definition" -->
