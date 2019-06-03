@@ -34,28 +34,29 @@ export class AttendanceService {
       .toPromise();
   }
 
-  public sendToDatabase(date: Date, student: Person, changesMade: boolean) {
-    if (changesMade) {
-      const schoolYear = getSchoolYearFromDate(date);
-      const queryString =
-        schoolYear +
-        "/" +
-        formatDate(date, "MMM d, y", "en-US") +
-        "/Student/" +
-        student.Grade +
-        "/" +
-        student.Name;
-      let obj = {};
-      if (student.Reason) {
-        obj["Reason"] = student.Reason;
-      }
-      if (student.Time) {
-        obj["Time"] = student.Time;
-      }
-      if (student.Comments) {
-        obj["Comments"] = student.Comments;
-      }
-      this.db.object(queryString).set(obj);
+  public sendToDatabase(date: Date, student: Person) {
+    const schoolYear = getSchoolYearFromDate(date);
+    const queryString =
+      schoolYear +
+      "/" +
+      formatDate(date, "MMM d, y", "en-US") +
+      "/Student/" +
+      student.Grade +
+      "/" +
+      student.Name;
+    let obj = {};
+    if (student.Status) {
+      obj["Status"] = student.Status;
     }
+    if (student.Reason) {
+      obj["Reason"] = student.Reason;
+    }
+    if (student.Time) {
+      obj["Time"] = student.Time;
+    }
+    if (student.Comments) {
+      obj["Comments"] = student.Comments;
+    }
+    this.db.object(queryString).set(obj);
   }
 }

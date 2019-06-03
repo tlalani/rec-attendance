@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { ELEMENT_DATA, Person } from "src/constants";
 
 @Component({
   selector: "app-qr-creator",

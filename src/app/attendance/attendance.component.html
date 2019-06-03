@@ -12,108 +12,19 @@
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
   </ng-container>
-  <mat-table
-    #table
-    [dataSource]="dataSource"
-    *ngIf="dataSource.length > 0 && !this.loading"
-    class="table"
-  >
-    <!--- Note that these columns can be defined in any order.
-            The actual rendered columns are set as a property on the row definition" -->
-
-    <!-- Name Column -->
-    <ng-container matColumnDef="name">
-      <mat-header-cell *matHeaderCellDef> Student Name </mat-header-cell>
-      <mat-cell
-        ngClass="{'absent': student.isAbsent()}"
-        *matCellDef="let student"
-      >
-        {{ student.Name }}
-      </mat-cell>
+  <mat-tab-group>
+    <ng-container *ngFor="let grade of result; let i = index">
+      <mat-tab *ngIf="grade.length > 0" [label]="grades[i]">
+        <div class="table">
+          <app-attendance-table
+            [dataSource]="grade"
+            [edits]="true"
+          ></app-attendance-table>
+        </div>
+      </mat-tab>
     </ng-container>
-
-    <ng-container matColumnDef="grade">
-      <mat-header-cell *matHeaderCellDef> Student Grade </mat-header-cell>
-      <mat-cell *matCellDef="let student">
-        {{ student.Grade }}
-      </mat-cell>
-    </ng-container>
-
-    <!-- Weight Column -->
-    <ng-container matColumnDef="status">
-      <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
-      <mat-cell *matCellDef="let student">
-        {{ student.Status }}
-      </mat-cell>
-    </ng-container>
-
-    <!-- Symbol Column -->
-    <ng-container matColumnDef="reason">
-      <mat-header-cell *matHeaderCellDef> Reason </mat-header-cell>
-      <mat-cell *matCellDef="let student">
-        <mat-form-field
-          class="reasons"
-          *ngIf="!student.isPresent()"
-          appearance="outline"
-        >
-          <mat-select
-            [(ngModel)]="student.Reason"
-            [disabled]="!student.editing"
-            placeholder="Select Reason"
-            (selectionChange)="makeChange()"
-          >
-            <mat-option
-              *ngFor="let reason of reasons; let i = index"
-              [value]="reason"
-              [disabled]="student.Reason === reason"
-            >
-              {{ reason }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="comments">
-      <mat-header-cell *matHeaderCellDef> Comments </mat-header-cell>
-      <mat-cell *matCellDef="let student">
-        <mat-form-field *ngIf="!student.isPresent()">
-          <input
-            matInput
-            [(ngModel)]="student.Comments"
-            [disabled]="!student.editing"
-            (input)="makeChange()"
-          />
-        </mat-form-field>
-      </mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="edit">
-      <mat-header-cell *matHeaderCellDef> Edit </mat-header-cell>
-      <mat-cell *matCellDef="let student">
-        <button
-          *ngIf="!student.isPresent() && !student.editing"
-          mat-raised-button
-          color="primary"
-          (click)="startEditing(student)"
-        >
-          Edit
-        </button>
-        <button
-          *ngIf="!student.isPresent() && student.editing"
-          mat-raised-button
-          color="warn"
-          (click)="saveEdits(student)"
-        >
-          Finish
-        </button>
-      </mat-cell>
-    </ng-container>
-
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
-  </mat-table>
-  <div *ngIf="dataSource.length < 1 && !this.loading">
+  </mat-tab-group>
+  <div *ngIf="this.result.length < 1 && !this.loading">
     No Records Found for The Date: {{ currentDate.toDateString() }}
   </div>
   <mat-spinner *ngIf="this.loading"> </mat-spinner>

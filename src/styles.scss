@@ -37,3 +37,27 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
+.dialog-header {
+  width: 100%;
+  border-bottom: solid 1px black;
+  text-align: center;
+  padding: 10px 0px;
+}
+
+.dialog-content {
+  padding: 20px 10px;
+}
+
+.dialog-footer {
+  width: 100%;
+  padding: 5px 0px;
+  border-top: solid 1px black;
+  button {
+    margin-left: 5px;
+  }
+}
+
+// .mat-dialog-container {
+//   padding: 0 !important;
+// }

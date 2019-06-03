@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { GridsterConfig, GridsterItem } from "angular-gridster2";
 import { AttendanceComponent } from "../attendance/attendance.component";
 import { ManualEntryComponent } from "../manual-entry/manual-entry.component";
+import { AttendanceTableComponent } from "../attendance-table/attendance-table.component";
 
 @Component({
   selector: "app-home",
@@ -27,8 +28,8 @@ export class HomeComponent implements OnInit {
       {
         x: 0,
         y: 0,
-        rows: 4,
-        cols: 3,
+        rows: 2,
+        cols: 4,
         headers: [
           {
             label: "Attendance",

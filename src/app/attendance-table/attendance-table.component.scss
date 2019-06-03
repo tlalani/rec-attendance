@@ -1,0 +1,56 @@
+.reasons {
+  ::ng-deep {
+    div.mat-form-field-wrapper {
+      padding-top: 10px !important;
+      padding-bottom: 10px !important;
+    }
+  }
+}
+
+mat-header-row {
+  padding: 5px;
+}
+
+mat-cell {
+  display: flex;
+  justify-content: center;
+}
+
+.table {
+  mat-form-field {
+    width: 95%;
+  }
+}
+
+mat-cell:nth-child(2),
+mat-header-cell:nth-child(2) {
+  flex: 0 0 10%;
+}
+
+mat-cell:nth-child(3),
+mat-header-cell:nth-child(3) {
+  flex: 0 0 10%;
+}
+
+mat-header-cell {
+  display: flex;
+  justify-content: center;
+}
+
+.absent {
+  color: red;
+}
+
+.finished {
+  color: teal;
+}
+
+mat-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+
+.container-dates {
+  padding: 20px;
+}

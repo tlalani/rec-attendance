@@ -1,7 +1,14 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { MatDatepickerInputEvent } from "@angular/material";
 import { AttendanceService } from "./attendance.service";
-import { Person, PersonDTO, reasonsArray } from "src/constants";
+import {
+  Person,
+  PersonDTO,
+  ReasonsArray,
+  getGradeFromString,
+  Grades,
+  ELEMENT_DATA
+} from "src/constants";
 
 @Component({
   selector: "app-attendance",
@@ -9,21 +16,12 @@ import { Person, PersonDTO, reasonsArray } from "src/constants";
   styleUrls: ["./attendance.component.scss"]
 })
 export class AttendanceComponent implements OnInit {
-  public displayedColumns: string[] = [
-    "name",
-    "grade",
-    "status",
-    "reason",
-    "comments",
-    "edit"
-  ];
-  public result: any[];
-  public reasons = reasonsArray;
-  public dataSource: Person[] = [];
+  public result: any[] = [];
+  public reasons = ReasonsArray;
   public currentDate: Date;
-  public people: PersonDTO[] = [];
+  public people: PersonDTO[][] = [[], [], [], [], [], [], [], [], []];
   public loading: boolean = false;
-  public changesMade: boolean = false;
+  public grades = Grades;
   constructor(private attendanceService: AttendanceService) {}
 
   ngOnInit() {
@@ -50,10 +48,12 @@ export class AttendanceComponent implements OnInit {
     this.attendanceService
       .getPeople()
       .then(items => {
-        Object.entries(items).forEach(grades => {
-          let grade = grades[0];
-          Object.entries(grades[1]).forEach(person => {
-            this.people.push(new PersonDTO({ Name: person[1], Grade: grade }));
+        Object.entries(items).forEach(([gradeStr, peopleInGrade]) => {
+          let grade = getGradeFromString(gradeStr);
+          Object.entries(peopleInGrade).forEach(person => {
+            this.people[grade].push(
+              new PersonDTO({ Name: person[1], Grade: gradeStr })
+            );
           });
         });
       })
@@ -63,61 +63,60 @@ export class AttendanceComponent implements OnInit {
   }
 
   public queryDailyAttendance() {
-    this.dataSource = [];
-    let result: Set<Person> = new Set();
-    let resultDTO: PersonDTO[] = [];
+    this.result = [];
+    let result: Set<Person>[] = [
+      new Set(),
+      new Set(),
+      new Set(),
+      new Set(),
+      new Set(),
+      new Set()
+    ];
+    let resultDTO: PersonDTO[][] = [[], [], [], [], [], []];
     this.attendanceService
       .queryAttendanceForSpecificDay(this.currentDate)
       .then((items: Object) => {
-        Object.entries(items).forEach(grades => {
-          let grade = grades[0];
-          if (grades.length > 1) {
-            Object.entries(grades[1]).forEach(person => {
+        Object.entries(items).forEach(([gradeStr, peopleInGrade]) => {
+          let grade = getGradeFromString(gradeStr);
+          if (peopleInGrade) {
+            Object.entries(peopleInGrade).forEach(person => {
               let name = person[0];
               let p = new Person(person[1]);
               p.Name = name;
-              p.Grade = grade;
+              p.Grade = gradeStr;
               p.setStatus();
-              result.add(p);
-              resultDTO.push(new PersonDTO(p.toDTO()));
+              result[grade].add(p);
+              resultDTO[grade].push(new PersonDTO(p.toDTO()));
             });
           }
         });
-        for (let res of this.people) {
-          let contains = false;
-          for (let res1 of resultDTO) {
-            if (
-              res.Name.replace(/ /g, "") == res1.Name.replace(/ /g, "") &&
-              res.Grade.replace(/ /g, "") == res1.Grade.replace(/ /g, "")
-            ) {
-              contains = true;
-              break;
+        for (let grade = 0; grade < this.people.length; grade++) {
+          if (this.people[grade].length > 0) {
+            for (let res of this.people[grade]) {
+              let contains = false;
+              for (let res1 of resultDTO[grade]) {
+                if (
+                  res.Name.replace(/ /g, "") == res1.Name.replace(/ /g, "") &&
+                  res.Grade.replace(/ /g, "") == res1.Grade.replace(/ /g, "")
+                ) {
+                  contains = true;
+                  break;
+                }
+              }
+              if (!contains) {
+                result[grade].add(new Person(res));
+              }
             }
           }
-          if (!contains) {
-            result.add(new Person(res));
-          }
         }
-        let res = Array.from(result);
-        res.sort((a, b) => {
-          if (a.Grade < b.Grade) {
-            return -1;
-          }
-          if (a.Grade > b.Grade) {
-            return 1;
-          }
-          if (a.Name < b.Name) {
-            return -1;
-          }
-          if (a.Name > b.Name) {
-            return 1;
-          }
+        result.forEach(items => {
+          let res = Array.from(items);
+          res.map((item: Person) => {
+            item.editable = !item.isPresent();
+          });
+          this.loading = false;
+          this.result.push(res);
         });
-        res.map((item: Person) => {
-          item.editable = !item.isPresent();
-        });
-        this.loading = false;
-        this.dataSource = res;
       })
       .catch(error => {
         this.loading = false;
@@ -129,21 +128,11 @@ export class AttendanceComponent implements OnInit {
       });
   }
 
-  public makeChange() {
-    this.changesMade = true;
-  }
-
-  public startEditing(student: Person) {
-    student.editing = true;
-  }
-
   public saveEdits(student: Person) {
+    console.log(student);
     const res = this.attendanceService.sendToDatabase(
       this.currentDate,
-      student,
-      this.changesMade
+      student
     );
-    this.changesMade = false;
-    student.editing = false;
   }
 }

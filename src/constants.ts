@@ -1,7 +1,7 @@
 const alpha = "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".split(
   ""
 );
-const grades = [
+export const Grades = [
   "1st Grade",
   "2nd Grade",
   "3rd Grade",
@@ -39,7 +39,13 @@ export const Statuses = {
   Tardy: "T"
 };
 
+export function getGradeFromString(item: string) {
+  if (!Number.isNaN(parseInt(item))) return parseInt(item.charAt(0)) - 1;
+  else return Roles.indexOf(item) + Grades.length - 1;
+}
+
 export class Person {
+  Role: string;
   Name: string;
   Time: string;
   Reason: string;
@@ -48,8 +54,14 @@ export class Person {
   Status: string;
   editing: boolean = false;
   editable: boolean = false;
+  Date?: string;
   constructor(obj) {
     obj && Object.assign(this, obj).setStatus();
+  }
+
+  static makeP(obj) {
+    let p = new Person(obj);
+    return p;
   }
 
   public isPresent() {
@@ -86,7 +98,6 @@ export class Person {
         this.Status = Statuses.Tardy;
       } else {
         this.Status = Statuses.Present;
-        this.Reason = "-";
       }
     } else {
       this.Status = Statuses.Absent;
@@ -95,6 +106,33 @@ export class Person {
 
   public toDTO() {
     return { Name: this.Name, Grade: this.Grade };
+  }
+
+  public updateString() {
+    return (
+      this.Name +
+      ", " +
+      this.Grade +
+      ", " +
+      this.Time +
+      ", " +
+      this.Reason +
+      ", " +
+      this.Comments +
+      "\n"
+    );
+  }
+
+  public toArray(order) {
+    let a = [];
+    order.forEach(item => {
+      Object.entries(this).forEach(([key, val]) => {
+        if (key == item) {
+          a.push(val);
+        }
+      });
+    });
+    return a;
   }
 }
 
@@ -119,49 +157,71 @@ export function getSchoolYearFromDate(date: Date) {
 }
 
 export const ELEMENT_DATA = [
-  { name: "Hydrogen", grade: "1st Grade", status: "P", reason: "No Reason" },
-  {
-    name: "Helium",
-    grade: "2nd Grade",
-    status: "P",
-    reason: "Reasons Unknown"
-  },
-  { name: "Lithium", grade: "3rd Grade", status: "A", reason: "Has a Reason" },
-  {
-    name: "Beryllium",
-    grade: "4th Grade",
-    status: "T",
-    reason: "Might Be A Reason"
-  },
-  {
-    name: "Boron",
-    grade: "5th Grade",
-    status: "A",
-    reason: "What's a reason?"
-  },
-  { name: "Carbon", grade: "6th Grade", status: "P", reason: "Transportation" },
-  { name: "Nitrogen", grade: "1st Grade", status: "T", reason: "Traveling" },
-  {
-    name: "Oxygen",
-    grade: "2nd Grade",
-    status: "T",
-    reason: "Trying to find a reason"
-  },
-  {
-    name: "Fluorine",
-    grade: "3rd Grade",
-    status: "A",
-    reason: "Flying away from me?"
-  },
-  {
-    name: "Neon",
-    grade: "4th grade",
-    status: "P",
-    reason: "Never had a reason!"
-  }
+  [
+    Person.makeP({
+      Name: "Hydrogen",
+      Grade: "1st Grade",
+      Status: "P",
+      Reason: "No Reason"
+    }),
+    Person.makeP({
+      Name: "Helium",
+      Grade: "2nd Grade",
+      Status: "P",
+      Reason: "Reasons Unknown"
+    }),
+    Person.makeP({
+      Name: "Lithium",
+      Grade: "3rd Grade",
+      Status: "A",
+      Reason: "Has a Reason"
+    }),
+    Person.makeP({
+      Name: "Beryllium",
+      Grade: "4th Grade",
+      Status: "T",
+      Reason: "Might Be A Reason"
+    }),
+    Person.makeP({
+      Name: "Boron",
+      Grade: "5th Grade",
+      Status: "A",
+      Reason: "What's a Reason?"
+    }),
+    Person.makeP({
+      Name: "Carbon",
+      Grade: "6th Grade",
+      Status: "P",
+      Reason: "Transportation"
+    }),
+    Person.makeP({
+      Name: "Nitrogen",
+      Grade: "1st Grade",
+      Status: "T",
+      Reason: "Traveling"
+    }),
+    Person.makeP({
+      Name: "Oxygen",
+      Grade: "2nd Grade",
+      Status: "T",
+      Reason: "Trying to find a Reason"
+    }),
+    Person.makeP({
+      Name: "Fluorine",
+      Grade: "3rd Grade",
+      Status: "A",
+      Reason: "Flying away from me?"
+    }),
+    Person.makeP({
+      Name: "Neon",
+      Grade: "4th Grade",
+      Status: "P",
+      Reason: "Never had a Reason!"
+    })
+  ]
 ];
 
-export const reasonsArray = [
+export const ReasonsArray = [
   "Extracurricular Education",
   "Extracurricular Sports",
   "Health",
@@ -173,3 +233,15 @@ export const reasonsArray = [
   "Bad Contact Number",
   "Other"
 ];
+
+export function militaryTimeToAMPM(milTime) {
+  if (milTime.split(" ").length < 2) {
+    var time = milTime.split(":");
+    if (time[0] > 12) {
+      return (time[0] % 12) + ":" + time[1] + " " + "PM";
+    } else {
+      return milTime + " " + "AM";
+    }
+  }
+  return milTime;
+}

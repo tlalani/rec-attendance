@@ -1,7 +1,19 @@
-.formitem {
-  padding: 20px;
+mat-form-field {
+  margin: 0px 10px;
 }
 
-mat-form-field {
-  margin: 10px;
+::ng-deep .mat-form-field-wrapper {
+  padding: 5px 0px;
+}
+
+.container {
+  width: 95%;
+}
+
+.button-submit {
+  margin: 10px 0px;
+}
+
+.datepicks {
+  color: black !important;
 }

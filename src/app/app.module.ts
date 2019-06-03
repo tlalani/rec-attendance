@@ -29,19 +29,27 @@ import {
   MatButtonModule,
   MatProgressSpinnerModule,
   MatToolbarModule,
-  MatTabsModule
+  MatTabsModule,
+  MatDividerModule,
+  MatDialogModule
 } from "@angular/material";
 import { AttendanceComponent } from "./attendance/attendance.component";
 import { HomeComponent } from "./home/home.component";
 import { LoginComponent } from "./login/login.component";
 import { QrCreatorComponent } from "./qr-creator/qr-creator.component";
 import { ManualEntryComponent } from "./manual-entry/manual-entry.component";
+import { SubmitDialogComponent } from "./submit-dialog/submit-dialog.component";
+import { AttendanceTableComponent } from "./attendance-table/attendance-table.component";
+import { GenericTableComponent } from './generic-table/generic-table.component';
 @NgModule({
   declarations: [
     AppComponent,
     routingModules,
     QrCreatorComponent,
-    ManualEntryComponent
+    ManualEntryComponent,
+    SubmitDialogComponent,
+    AttendanceTableComponent,
+    GenericTableComponent
   ],
   imports: [
     BrowserModule,
@@ -71,7 +79,9 @@ import { ManualEntryComponent } from "./manual-entry/manual-entry.component";
     MatProgressSpinnerModule,
     MatToolbarModule,
     MatTabsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatDividerModule,
+    MatDialogModule
   ],
   providers: [MatDatepickerModule, MatNativeDateModule],
   bootstrap: [AppComponent],
@@ -80,7 +90,9 @@ import { ManualEntryComponent } from "./manual-entry/manual-entry.component";
     AttendanceComponent,
     LoginComponent,
     QrCreatorComponent,
-    ManualEntryComponent
+    ManualEntryComponent,
+    SubmitDialogComponent,
+    AttendanceTableComponent
   ]
 })
 export class AppModule {}
