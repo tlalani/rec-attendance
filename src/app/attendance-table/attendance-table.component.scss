@@ -8,7 +8,7 @@
 }
 
 mat-header-row {
-  padding: 5px;
+  padding: 0px 5px;
 }
 
 mat-cell {
@@ -17,6 +17,8 @@ mat-cell {
 }
 
 .table {
+  height: 450px;
+  overflow: auto;
   mat-form-field {
     width: 95%;
   }
