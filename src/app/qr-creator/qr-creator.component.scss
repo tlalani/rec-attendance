@@ -1,0 +1,16 @@
+@media print {
+  .container {
+    width: 800px;
+  }
+  .noPrint {
+    display: none;
+  }
+  .print {
+    display: block;
+    width: 100%;
+  }
+  .breaker {
+    height: 140px;
+    width: 100%;
+  }
+}

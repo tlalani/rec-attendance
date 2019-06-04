@@ -41,6 +41,7 @@ import { ManualEntryComponent } from "./manual-entry/manual-entry.component";
 import { SubmitDialogComponent } from "./submit-dialog/submit-dialog.component";
 import { AttendanceTableComponent } from "./attendance-table/attendance-table.component";
 import { GenericTableComponent } from './generic-table/generic-table.component';
+import { QrCodeComponent } from './qr-code/qr-code.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -49,7 +50,8 @@ import { GenericTableComponent } from './generic-table/generic-table.component';
     ManualEntryComponent,
     SubmitDialogComponent,
     AttendanceTableComponent,
-    GenericTableComponent
+    GenericTableComponent,
+    QrCodeComponent
   ],
   imports: [
     BrowserModule,

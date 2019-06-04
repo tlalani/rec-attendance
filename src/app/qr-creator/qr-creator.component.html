@@ -1,6 +1,22 @@
-<div>
-  <input hidden type="file" #fileInput (change)="handleFileInput($event)" />
-  <button color="primary" mat-raised-button (click)="fileInput.click()">
-    Pick File
-  </button>
+<div class="container">
+  <div class="noPrint">
+    <input hidden type="file" #fileInput (change)="handleFileInput($event)" />
+    <button color="primary" mat-raised-button (click)="fileInput.click()">
+      Pick File
+    </button>
+    <br />
+    <br />
+  </div>
+  <div *ngIf="fileUploaded" fxLayout="row wrap" class="print">
+    <ng-container *ngFor="let person of result; let i = index">
+      <app-qr-code
+        class="qrcode"
+        fxFlex="50%"
+        fxFlex.lt-lg="50%"
+        [person]="person"
+        [lastIndex]="result.length"
+      ></app-qr-code>
+      <div class="breaker" *ngIf="(i + 1) % 8 === 0"></div>
+    </ng-container>
+  </div>
 </div>

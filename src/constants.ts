@@ -139,6 +139,7 @@ export class Person {
 export class PersonDTO {
   Name: string;
   Grade: string;
+  Role?: string;
   constructor(obj) {
     obj && Object.assign(this, obj);
   }
