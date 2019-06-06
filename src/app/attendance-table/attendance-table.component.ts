@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
-import { ELEMENT_DATA, ReasonsArray, Person } from "src/constants";
+import { ELEMENT_DATA, ReasonsArray, Person, Statuses } from "src/constants";
 import { DataSource } from "@angular/cdk/table";
+import { MatDialog } from "@angular/material";
+import { ContactDialogComponent } from "../contact-dialog/contact-dialog.component";
 
 @Component({
   selector: "app-attendance-table",
@@ -10,7 +12,7 @@ import { DataSource } from "@angular/cdk/table";
 export class AttendanceTableComponent implements OnInit {
   @Input() dataSource;
   @Input() edits;
-  @Output() changed = new EventEmitter<Person>();
+  @Output() changes = new EventEmitter<Person>();
   public displayedColumns: string[] = [
     "name",
     "grade",
@@ -19,7 +21,8 @@ export class AttendanceTableComponent implements OnInit {
     "comments"
   ];
   public reasons = ReasonsArray;
-  constructor() {}
+  public statuses = Object.values(Statuses);
+  constructor(private dialog: MatDialog) {}
 
   ngOnInit() {
     if (this.edits) {
@@ -33,12 +36,21 @@ export class AttendanceTableComponent implements OnInit {
 
   public saveEdits(student) {
     if (student.changes) {
-      this.changed.emit(student);
+      this.changes.emit(student);
     }
     student.editing = false;
   }
 
   public makeChange(student) {
     student.changes = true;
+  }
+
+  public openDialog(person) {
+    const dialogRef = this.dialog.open(ContactDialogComponent, {
+      width: "500px",
+      data: {
+        person: person
+      }
+    });
   }
 }

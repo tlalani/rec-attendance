@@ -1,6 +1,6 @@
 <div class="container-dates">
-  <ng-container>
-    <mat-form-field class="date">
+  <div class="date">
+    <mat-form-field>
       <input
         matInput
         [matDatepicker]="picker"
@@ -11,7 +11,7 @@
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
-  </ng-container>
+  </div>
   <mat-tab-group>
     <ng-container *ngFor="let grade of result; let i = index">
       <mat-tab *ngIf="grade.length > 0" [label]="grades[i]">
@@ -19,6 +19,7 @@
           <app-attendance-table
             [dataSource]="grade"
             [edits]="true"
+            (changes)="saveEdits($event)"
           ></app-attendance-table>
         </div>
       </mat-tab>

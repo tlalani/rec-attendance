@@ -31,7 +31,11 @@ import {
   MatToolbarModule,
   MatTabsModule,
   MatDividerModule,
-  MatDialogModule
+  MatDialogModule,
+  MatSidenavModule,
+  MatListModule,
+  MatIconModule,
+  MatTooltipModule
 } from "@angular/material";
 import { AttendanceComponent } from "./attendance/attendance.component";
 import { HomeComponent } from "./home/home.component";
@@ -40,8 +44,10 @@ import { QrCreatorComponent } from "./qr-creator/qr-creator.component";
 import { ManualEntryComponent } from "./manual-entry/manual-entry.component";
 import { SubmitDialogComponent } from "./submit-dialog/submit-dialog.component";
 import { AttendanceTableComponent } from "./attendance-table/attendance-table.component";
-import { GenericTableComponent } from './generic-table/generic-table.component';
-import { QrCodeComponent } from './qr-code/qr-code.component';
+import { GenericTableComponent } from "./generic-table/generic-table.component";
+import { QrCodeComponent } from "./qr-code/qr-code.component";
+import { ContactDialogComponent } from "./contact-dialog/contact-dialog.component";
+import { ContactInfoComponent } from "./contact-info/contact-info.component";
 @NgModule({
   declarations: [
     AppComponent,
@@ -51,7 +57,9 @@ import { QrCodeComponent } from './qr-code/qr-code.component';
     SubmitDialogComponent,
     AttendanceTableComponent,
     GenericTableComponent,
-    QrCodeComponent
+    QrCodeComponent,
+    ContactDialogComponent,
+    ContactInfoComponent
   ],
   imports: [
     BrowserModule,
@@ -83,7 +91,11 @@ import { QrCodeComponent } from './qr-code/qr-code.component';
     MatTabsModule,
     ReactiveFormsModule,
     MatDividerModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSidenavModule,
+    MatListModule,
+    MatIconModule,
+    MatTooltipModule
   ],
   providers: [MatDatepickerModule, MatNativeDateModule],
   bootstrap: [AppComponent],
@@ -94,7 +106,8 @@ import { QrCodeComponent } from './qr-code/qr-code.component';
     QrCreatorComponent,
     ManualEntryComponent,
     SubmitDialogComponent,
-    AttendanceTableComponent
+    AttendanceTableComponent,
+    ContactDialogComponent
   ]
 })
 export class AppModule {}

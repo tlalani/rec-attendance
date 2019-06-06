@@ -36,7 +36,13 @@ export function normalize(config) {
 export const Statuses = {
   Present: "P",
   Absent: "A",
-  Tardy: "T"
+  Tardy: "T",
+  Excused: "E"
+};
+
+export const contactStatuses = {
+  Working: "W",
+  Innacurate: "I"
 };
 
 export function getGradeFromString(item: string) {
@@ -72,6 +78,10 @@ export class Person {
     return this.Status === Statuses.Absent ? true : false;
   }
 
+  public isExcused() {
+    return this.Status === Statuses.Excused ? true : false;
+  }
+
   public isEditable() {
     return this.editable;
   }
@@ -89,18 +99,20 @@ export class Person {
   }
 
   public setStatus() {
-    if (this.Time && this.Time !== "-1") {
-      const timearr = this.Time.split(" ")[0].split(":");
-      if (
-        parseInt(timearr[0]) > 10 ||
-        (parseInt(timearr[0]) == 10 && parseInt(timearr[1]) > 40)
-      ) {
-        this.Status = Statuses.Tardy;
+    if (!this.Status) {
+      if (this.Time && this.Time !== "-1") {
+        const timearr = this.Time.split(" ")[0].split(":");
+        if (
+          parseInt(timearr[0]) > 10 ||
+          (parseInt(timearr[0]) == 10 && parseInt(timearr[1]) > 40)
+        ) {
+          this.Status = Statuses.Tardy;
+        } else {
+          this.Status = Statuses.Present;
+        }
       } else {
-        this.Status = Statuses.Present;
+        this.Status = Statuses.Absent;
       }
-    } else {
-      this.Status = Statuses.Absent;
     }
   }
 
@@ -134,6 +146,14 @@ export class Person {
     });
     return a;
   }
+
+  public hasGrade() {
+    return this.Role === Roles[0] || this.Role === Roles[1];
+  }
+
+  public firstName() {
+    return this.Name.split(" ")[0];
+  }
 }
 
 export class PersonDTO {
@@ -142,6 +162,52 @@ export class PersonDTO {
   Role?: string;
   constructor(obj) {
     obj && Object.assign(this, obj);
+  }
+}
+
+export class Phone {
+  label: string;
+  number: string;
+  contactStatus: string;
+  type: string = "Phone";
+  constructor(obj) {
+    obj && Object.assign(this, obj);
+  }
+  public isAccurate() {
+    return this.contactStatus == contactStatuses.Working;
+  }
+  public changeStatus() {
+    if (this.contactStatus == "W") {
+      this.contactStatus = contactStatuses.Innacurate;
+    } else {
+      this.contactStatus = contactStatuses.Working;
+    }
+  }
+  static makeP(obj) {
+    let p = new Phone(obj);
+    return p;
+  }
+}
+export class Email {
+  label: string;
+  email: string;
+  contactStatus: string;
+  type: string = "Email";
+  constructor(obj) {
+    obj && Object.assign(this, obj);
+  }
+  public isAccurate() {
+    return this.contactStatus === contactStatuses.Working;
+  }
+  static makeE(obj) {
+    return new Email(obj);
+  }
+  public changeStatus() {
+    if (this.contactStatus == "W") {
+      this.contactStatus = contactStatuses.Innacurate;
+    } else {
+      this.contactStatus = contactStatuses.Working;
+    }
   }
 }
 
@@ -220,6 +286,42 @@ export const ELEMENT_DATA = [
       Reason: "Never had a Reason!"
     })
   ]
+];
+
+export const NUMBERS: Phone[] = [
+  Phone.makeP({
+    label: "Mother Cell",
+    number: "847-668-2345",
+    contactStatus: contactStatuses.Working
+  }),
+  Phone.makeP({
+    label: "Father Cell",
+    number: "224-425-3922",
+    contactStatus: contactStatuses.Working
+  }),
+  Phone.makeP({
+    label: "Home Phone",
+    number: "324-543-1382",
+    contactStatus: contactStatuses.Working
+  }),
+  Phone.makeP({
+    label: "Cell Phone",
+    number: "312-422-2480",
+    contactStatus: contactStatuses.Working
+  })
+];
+
+export const EMAILS: Email[] = [
+  Email.makeE({
+    label: "Father Email",
+    email: "asdfo@gmail.com",
+    contactStatus: contactStatuses.Working
+  }),
+  Email.makeE({
+    label: "Mother Email",
+    email: "junaid@gmail.com",
+    contactStatus: contactStatuses.Working
+  })
 ];
 
 export const ReasonsArray = [

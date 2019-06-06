@@ -1,106 +1,107 @@
-<div fxLayout="column" class="container">
-  <div fxLayout="row" fxLayout.lt-sm="column">
-    <mat-form-field fxFlex="33" appearance="outline">
-      <mat-label>Role</mat-label>
-      <mat-select [(ngModel)]="this.person.Role">
-        <mat-option *ngFor="let role of roles" [value]="role">
-          {{ role }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+<div class="container">
+  <div fxLayout="column">
+    <div class="first-three" fxLayout.gt-sm="row" fxLayout.sm="column">
+      <mat-form-field fxFlex="32" appearance="outline">
+        <mat-label>Role</mat-label>
+        <mat-select [(ngModel)]="this.person.Role">
+          <mat-option *ngFor="let role of roles" [value]="role">
+            {{ role }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
 
-    <mat-form-field fxFlex="33" appearance="outline">
-      <mat-label>Date</mat-label>
-      <input
-        class="datepicks"
-        matInput
-        [matDatepicker]="picker"
-        placeholder="Select a Date"
-        disabled
-        (dateChange)="changeDate($event)"
-      />
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker
-        #picker
-        [disabled]="person.Role === undefined"
-      ></mat-datepicker>
-    </mat-form-field>
+      <mat-form-field fxFlex="32" appearance="outline">
+        <mat-label>Date</mat-label>
+        <input
+          class="datepicks"
+          matInput
+          [matDatepicker]="picker"
+          placeholder="Select a Date"
+          disabled
+          (dateChange)="changeDate($event)"
+        />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker
+          #picker
+          [disabled]="person.Role === undefined"
+        ></mat-datepicker>
+      </mat-form-field>
 
-    <mat-form-field fxFlex="33" appearance="outline">
-      <mat-label>Grade</mat-label>
-      <mat-select
-        [disabled]="
-          this.person.Date === undefined && this.person.Role === roles[2]
-        "
-        (selectionChange)="changeGrade($event)"
-        [(ngModel)]="this.person.Grade"
-      >
-        <mat-option *ngFor="let grade of grades" [value]="grade">
-          {{ grade }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+      <mat-form-field fxFlex="32" appearance="outline">
+        <mat-label>Grade</mat-label>
+        <mat-select
+          [disabled]="this.person.Date === undefined || !this.person.hasGrade()"
+          (selectionChange)="changeGrade($event)"
+          [(ngModel)]="this.person.Grade"
+        >
+          <mat-option *ngFor="let grade of grades" [value]="grade">
+            {{ grade }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div fxLayout="row" fxLayout.lt-sm="column">
+      <mat-form-field fxFlex="50" appearance="outline">
+        <mat-label>Name</mat-label>
+        <mat-select
+          [disabled]="person.Name === undefined && names.length < 1"
+          [(ngModel)]="this.person.Name"
+        >
+          <mat-option *ngFor="let name of names" [value]="name">
+            {{ name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field fxFlex="50" appearance="outline">
+        <mat-label>Time</mat-label>
+        <input
+          type="time"
+          [disabled]="person.Name === undefined"
+          matInput
+          (input)="checkTime($event)"
+        />
+      </mat-form-field>
+    </div>
+
+    <mat-divider> </mat-divider>
+
+    <div fxLayout="row" fxLayout.lt-sm="column">
+      <mat-form-field fxFlex="50" appearance="outline">
+        <mat-label>Reason</mat-label>
+        <mat-select
+          [disabled]="person.Name === undefined || person.isPresent()"
+          [(ngModel)]="this.person.Reason"
+        >
+          <mat-option *ngFor="let reason of reasons" [value]="reason">
+            {{ reason }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field fxFlex="50" appearance="outline">
+        <mat-label>Comments</mat-label>
+        <input
+          [disabled]="person.Reason === undefined || person.isPresent()"
+          matInput
+          [(ngModel)]="this.person.Comments"
+        />
+      </mat-form-field>
+    </div>
   </div>
 
   <mat-divider></mat-divider>
 
-  <div fxLayout="row" fxLayout.lt-sm="column">
-    <mat-form-field fxFlex="50" appearance="outline">
-      <mat-label>Name</mat-label>
-      <mat-select
-        [disabled]="person.Name === undefined && names.length < 1"
-        [(ngModel)]="this.person.Name"
-      >
-        <mat-option *ngFor="let name of names" [value]="name">
-          {{ name }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field fxFlex="50" appearance="outline">
-      <mat-label>Time</mat-label>
-      <input
-        type="time"
-        [disabled]="person.Name === undefined"
-        matInput
-        (input)="checkTime($event)"
-      />
-    </mat-form-field>
-  </div>
-
-  <mat-divider> </mat-divider>
-
-  <div fxLayout="row" fxLayout.lt-sm="column">
-    <mat-form-field fxFlex="50" appearance="outline">
-      <mat-label>Reason</mat-label>
-      <mat-select
-        [disabled]="person.Name === undefined || person.isPresent()"
-        [(ngModel)]="this.person.Reason"
-      >
-        <mat-option *ngFor="let reason of reasons" [value]="reason">
-          {{ reason }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field fxFlex="50" appearance="outline">
-      <mat-label>Comments</mat-label>
-      <input
-        [disabled]="person.Reason === undefined || person.isPresent()"
-        matInput
-        [(ngModel)]="this.person.Comments"
-      />
-    </mat-form-field>
-  </div>
+  <button
+    [disabled]="!person.Time"
+    class="button-submit"
+    mat-raised-button
+    color="primary"
+    (click)="openDialog()"
+  >
+    Submit
+  </button>
 </div>
-
-<mat-divider></mat-divider>
-
-<button
-  class="button-submit"
-  mat-raised-button
-  color="primary"
-  (click)="openDialog()"
->
-  Submit
-</button>

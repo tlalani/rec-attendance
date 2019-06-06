@@ -28,6 +28,7 @@
         id="pw-input"
         type="password"
         [(ngModel)]="password"
+        (keydown.enter)="onLoginClick()"
       />
     </mat-form-field>
     <br />

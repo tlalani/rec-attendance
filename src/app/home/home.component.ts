@@ -28,18 +28,16 @@ export class HomeComponent implements OnInit {
       {
         x: 0,
         y: 0,
+        rows: 4,
+        cols: 3,
+        component: AttendanceComponent
+      },
+      {
+        x: 0,
+        y: 3,
         rows: 2,
-        cols: 4,
-        headers: [
-          {
-            label: "Attendance",
-            component: AttendanceComponent
-          },
-          {
-            label: "Manual Entry",
-            component: ManualEntryComponent
-          }
-        ]
+        cols: 2,
+        component: ManualEntryComponent
       }
     ];
 

@@ -1,0 +1,53 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{ person.Name }}</mat-card-title>
+    <mat-card-subtitle>{{ person.Grade }}</mat-card-subtitle>
+  </mat-card-header>
+  <br />
+  <br />
+  <mat-divider></mat-divider>
+  <br />
+  <mat-card-content>
+    <p style="text-align: center">Phone Numbers</p>
+    <div fxLayout="row wrap">
+      <ng-container *ngFor="let number of numbers">
+        <mat-form-field fxFlex="50" appearance="outline">
+          <mat-label>{{ number.label }}</mat-label>
+          <input
+            [disabled]="number.isAccurate()"
+            matInput
+            [value]="number.number"
+          />
+          <mat-icon
+            matSuffix
+            [matTooltip]="getTooltipText(number)"
+            [color]="getStatus(number)"
+            (click)="changeAccuracy(number)"
+            >{{ getName(number) }}</mat-icon
+          >
+        </mat-form-field>
+      </ng-container>
+    </div>
+    <mat-divider></mat-divider>
+    <p style="text-align: center">Emails</p>
+    <div fxLayout="row">
+      <ng-container *ngFor="let email of emails">
+        <mat-form-field fxFlex="50" appearance="outline">
+          <mat-label>{{ email.label }}</mat-label>
+          <input
+            [disabled]="email.isAccurate()"
+            matInput
+            [value]="email.email"
+          />
+          <mat-icon
+            matSuffix
+            [matTooltip]="getTooltipText(email)"
+            [color]="getStatus(email)"
+            (click)="changeAccuracy(email)"
+            >{{ getName(email) }}</mat-icon
+          >
+        </mat-form-field>
+      </ng-container>
+    </div>
+  </mat-card-content>
+</mat-card>

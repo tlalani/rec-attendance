@@ -1,20 +1,21 @@
 <div class="table">
   <mat-table #table [dataSource]="dataSource">
-    <!--- Note that these columns can be defined in any order.
-        The actual rendered columns are set as a property on the row definition" -->
-
-    <!-- Name Column -->
     <ng-container matColumnDef="name">
       <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
       <mat-cell *matCellDef="let student"
-        ><span
+        ><button
+          mat-button
+          [matTooltip]="student.Name"
+          matTooltipPosition="above"
           [ngClass]="{
-            absent: student.isAbsent() && !student.Reason,
+            absent:
+              (student.isAbsent() || student.isExcused()) && !student.Reason,
             finished: student.isAbsent() && student.Reason && !student.editing
           }"
+          (click)="openDialog(student)"
         >
-          {{ student.Name }}
-        </span>
+          {{ student.firstName() }}
+        </button>
       </mat-cell>
     </ng-container>
 
@@ -22,8 +23,12 @@
       <mat-header-cell *matHeaderCellDef> Grade </mat-header-cell>
       <mat-cell
         [ngClass]="{
-          absent: student.isAbsent() && !student.Reason,
-          finished: student.isAbsent() && student.Reason && !student.editing
+          absent:
+            (student.isAbsent() || student.isExcused()) && !student.Reason,
+          finished:
+            (student.isAbsent() || student.isExcused()) &&
+            student.Reason &&
+            !student.editing
         }"
         *matCellDef="let student"
       >
@@ -34,14 +39,23 @@
     <!-- Weight Column -->
     <ng-container matColumnDef="status">
       <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
-      <mat-cell
-        [ngClass]="{
-          absent: student.isAbsent() && !student.Reason,
-          finished: student.isAbsent() && student.Reason && !student.editing
-        }"
-        *matCellDef="let student"
-      >
-        {{ student.Status }}
+      <mat-cell *matCellDef="let student">
+        <mat-form-field class="status" appearance="outline">
+          <mat-select
+            [(ngModel)]="student.Status"
+            [disabled]="!student.editing"
+            placeholder="Status"
+            (selectionChange)="makeChange(student)"
+          >
+            <mat-option
+              *ngFor="let status of statuses; let i = index"
+              [value]="status"
+              [disabled]="student.Status === status"
+            >
+              {{ status }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
       </mat-cell>
     </ng-container>
 
@@ -92,7 +106,7 @@
       <mat-header-cell *matHeaderCellDef> </mat-header-cell>
       <mat-cell *matCellDef="let student">
         <button
-          *ngIf="!student.isPresent() && !student.editing"
+          *ngIf="!student.editing"
           mat-raised-button
           color="primary"
           (click)="startEditing(student)"
@@ -100,7 +114,7 @@
           Edit
         </button>
         <button
-          *ngIf="!student.isPresent() && student.editing"
+          *ngIf="student.editing"
           mat-raised-button
           color="warn"
           (click)="saveEdits(student)"
