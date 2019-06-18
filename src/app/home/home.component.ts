@@ -3,6 +3,8 @@ import { GridsterConfig, GridsterItem } from "angular-gridster2";
 import { AttendanceComponent } from "../attendance/attendance.component";
 import { ManualEntryComponent } from "../manual-entry/manual-entry.component";
 import { AttendanceTableComponent } from "../attendance-table/attendance-table.component";
+import { AngularFireAuth } from "angularfire2/auth";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-home",
@@ -13,7 +15,7 @@ export class HomeComponent implements OnInit {
   public options: GridsterConfig;
   public dashboard;
   public tabActive;
-  constructor() {}
+  constructor(private afAuth: AngularFireAuth, public router: Router) {}
 
   itemChange(item, itemComponent) {
     //console.info("itemChanged", item, itemComponent);
@@ -30,14 +32,16 @@ export class HomeComponent implements OnInit {
         y: 0,
         rows: 4,
         cols: 3,
-        component: AttendanceComponent
-      },
-      {
-        x: 0,
-        y: 3,
-        rows: 2,
-        cols: 2,
-        component: ManualEntryComponent
+        headers: [
+          {
+            label: "Attendance",
+            component: AttendanceComponent
+          },
+          {
+            label: "Manual Entry",
+            component: ManualEntryComponent
+          }
+        ]
       }
     ];
 
@@ -61,5 +65,11 @@ export class HomeComponent implements OnInit {
   }
   addItem() {
     this.dashboard.push({ x: 0, y: 0, rows: 0, cols: 0 });
+  }
+
+  performLogOut() {
+    this.afAuth.auth.signOut().then(() => {
+      this.router.navigate(["login"]);
+    });
   }
 }

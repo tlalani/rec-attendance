@@ -1,6 +1,9 @@
 const alpha = "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".split(
   ""
 );
+
+export const DEFAULT_USER_IMAGE = "assets/pictures/no_picture.png";
+
 export const Grades = [
   "1st Grade",
   "2nd Grade",
@@ -151,8 +154,9 @@ export class Person {
     return this.Role === Roles[0] || this.Role === Roles[1];
   }
 
-  public firstName() {
-    return this.Name.split(" ")[0];
+  public firstAndLastName() {
+    let fullName = this.Name.split(" ");
+    return fullName[0] + " " + fullName[fullName.length - 1];
   }
 }
 
@@ -162,6 +166,10 @@ export class PersonDTO {
   Role?: string;
   constructor(obj) {
     obj && Object.assign(this, obj);
+  }
+
+  public hasGrade() {
+    return this.Role === Roles[0] || this.Role === Roles[1];
   }
 }
 

@@ -1,10 +1,19 @@
-<div fxLayout="column" class="qrobj">
+<div fxLayout="column" class="qrobj" *ngIf="shouldExist">
+  <button class="noPrint" mat-icon-button>
+    <mat-icon
+      matTooltip="Delete this Person?"
+      matTooltipPosition="after"
+      color="warn"
+      (click)="sendDelete()"
+      >block</mat-icon
+    >
+  </button>
   <div fxLayout="row" class="text">
     <p>{{ person.Name }}</p>
     <p>{{ person.Name }}</p>
   </div>
   <div fxLayout="row" class="images">
-    <img [src]="this.qrlink" />
-    <img [src]="this.piclink" />
+    <img [src]="this.qrlink" (error)="getDefaultUrl()" />
+    <img [src]="this.piclink" (error)="getDefaultUrl()" />
   </div>
 </div>

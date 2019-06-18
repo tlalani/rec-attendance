@@ -48,6 +48,7 @@ import { GenericTableComponent } from "./generic-table/generic-table.component";
 import { QrCodeComponent } from "./qr-code/qr-code.component";
 import { ContactDialogComponent } from "./contact-dialog/contact-dialog.component";
 import { ContactInfoComponent } from "./contact-info/contact-info.component";
+import { ManualQrComponent } from './manual-qr/manual-qr.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -59,7 +60,8 @@ import { ContactInfoComponent } from "./contact-info/contact-info.component";
     GenericTableComponent,
     QrCodeComponent,
     ContactDialogComponent,
-    ContactInfoComponent
+    ContactInfoComponent,
+    ManualQrComponent
   ],
   imports: [
     BrowserModule,

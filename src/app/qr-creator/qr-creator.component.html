@@ -4,6 +4,14 @@
     <button color="primary" mat-raised-button (click)="fileInput.click()">
       Pick File
     </button>
+    <button
+      color="warn"
+      [disabled]="this.fileUploaded == false"
+      mat-button
+      (click)="sendDelete()"
+    >
+      Reset
+    </button>
     <br />
     <br />
   </div>
@@ -14,7 +22,6 @@
         fxFlex="50%"
         fxFlex.lt-lg="50%"
         [person]="person"
-        [lastIndex]="result.length"
       ></app-qr-code>
       <div class="breaker" *ngIf="(i + 1) % 8 === 0"></div>
     </ng-container>

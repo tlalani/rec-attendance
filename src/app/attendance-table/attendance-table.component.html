@@ -1,10 +1,14 @@
 <div class="table">
+  <mat-slide-toggle color="primary" [checked]="true" #diss
+    >Disable Name Buttons</mat-slide-toggle
+  >
   <mat-table #table [dataSource]="dataSource">
     <ng-container matColumnDef="name">
       <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
       <mat-cell *matCellDef="let student"
         ><button
           mat-button
+          [disabled]="diss.checked"
           [matTooltip]="student.Name"
           matTooltipPosition="above"
           [ngClass]="{
@@ -14,7 +18,7 @@
           }"
           (click)="openDialog(student)"
         >
-          {{ student.firstName() }}
+          {{ student.firstAndLastName() }}
         </button>
       </mat-cell>
     </ng-container>
@@ -25,10 +29,7 @@
         [ngClass]="{
           absent:
             (student.isAbsent() || student.isExcused()) && !student.Reason,
-          finished:
-            (student.isAbsent() || student.isExcused()) &&
-            student.Reason &&
-            !student.editing
+          finished: student.isAbsent() && student.Reason && !student.editing
         }"
         *matCellDef="let student"
       >
@@ -106,8 +107,16 @@
       <mat-header-cell *matHeaderCellDef> </mat-header-cell>
       <mat-cell *matCellDef="let student">
         <button
-          *ngIf="!student.editing"
+          *ngIf="student.isAbsent() && !student.Reason && !student.editing"
           mat-raised-button
+          color="primary"
+          (click)="startEditing(student)"
+        >
+          Edit
+        </button>
+        <button
+          *ngIf="(!student.isAbsent() || student.Reason) && !student.editing"
+          mat-stroked-button
           color="primary"
           (click)="startEditing(student)"
         >

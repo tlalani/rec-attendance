@@ -9,6 +9,7 @@ import {
   Grades,
   ELEMENT_DATA
 } from "src/constants";
+import { AngularFireAuth } from "angularfire2/auth";
 
 @Component({
   selector: "app-attendance",
@@ -22,7 +23,10 @@ export class AttendanceComponent implements OnInit {
   public people: PersonDTO[][] = [[], [], [], [], [], [], [], [], []];
   public loading: boolean = false;
   public grades = Grades;
-  constructor(private attendanceService: AttendanceService) {}
+  constructor(
+    private attendanceService: AttendanceService,
+    private afAuth: AngularFireAuth
+  ) {}
 
   ngOnInit() {
     this.loading = true;
@@ -119,6 +123,7 @@ export class AttendanceComponent implements OnInit {
         });
       })
       .catch(error => {
+        console.log(this.afAuth.auth.currentUser);
         this.loading = false;
         console.error(
           "This day",
@@ -129,7 +134,6 @@ export class AttendanceComponent implements OnInit {
   }
 
   public saveEdits(student: Person) {
-    console.log(student);
     const res = this.attendanceService.sendToDatabase(
       this.currentDate,
       student

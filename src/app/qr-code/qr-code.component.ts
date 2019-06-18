@@ -1,5 +1,5 @@
-import { Component, OnInit, Input } from "@angular/core";
-import { Person, PersonDTO } from "src/constants";
+import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
+import { Person, PersonDTO, DEFAULT_USER_IMAGE } from "src/constants";
 import { QrCodeService } from "./qr-code.service";
 
 @Component({
@@ -9,8 +9,8 @@ import { QrCodeService } from "./qr-code.service";
 })
 export class QrCodeComponent implements OnInit {
   @Input() person: PersonDTO;
-  @Input() lastIndex: number;
   public displayString: string;
+  public shouldExist: boolean = true;
   public qrlink: string;
   public piclink: string;
   constructor(private qrCodeService: QrCodeService) {}
@@ -23,12 +23,13 @@ export class QrCodeComponent implements OnInit {
     this.qrlink =
       "https://api.qrserver.com/v1/create-qr-code/?size=170x170&data=" +
       this.displayString;
+  }
 
-    if (
-      this.qrCodeService.staffIndex + this.qrCodeService.studentIndex >=
-      this.lastIndex
-    ) {
-      this.qrCodeService.reset();
-    }
+  sendDelete() {
+    this.shouldExist = false;
+  }
+
+  getDefaultUrl() {
+    this.piclink = DEFAULT_USER_IMAGE;
   }
 }

@@ -17,6 +17,7 @@ export class QrCodeService {
       return { folder: "staff", index: ++this.staffIndex };
     }
   }
+
   reset() {
     this.studentIndex = 0;
     this.staffIndex = 0;

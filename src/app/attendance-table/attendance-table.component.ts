@@ -11,7 +11,6 @@ import { ContactDialogComponent } from "../contact-dialog/contact-dialog.compone
 })
 export class AttendanceTableComponent implements OnInit {
   @Input() dataSource;
-  @Input() edits;
   @Output() changes = new EventEmitter<Person>();
   public displayedColumns: string[] = [
     "name",
@@ -24,11 +23,7 @@ export class AttendanceTableComponent implements OnInit {
   public statuses = Object.values(Statuses);
   constructor(private dialog: MatDialog) {}
 
-  ngOnInit() {
-    if (this.edits) {
-      this.displayedColumns.push("edit");
-    }
-  }
+  ngOnInit() {}
 
   public startEditing(student) {
     student.editing = true;

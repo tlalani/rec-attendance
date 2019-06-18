@@ -1,0 +1,46 @@
+<div>
+  <mat-form-field fxFlex="32" appearance="outline">
+    <mat-label>Role</mat-label>
+    <mat-select [(ngModel)]="this.person.Role">
+      <mat-option *ngFor="let role of roles" [value]="role">
+        {{ role }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field fxFlex="50" appearance="outline">
+    <mat-label>Name</mat-label>
+    <input matInput [(ngModel)]="this.person.Name" />
+  </mat-form-field>
+
+  <mat-form-field fxFlex="32" appearance="outline">
+    <mat-label>Grade</mat-label>
+    <mat-select
+      [disabled]="!this.person.hasGrade()"
+      [(ngModel)]="this.person.Grade"
+    >
+      <mat-option *ngFor="let grade of grades" [value]="grade">
+        {{ grade }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+<button
+  color="primary"
+  mat-raised-button
+  (click)="submit()"
+  [disabled]="!isComplete()"
+>
+  Submit
+</button>
+
+<div fxLayout="row wrap" class="print">
+  <ng-container *ngFor="let person of result; let i = index">
+    <app-qr-code
+      class="qrcode"
+      fxFlex="50%"
+      fxFlex.lt-lg="50%"
+      [person]="person"
+    ></app-qr-code>
+  </ng-container>
+</div>

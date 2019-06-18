@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ELEMENT_DATA, Roles, Grades, PersonDTO } from "src/constants";
 import { isNumber } from "util";
+import { QrCodeService } from "../qr-code/qr-code.service";
 
 @Component({
   selector: "app-qr-creator",
@@ -11,9 +12,7 @@ export class QrCreatorComponent implements OnInit {
   public fileToUpload: File;
   public result: PersonDTO[];
   public fileUploaded: boolean = false;
-  public studentIndex: number = -1;
-  public staffIndex: number = -1;
-  constructor() {}
+  constructor(private qrCodeService: QrCodeService) {}
 
   ngOnInit() {}
 
@@ -21,6 +20,7 @@ export class QrCreatorComponent implements OnInit {
     return !Number.isNaN(parseInt(item));
   }
   handleFileInput(event) {
+    this.qrCodeService.reset();
     this.fileUploaded = false;
     this.result = [];
     let currentRole = "";
@@ -63,12 +63,14 @@ export class QrCreatorComponent implements OnInit {
       });
       console.log(this.result);
       this.fileUploaded = true;
+      event.target.value = null;
     };
     fileReader.readAsText(this.fileToUpload);
   }
 
-  getIndex(person: PersonDTO) {
-    if (person.Role === "Student") return ++this.studentIndex;
-    else return ++this.staffIndex;
+  reset() {
+    this.fileUploaded = false;
+    this.fileToUpload = null;
+    this.result = [];
   }
 }
