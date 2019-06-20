@@ -5,6 +5,8 @@ import { ManualEntryComponent } from "../manual-entry/manual-entry.component";
 import { AttendanceTableComponent } from "../attendance-table/attendance-table.component";
 import { AngularFireAuth } from "angularfire2/auth";
 import { Router } from "@angular/router";
+import { QrCreatorComponent } from "../qr-creator/qr-creator.component";
+import { ManualQrComponent } from "../manual-qr/manual-qr.component";
 
 @Component({
   selector: "app-home",
@@ -40,6 +42,23 @@ export class HomeComponent implements OnInit {
           {
             label: "Manual Entry",
             component: ManualEntryComponent
+          }
+        ]
+      },
+      {
+        x: 3,
+        y: 0,
+        rows: 2,
+        cols: 2,
+        openInNew: true,
+        headers: [
+          {
+            label: "Create Batch QR",
+            component: QrCreatorComponent
+          },
+          {
+            label: "Single QR Creator",
+            component: ManualQrComponent
           }
         ]
       }

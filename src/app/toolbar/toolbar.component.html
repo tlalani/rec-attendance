@@ -1,0 +1,12 @@
+<mat-toolbar>
+  REC Attendance System
+  <button mat-icon-button [matMenuTriggerFor]="menu" class="btn-log-out">
+    <mat-icon class="icon">account_circle</mat-icon>
+    <i class="fas fa-caret-down"></i>
+  </button>
+  <mat-menu #menu>
+    <button (click)="logout()" mat-menu-item>
+      Logout
+    </button>
+  </mat-menu>
+</mat-toolbar>

@@ -35,7 +35,8 @@ import {
   MatSidenavModule,
   MatListModule,
   MatIconModule,
-  MatTooltipModule
+  MatTooltipModule,
+  MatMenuModule
 } from "@angular/material";
 import { AttendanceComponent } from "./attendance/attendance.component";
 import { HomeComponent } from "./home/home.component";
@@ -48,7 +49,8 @@ import { GenericTableComponent } from "./generic-table/generic-table.component";
 import { QrCodeComponent } from "./qr-code/qr-code.component";
 import { ContactDialogComponent } from "./contact-dialog/contact-dialog.component";
 import { ContactInfoComponent } from "./contact-info/contact-info.component";
-import { ManualQrComponent } from './manual-qr/manual-qr.component';
+import { ManualQrComponent } from "./manual-qr/manual-qr.component";
+import { ToolbarComponent } from "./toolbar/toolbar.component";
 @NgModule({
   declarations: [
     AppComponent,
@@ -61,7 +63,8 @@ import { ManualQrComponent } from './manual-qr/manual-qr.component';
     QrCodeComponent,
     ContactDialogComponent,
     ContactInfoComponent,
-    ManualQrComponent
+    ManualQrComponent,
+    ToolbarComponent
   ],
   imports: [
     BrowserModule,
@@ -97,7 +100,8 @@ import { ManualQrComponent } from './manual-qr/manual-qr.component';
     MatSidenavModule,
     MatListModule,
     MatIconModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatMenuModule
   ],
   providers: [MatDatepickerModule, MatNativeDateModule],
   bootstrap: [AppComponent],
@@ -109,7 +113,8 @@ import { ManualQrComponent } from './manual-qr/manual-qr.component';
     ManualEntryComponent,
     SubmitDialogComponent,
     AttendanceTableComponent,
-    ContactDialogComponent
+    ContactDialogComponent,
+    ToolbarComponent
   ]
 })
 export class AppModule {}

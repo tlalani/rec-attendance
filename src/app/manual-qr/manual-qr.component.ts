@@ -26,4 +26,8 @@ export class ManualQrComponent implements OnInit {
     this.result.push(this.person);
     this.person = new PersonDTO({ Name: null });
   }
+
+  print() {
+    window.print();
+  }
 }
