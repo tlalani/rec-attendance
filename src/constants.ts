@@ -188,7 +188,7 @@ export function createSetArray(type: number) {
       }
     }
     if (type === Type.Staff || type === Type.Both) {
-      if (role !== Roles.Student || role !== Roles.Teachers) {
+      if (role !== Roles.Student || role !== Roles.Teacher) {
         r.push(new Set());
       }
     }
@@ -222,7 +222,7 @@ export function getStaffArray(staffSnapshot) {
     let p = new Person(person[1]);
     p.Name = name;
     p.setStatus();
-    result.add(p);
+    let index = result[0].add(p);
   });
 }
 
