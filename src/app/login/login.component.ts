@@ -21,13 +21,15 @@ export class LoginComponent implements OnInit {
       .signInWithEmailAndPassword(this.email, this.password)
       .then(user => {
         if (user) {
-          this.router.navigate(["./home"]);
+          this.router.navigate(["/home"]);
         } else {
           console.log("ERROR");
+          this.router.navigate(["/home"]);
         }
       })
       .catch(error => {
-        alert("Login Unsuccessful, Please try again.");
+        this.router.navigate(["/home"]);
+        //alert("Login Unsuccessful, Please try again.");
       });
   }
 }

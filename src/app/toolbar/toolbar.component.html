@@ -1,5 +1,9 @@
 <mat-toolbar>
   REC Attendance System
+  <div class="divider"></div>
+  <button mat-button class="sidelink" (click)="toQr()">
+    QR Codes
+  </button>
   <button mat-icon-button [matMenuTriggerFor]="menu" class="btn-log-out">
     <mat-icon class="icon">account_circle</mat-icon>
     <i class="fas fa-caret-down"></i>

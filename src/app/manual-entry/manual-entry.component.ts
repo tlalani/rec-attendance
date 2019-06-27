@@ -18,7 +18,7 @@ import { formatDate } from "@angular/common";
   styleUrls: ["./manual-entry.component.scss"]
 })
 export class ManualEntryComponent implements OnInit {
-  public roles = Roles;
+  public roles = Object.keys(Roles);
   public statuses = Object.keys(Statuses);
   public person: Person = new Person({});
   public grades: string[] = Grades;

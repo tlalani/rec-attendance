@@ -34,33 +34,14 @@ export class HomeComponent implements OnInit {
         y: 0,
         rows: 4,
         cols: 3,
-        headers: [
-          {
-            label: "Attendance",
-            component: AttendanceComponent
-          },
-          {
-            label: "Manual Entry",
-            component: ManualEntryComponent
-          }
-        ]
+        component: AttendanceComponent
       },
       {
         x: 3,
         y: 0,
         rows: 2,
         cols: 2,
-        openInNew: true,
-        headers: [
-          {
-            label: "Create Batch QR",
-            component: QrCreatorComponent
-          },
-          {
-            label: "Single QR Creator",
-            component: ManualQrComponent
-          }
-        ]
+        component: ManualEntryComponent
       }
     ];
 

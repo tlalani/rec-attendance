@@ -12,7 +12,19 @@ export const Grades = [
   "5th Grade",
   "6th Grade"
 ];
-export const Roles = ["Student", "Teacher", "Management", "Intern"];
+
+export const Type = {
+  Student: 1,
+  Staff: 2,
+  Both: 3
+};
+
+export const Roles = {
+  Student: "Student",
+  Teacher: "Teacher",
+  Management: "Management",
+  Intern: "Intern"
+};
 const offset = -13;
 
 export function normalize(config) {
@@ -50,7 +62,7 @@ export const contactStatuses = {
 
 export function getGradeFromString(item: string) {
   if (!Number.isNaN(parseInt(item))) return parseInt(item.charAt(0)) - 1;
-  else return Roles.indexOf(item) + Grades.length - 1;
+  else return Object.keys(Roles).indexOf(item) + Grades.length - 1;
 }
 
 export class Person {
@@ -151,13 +163,67 @@ export class Person {
   }
 
   public hasGrade() {
-    return this.Role === Roles[0] || this.Role === Roles[1];
+    return this.Role === Roles.Student || this.Role === Roles.Teacher;
   }
 
   public firstAndLastName() {
     let fullName = this.Name.split(" ");
     return fullName[0] + " " + fullName[fullName.length - 1];
   }
+
+  public equals(other: Person | PersonDTO) {
+    return (
+      this.Name.replace(/ /g, "") == other.Name.replace(/ /g, "") &&
+      this.Grade.replace(/ /g, "") == other.Grade.replace(/ /g, "")
+    );
+  }
+}
+
+export function createSetArray(type: number) {
+  let r = [];
+  Object.values(Roles).forEach(role => {
+    if (type === Type.Student || type === Type.Both) {
+      if (role === Roles.Student) {
+        Grades.forEach(() => r.push(new Set()));
+      }
+    }
+    if (type === Type.Staff || type === Type.Both) {
+      if (role !== Roles.Student || role !== Roles.Teachers) {
+        r.push(new Set());
+      }
+    }
+  });
+  return r;
+}
+
+export function getStudentsArray(studentSnapshot) {
+  let result: Set<Person>[] = createSetArray(Type.Student);
+  Object.entries(studentSnapshot).forEach(([gradeStr, peopleInGrade]) => {
+    let grade = getGradeFromString(gradeStr);
+    if (peopleInGrade) {
+      Object.entries(peopleInGrade).forEach(person => {
+        let name = person[0];
+        let p = new Person(person[1]);
+        p.Name = name;
+        p.Grade = gradeStr;
+        p.setStatus();
+        result[grade].add(p);
+      });
+    }
+  });
+
+  return result;
+}
+
+export function getStaffArray(staffSnapshot) {
+  let result: Set<Person>[] = createSetArray(Type.Staff);
+  Object.entries(staffSnapshot).forEach(person => {
+    let name = person[0];
+    let p = new Person(person[1]);
+    p.Name = name;
+    p.setStatus();
+    result.add(p);
+  });
 }
 
 export class PersonDTO {
@@ -168,8 +234,15 @@ export class PersonDTO {
     obj && Object.assign(this, obj);
   }
 
+  public equals(other: Person | PersonDTO) {
+    return (
+      this.Name.replace(/ /g, "") == other.Name.replace(/ /g, "") &&
+      this.Grade.replace(/ /g, "") == other.Grade.replace(/ /g, "")
+    );
+  }
+
   public hasGrade() {
-    return this.Role === Roles[0] || this.Role === Roles[1];
+    return this.Role === Roles.Student || this.Role === Roles.Teacher;
   }
 }
 

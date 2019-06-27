@@ -22,4 +22,8 @@ export class ToolbarComponent implements OnInit {
         console.log(err);
       });
   }
+
+  toQr() {
+    this.router.navigate(["/createqr"]);
+  }
 }

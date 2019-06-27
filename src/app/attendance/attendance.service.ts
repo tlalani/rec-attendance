@@ -17,7 +17,7 @@ export class AttendanceService {
 
   public getPeople() {
     return this.db
-      .object("People/Student")
+      .object("People")
       .valueChanges()
       .pipe(first())
       .toPromise();
@@ -26,7 +26,7 @@ export class AttendanceService {
   public queryAttendanceForSpecificDay(date) {
     const schoolYear = getSchoolYearFromDate(date);
     const queryString =
-      schoolYear + "/" + formatDate(date, "MMM d, y", "en-US") + "/Student";
+      schoolYear + "/" + formatDate(date, "MMM d, y", "en-US");
     return this.db
       .object(queryString)
       .valueChanges()

@@ -33,7 +33,7 @@ export class QrCreatorComponent implements OnInit {
         if (item.length > 0) {
           if (this.isANumber(item)) {
             currentGrade = parseInt(item) - 1;
-          } else if (Roles.includes(item)) {
+          } else if (Object.keys(Roles).includes(item)) {
             currentRole = item;
             currentGrade = 0;
           } else {

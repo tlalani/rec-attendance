@@ -7,7 +7,10 @@ import {
   ReasonsArray,
   getGradeFromString,
   Grades,
-  ELEMENT_DATA
+  ELEMENT_DATA,
+  getStudentArray,
+  Roles,
+  createSetArray
 } from "src/constants";
 import { AngularFireAuth } from "angularfire2/auth";
 
@@ -20,7 +23,9 @@ export class AttendanceComponent implements OnInit {
   public result: any[] = [];
   public reasons = ReasonsArray;
   public currentDate: Date;
-  public people: PersonDTO[][] = [[], [], [], [], [], [], [], [], []];
+  public students: PersonDTO[][] = [[], [], [], [], [], []];
+  public teachers: PersonDTO[][] = [[], [], [], [], [], []];
+  public management: PersonDTO[][] = [[], []];
   public loading: boolean = false;
   public grades = Grades;
   constructor(
@@ -51,14 +56,32 @@ export class AttendanceComponent implements OnInit {
   public getPeopleQuery() {
     this.attendanceService
       .getPeople()
-      .then(items => {
-        Object.entries(items).forEach(([gradeStr, peopleInGrade]) => {
-          let grade = getGradeFromString(gradeStr);
-          Object.entries(peopleInGrade).forEach(person => {
-            this.people[grade].push(
-              new PersonDTO({ Name: person[1], Grade: gradeStr })
-            );
-          });
+      .then(roles => {
+        Object.entries(roles).forEach(([role, people]) => {
+          if (role === Roles.Student || role === Roles.Teacher) {
+            Object.entries(people).forEach(([gradeStr, peopleInGrade]) => {
+              let grade = getGradeFromString(gradeStr);
+              Object.entries(peopleInGrade).forEach(person => {
+                if (role === Roles.Teacher) {
+                  this.teachers[grade].push(
+                    new PersonDTO({ Name: person[1], Grade: gradeStr })
+                  );
+                } else {
+                  this.students[grade].push(
+                    new PersonDTO({ Name: person[1], Grade: gradeStr })
+                  );
+                }
+              });
+            });
+          } else {
+            Object.entries(people).forEach(person => {
+              let index =
+                Object.keys(Roles).indexOf(role) % this.management.length;
+              this.management[index].push(
+                new PersonDTO({ Name: person[1], Grade: null })
+              );
+            });
+          }
         });
       })
       .catch(error => {
@@ -68,47 +91,29 @@ export class AttendanceComponent implements OnInit {
 
   public queryDailyAttendance() {
     this.result = [];
-    let result: Set<Person>[] = [
-      new Set(),
-      new Set(),
-      new Set(),
-      new Set(),
-      new Set(),
-      new Set()
-    ];
-    let resultDTO: PersonDTO[][] = [[], [], [], [], [], []];
+    let result: Set<Person>[] = [];
     this.attendanceService
       .queryAttendanceForSpecificDay(this.currentDate)
       .then((items: Object) => {
-        Object.entries(items).forEach(([gradeStr, peopleInGrade]) => {
-          let grade = getGradeFromString(gradeStr);
-          if (peopleInGrade) {
-            Object.entries(peopleInGrade).forEach(person => {
-              let name = person[0];
-              let p = new Person(person[1]);
-              p.Name = name;
-              p.Grade = gradeStr;
-              p.setStatus();
-              result[grade].add(p);
-              resultDTO[grade].push(new PersonDTO(p.toDTO()));
+        Object.entries(items).forEach(([role, snapShot]) => {
+          if (role === Roles.Student) {
+            let r = getStudentArray(snapShot);
+            r.forEach(item => {
+              result.push(item);
             });
           }
         });
-        for (let grade = 0; grade < this.people.length; grade++) {
-          if (this.people[grade].length > 0) {
-            for (let res of this.people[grade]) {
+        for (let i = 0; i < result.length; i++) {
+          if (result[i].size > 0) {
+            for (let personInGrade of this.students[i]) {
               let contains = false;
-              for (let res1 of resultDTO[grade]) {
-                if (
-                  res.Name.replace(/ /g, "") == res1.Name.replace(/ /g, "") &&
-                  res.Grade.replace(/ /g, "") == res1.Grade.replace(/ /g, "")
-                ) {
+              result[i].forEach(personPresent => {
+                if (personInGrade.equals(personPresent)) {
                   contains = true;
-                  break;
                 }
-              }
+              });
               if (!contains) {
-                result[grade].add(new Person(res));
+                result[i].add(new Person(personInGrade));
               }
             }
           }
@@ -123,7 +128,7 @@ export class AttendanceComponent implements OnInit {
         });
       })
       .catch(error => {
-        console.log(this.afAuth.auth.currentUser);
+        console.log(error);
         this.loading = false;
         console.error(
           "This day",

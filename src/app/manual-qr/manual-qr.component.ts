@@ -9,7 +9,7 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 })
 export class ManualQrComponent implements OnInit {
   public result: PersonDTO[] = [];
-  public roles = Roles;
+  public roles = Object.keys(Roles);
   public grades = Grades;
   public person: PersonDTO = new PersonDTO({ Name: null });
   constructor() {}
