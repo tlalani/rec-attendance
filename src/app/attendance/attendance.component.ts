@@ -8,7 +8,7 @@ import {
   getGradeFromString,
   Grades,
   ELEMENT_DATA,
-  getStudentArray,
+  getStudentsArray,
   Roles,
   createSetArray
 } from "src/constants";
@@ -97,7 +97,7 @@ export class AttendanceComponent implements OnInit {
       .then((items: Object) => {
         Object.entries(items).forEach(([role, snapShot]) => {
           if (role === Roles.Student) {
-            let r = getStudentArray(snapShot);
+            let r = getStudentsArray(snapShot);
             r.forEach(item => {
               result.push(item);
             });
