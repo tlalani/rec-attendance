@@ -88,7 +88,7 @@ import { ToolbarComponent } from "./toolbar/toolbar.component";
     FormsModule,
     MatCardModule,
     MatButtonModule,
-    AngularFireModule.initializeApp(normalize(environment.firebase)),
+    AngularFireModule.initializeApp(environment.firebase),
     AngularFireDatabaseModule,
     AngularFireAuthModule,
     MatProgressSpinnerModule,
