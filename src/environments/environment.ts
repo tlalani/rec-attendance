@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   firebase: {
-    apiKey: "NVLn6KOUs2t2jqrY9t41nYqM2zebZOaTx1AA9Zp",
+    apiKey: "AIzaSyBHfOgO7deLVgQNaLd-Om2YMBXGkNooVMc",
     authDomain: "attendance-rec.firebaseapp.com",
     databaseURL: "https://attendance-rec.firebaseio.com",
     projectId: "attendance-rec",
