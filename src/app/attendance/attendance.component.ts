@@ -121,7 +121,8 @@ export class AttendanceComponent implements OnInit {
         result.forEach(items => {
           let res = Array.from(items);
           res.map((item: Person) => {
-            item.editable = !item.isPresent();
+            item.editable = true;
+            item.editing = false;
           });
           this.loading = false;
           this.result.push(res);

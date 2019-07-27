@@ -17,7 +17,8 @@ export class AttendanceTableComponent implements OnInit {
     "grade",
     "status",
     "reason",
-    "comments"
+    "comments",
+    "edit"
   ];
   public reasons = ReasonsArray;
   public statuses = Object.values(Statuses);

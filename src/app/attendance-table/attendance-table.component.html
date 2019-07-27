@@ -107,16 +107,8 @@
       <mat-header-cell *matHeaderCellDef> </mat-header-cell>
       <mat-cell *matCellDef="let student">
         <button
-          *ngIf="student.isAbsent() && !student.Reason && !student.editing"
+          *ngIf="!student.editing"
           mat-raised-button
-          color="primary"
-          (click)="startEditing(student)"
-        >
-          Edit
-        </button>
-        <button
-          *ngIf="(!student.isAbsent() || student.Reason) && !student.editing"
-          mat-stroked-button
           color="primary"
           (click)="startEditing(student)"
         >
