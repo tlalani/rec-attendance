@@ -11,7 +11,7 @@ import { auth } from "firebase";
 export class LoginComponent implements OnInit {
   public email: string = "";
   public password: string = "";
-  public logoLink = "../../assets/pictures/logo.png";
+  public logoLink = "assets/pictures/logo.png";
   constructor(private router: Router, private auth: AngularFireAuth) {}
 
   ngOnInit() {}
