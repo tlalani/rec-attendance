@@ -7,6 +7,10 @@
   }
 }
 
+button {
+  padding: 0;
+}
+
 mat-header-row {
   padding: 0px 5px;
 }
@@ -16,11 +20,14 @@ mat-cell {
   justify-content: center;
 }
 
+.teacher {
+  background-color: rgba(211, 211, 211, 0.527);
+}
 .table {
   height: 450px;
   overflow: auto;
   mat-form-field {
-    width: 95%;
+    width: 98%;
   }
 }
 
@@ -49,8 +56,8 @@ mat-header-cell {
 
 mat-spinner {
   position: absolute;
-  top: 100px;
-  left: 100px;
+  top: 200px;
+  left: 200px;
 }
 
 .container-dates {

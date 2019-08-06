@@ -86,15 +86,19 @@ export class Person {
   }
 
   public isPresent() {
-    return this.Status === Statuses.Present ? true : false;
+    return this.Status === Statuses.Present;
   }
 
   public isAbsent() {
-    return this.Status === Statuses.Absent ? true : false;
+    return this.Status === Statuses.Absent;
   }
 
   public isExcused() {
-    return this.Status === Statuses.Excused ? true : false;
+    return this.Status === Statuses.Excused;
+  }
+
+  public isTeacher() {
+    return this.Role === Roles.Teacher;
   }
 
   public isEditable() {
@@ -196,22 +200,25 @@ export function createSetArray(type: number) {
   return r;
 }
 
-export function getStudentsArray(studentSnapshot) {
+export function getStudentsArray(studentSnapshot, role) {
+  //creates the set of people per grade
   let result: Set<Person>[] = createSetArray(Type.Student);
+  //Firebase data
   Object.entries(studentSnapshot).forEach(([gradeStr, peopleInGrade]) => {
     let grade = getGradeFromString(gradeStr);
     if (peopleInGrade) {
+      //for each person in the grade add them to their grade's list.
       Object.entries(peopleInGrade).forEach(person => {
         let name = person[0];
         let p = new Person(person[1]);
         p.Name = name;
         p.Grade = gradeStr;
+        p.Role = role;
         p.setStatus();
         result[grade].add(p);
       });
     }
   });
-
   return result;
 }
 
@@ -222,7 +229,6 @@ export function getStaffArray(staffSnapshot) {
     let p = new Person(person[1]);
     p.Name = name;
     p.setStatus();
-    let index = result[0].add(p);
   });
 }
 
@@ -305,69 +311,76 @@ export function getSchoolYearFromDate(date: Date) {
 }
 
 export const ELEMENT_DATA = [
-  [
-    Person.makeP({
-      Name: "Hydrogen",
-      Grade: "1st Grade",
-      Status: "P",
-      Reason: "No Reason"
-    }),
-    Person.makeP({
-      Name: "Helium",
-      Grade: "2nd Grade",
-      Status: "P",
-      Reason: "Reasons Unknown"
-    }),
-    Person.makeP({
-      Name: "Lithium",
-      Grade: "3rd Grade",
-      Status: "A",
-      Reason: "Has a Reason"
-    }),
-    Person.makeP({
-      Name: "Beryllium",
-      Grade: "4th Grade",
-      Status: "T",
-      Reason: "Might Be A Reason"
-    }),
-    Person.makeP({
-      Name: "Boron",
-      Grade: "5th Grade",
-      Status: "A",
-      Reason: "What's a Reason?"
-    }),
-    Person.makeP({
-      Name: "Carbon",
-      Grade: "6th Grade",
-      Status: "P",
-      Reason: "Transportation"
-    }),
-    Person.makeP({
-      Name: "Nitrogen",
-      Grade: "1st Grade",
-      Status: "T",
-      Reason: "Traveling"
-    }),
-    Person.makeP({
-      Name: "Oxygen",
-      Grade: "2nd Grade",
-      Status: "T",
-      Reason: "Trying to find a Reason"
-    }),
-    Person.makeP({
-      Name: "Fluorine",
-      Grade: "3rd Grade",
-      Status: "A",
-      Reason: "Flying away from me?"
-    }),
-    Person.makeP({
-      Name: "Neon",
-      Grade: "4th Grade",
-      Status: "P",
-      Reason: "Never had a Reason!"
-    })
-  ]
+  Person.makeP({
+    Name: "Hydrogen",
+    Grade: "1st Grade",
+    Status: "P",
+    Reason: "No Reason"
+  }),
+  Person.makeP({
+    Name: "Helium",
+    Grade: "1st Grade",
+    Status: "P",
+    Reason: "Reasons Unknown"
+  }),
+  Person.makeP({
+    Name: "Lithium",
+    Grade: "2nd Grade",
+    Status: "A",
+    Reason: "Has a Reason"
+  }),
+  Person.makeP({
+    Name: "Beryllium",
+    Grade: "2nd Grade",
+    Status: "T",
+    Reason: "Might Be A Reason"
+  }),
+  Person.makeP({
+    Name: "Boron",
+    Grade: "3rd Grade",
+    Status: "A",
+    Reason: "What's a Reason?"
+  }),
+  Person.makeP({
+    Name: "Carbon",
+    Grade: "3rd Grade",
+    Status: "P",
+    Reason: "Transportation"
+  }),
+  Person.makeP({
+    Name: "Nitrogen",
+    Grade: "5th Grade",
+    Status: "T",
+    Reason: "Traveling"
+  }),
+  Person.makeP({
+    Name: "Oxygen",
+    Grade: "5th Grade",
+    Status: "T",
+    Reason: "Trying to find a Reason"
+  }),
+  Person.makeP({
+    Name: "Fluorine",
+    Grade: "6th Grade",
+    Status: "A",
+    Reason: "Flying away from me?"
+  }),
+  Person.makeP({
+    Name: "Neon",
+    Grade: "6th Grade",
+    Status: "P",
+    Reason: "Never had a Reason!"
+  })
 ];
+
+export function makeSampleData() {
+  let result: Person[][] = [[], [], [], [], [], []];
+  ELEMENT_DATA.forEach((person: Person) => {
+    let index = getGradeFromString(person.Grade);
+    result[index].push(person);
+  });
+  return result;
+}
 
 export const NUMBERS: Phone[] = [
   Phone.makeP({

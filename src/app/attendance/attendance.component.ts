@@ -10,7 +10,8 @@ import {
   ELEMENT_DATA,
   getStudentsArray,
   Roles,
-  createSetArray
+  createSetArray,
+  makeSampleData
 } from "src/constants";
 import { AngularFireAuth } from "angularfire2/auth";
 
@@ -34,6 +35,11 @@ export class AttendanceComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    // this.loading = true;
+    // setTimeout(() => {
+    //   this.loading = false;
+    //   this.result = makeSampleData();
+    // }, 2000);
     this.loading = true;
     let date = new Date();
     if (date.getDay() < 6) {
@@ -91,34 +97,42 @@ export class AttendanceComponent implements OnInit {
 
   public queryDailyAttendance() {
     this.result = [];
-    let result: Set<Person>[] = [];
+    let toReturn: Set<Person>[] = [];
     this.attendanceService
       .queryAttendanceForSpecificDay(this.currentDate)
       .then((items: Object) => {
         Object.entries(items).forEach(([role, snapShot]) => {
-          if (role === Roles.Student) {
-            let r = getStudentsArray(snapShot);
+          if (role === Roles.Student || role === Roles.Teacher) {
+            let r = getStudentsArray(snapShot, role);
+            let i = 0;
             r.forEach(item => {
-              result.push(item);
+              if (toReturn[i]) {
+                item.forEach(person => {
+                  toReturn[i].add(person);
+                });
+              } else {
+                toReturn.push(item);
+              }
+              i++;
             });
           }
         });
-        for (let i = 0; i < result.length; i++) {
-          if (result[i].size > 0) {
+        for (let i = 0; i < toReturn.length; i++) {
+          if (toReturn[i].size > 0) {
             for (let personInGrade of this.students[i]) {
               let contains = false;
-              result[i].forEach(personPresent => {
+              toReturn[i].forEach(personPresent => {
                 if (personInGrade.equals(personPresent)) {
                   contains = true;
                 }
               });
               if (!contains) {
-                result[i].add(new Person(personInGrade));
+                toReturn[i].add(new Person(personInGrade));
               }
             }
           }
         }
-        result.forEach(items => {
+        toReturn.forEach(items => {
           let res = Array.from(items);
           res.map((item: Person) => {
             item.editable = true;
@@ -129,7 +143,7 @@ export class AttendanceComponent implements OnInit {
         });
       })
       .catch(error => {
-        console.log(error);
+        //console.log(error);
         this.loading = false;
         console.error(
           "This day",

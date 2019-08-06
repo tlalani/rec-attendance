@@ -32,7 +32,7 @@ export class HomeComponent implements OnInit {
       {
         x: 0,
         y: 0,
-        rows: 4,
+        rows: 2,
         cols: 3,
         component: AttendanceComponent
       },

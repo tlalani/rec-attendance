@@ -1,24 +1,23 @@
 <div class="table">
-  <mat-slide-toggle color="primary" [checked]="true" #diss
-    >Disable Name Buttons</mat-slide-toggle
-  >
   <mat-table #table [dataSource]="dataSource">
     <ng-container matColumnDef="name">
-      <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
-      <mat-cell *matCellDef="let student"
-        ><button
+      <mat-header-cell *matHeaderCellDef>
+        Name
+      </mat-header-cell>
+      <mat-cell *matCellDef="let person">
+        <button
           mat-button
-          [disabled]="diss.checked"
-          [matTooltip]="student.Name"
+          disabled="true"
+          style="color: black; padding: 0px 10px;"
+          [matTooltip]="person.Name"
           matTooltipPosition="above"
           [ngClass]="{
-            absent:
-              (student.isAbsent() || student.isExcused()) && !student.Reason,
-            finished: student.isAbsent() && student.Reason && !student.editing
+            absent: (person.isAbsent() || person.isExcused()) && !person.Reason,
+            finished: person.isAbsent() && person.Reason && !person.editing
           }"
-          (click)="openDialog(student)"
+          (click)="openDialog(person)"
         >
-          {{ student.firstAndLastName() }}
+          {{ person.firstAndLastName() }}
         </button>
       </mat-cell>
     </ng-container>
@@ -27,31 +26,30 @@
       <mat-header-cell *matHeaderCellDef> Grade </mat-header-cell>
       <mat-cell
         [ngClass]="{
-          absent:
-            (student.isAbsent() || student.isExcused()) && !student.Reason,
-          finished: student.isAbsent() && student.Reason && !student.editing
+          absent: (person.isAbsent() || person.isExcused()) && !person.Reason,
+          finished: person.isAbsent() && person.Reason && !person.editing
         }"
-        *matCellDef="let student"
+        *matCellDef="let person"
       >
-        {{ student.Grade }}
+        {{ person.Grade }}
       </mat-cell>
     </ng-container>
 
     <!-- Weight Column -->
     <ng-container matColumnDef="status">
       <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
-      <mat-cell *matCellDef="let student">
+      <mat-cell *matCellDef="let person">
         <mat-form-field class="status" appearance="outline">
           <mat-select
-            [(ngModel)]="student.Status"
-            [disabled]="!student.editing"
+            [(ngModel)]="person.Status"
+            [disabled]="!person.editing"
             placeholder="Status"
-            (selectionChange)="makeChange(student)"
+            (selectionChange)="makeChange(person)"
           >
             <mat-option
               *ngFor="let status of statuses; let i = index"
               [value]="status"
-              [disabled]="student.Status === status"
+              [disabled]="person.Status === status"
             >
               {{ status }}
             </mat-option>
@@ -63,23 +61,23 @@
     <!-- Symbol Column -->
     <ng-container matColumnDef="reason">
       <mat-header-cell *matHeaderCellDef> Reason </mat-header-cell>
-      <mat-cell *matCellDef="let student">
-        <span *ngIf="student.isPresent()">--</span>
+      <mat-cell *matCellDef="let person">
+        <span *ngIf="person.isPresent()">--</span>
         <mat-form-field
           class="reasons"
-          *ngIf="!student.isPresent()"
+          *ngIf="!person.isPresent()"
           appearance="outline"
         >
           <mat-select
-            [(ngModel)]="student.Reason"
-            [disabled]="!student.editing"
+            [(ngModel)]="person.Reason"
+            [disabled]="!person.editing"
             placeholder="Select Reason"
-            (selectionChange)="makeChange(student)"
+            (selectionChange)="makeChange(person)"
           >
             <mat-option
               *ngFor="let reason of reasons; let i = index"
               [value]="reason"
-              [disabled]="student.Reason === reason"
+              [disabled]="person.Reason === reason"
             >
               {{ reason }}
             </mat-option>
@@ -90,14 +88,14 @@
 
     <ng-container matColumnDef="comments">
       <mat-header-cell *matHeaderCellDef> Comments </mat-header-cell>
-      <mat-cell *matCellDef="let student">
-        <span *ngIf="student.isPresent()">--</span>
-        <mat-form-field *ngIf="!student.isPresent()">
+      <mat-cell *matCellDef="let person">
+        <span *ngIf="person.isPresent()">--</span>
+        <mat-form-field appearance="outline" *ngIf="!person.isPresent()">
           <input
             matInput
-            [(ngModel)]="student.Comments"
-            [disabled]="!student.editing"
-            (input)="makeChange(student)"
+            [(ngModel)]="person.Comments"
+            [disabled]="!person.editing"
+            (input)="makeChange(person)"
           />
         </mat-form-field>
       </mat-cell>
@@ -105,20 +103,20 @@
 
     <ng-container matColumnDef="edit">
       <mat-header-cell *matHeaderCellDef> </mat-header-cell>
-      <mat-cell *matCellDef="let student">
+      <mat-cell *matCellDef="let person">
         <button
-          *ngIf="!student.editing"
+          *ngIf="!person.editing"
           mat-raised-button
           color="primary"
-          (click)="startEditing(student)"
+          (click)="startEditing(person)"
         >
           Edit
         </button>
         <button
-          *ngIf="student.editing"
+          *ngIf="person.editing"
           mat-raised-button
           color="warn"
-          (click)="saveEdits(student)"
+          (click)="saveEdits(person)"
         >
           Finish
         </button>
@@ -128,6 +126,9 @@
     <mat-header-row
       *matHeaderRowDef="displayedColumns; sticky: true"
     ></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    <mat-row
+      *matRowDef="let row; columns: displayedColumns"
+      [ngClass]="{ teacher: row.Role === 'Teacher' }"
+    ></mat-row>
   </mat-table>
 </div>
