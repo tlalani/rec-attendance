@@ -15,9 +15,10 @@ export class AttendanceService {
 
   constructor(private db: AngularFireDatabase) {}
 
-  public getPeople() {
+  public getPeople(schoolYear) {
+    const queryString = "People/" + schoolYear;
     return this.db
-      .object("People")
+      .object(queryString)
       .valueChanges()
       .pipe(first())
       .toPromise();

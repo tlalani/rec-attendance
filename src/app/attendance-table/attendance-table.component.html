@@ -17,7 +17,7 @@
           }"
           (click)="openDialog(person)"
         >
-          {{ person.firstAndLastName() }}
+          {{ person.firstAndLastName().substring(0, 18) }}
         </button>
       </mat-cell>
     </ng-container>

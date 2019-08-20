@@ -11,6 +11,12 @@ button {
   padding: 0;
 }
 
+mat-cell:first-of-type,
+mat-header-cell:first-of-type {
+  padding-left: 0px;
+  padding-right: 10px;
+}
+
 mat-header-row {
   padding: 0px 5px;
 }

@@ -301,7 +301,7 @@ export class Email {
 export function getSchoolYearFromDate(date: Date) {
   let month = date.getMonth();
   let year = date.getFullYear();
-  if (month >= 8) {
+  if (month >= 7) {
     let year1 = year + 1;
     return "" + year + "-" + year1;
   } else {
@@ -441,4 +441,30 @@ export function militaryTimeToAMPM(milTime) {
     }
   }
   return milTime;
+}
+
+export function compareNames(personA, personB) {
+  if (
+    personA.Name.split(" ")[0].toLowerCase() >
+    personB.Name.split(" ")[0].toLowerCase()
+  ) {
+    return 1;
+  } else if (
+    personB.Name.split(" ")[0].toLowerCase() <
+    personA.Name.split(" ")[0].toLowerCase()
+  ) {
+    return -1;
+  } else {
+    return 0;
+  }
+}
+
+export function moveTeachersToBottom(list: Person[]) {
+  for (let i = list.length - 1; i >= 0; i--) {
+    if (list[i].Role === "Teacher") {
+      list.push(list[i]);
+      list.splice(i, 1);
+    }
+  }
+  return list;
 }

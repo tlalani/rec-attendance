@@ -11,7 +11,10 @@ import {
   getStudentsArray,
   Roles,
   createSetArray,
-  makeSampleData
+  makeSampleData,
+  compareNames,
+  moveTeachersToBottom,
+  getSchoolYearFromDate
 } from "src/constants";
 import { AngularFireAuth } from "angularfire2/auth";
 
@@ -24,11 +27,12 @@ export class AttendanceComponent implements OnInit {
   public result: any[] = [];
   public reasons = ReasonsArray;
   public currentDate: Date;
-  public students: PersonDTO[][] = [[], [], [], [], [], []];
-  public teachers: PersonDTO[][] = [[], [], [], [], [], []];
-  public management: PersonDTO[][] = [[], []];
+  public students: PersonDTO[][];
+  public teachers: PersonDTO[][];
+  public management: PersonDTO[][];
   public loading: boolean = false;
   public grades = Grades;
+  public schoolYear: string;
   constructor(
     private attendanceService: AttendanceService,
     private afAuth: AngularFireAuth
@@ -49,7 +53,8 @@ export class AttendanceComponent implements OnInit {
       date.setDate(date.getDate() - 7);
     }
     this.currentDate = date;
-    this.getPeopleQuery();
+    this.schoolYear = getSchoolYearFromDate(date);
+    this.getPeopleQuery(this.schoolYear);
     this.queryDailyAttendance();
   }
 
@@ -59,9 +64,10 @@ export class AttendanceComponent implements OnInit {
     this.queryDailyAttendance();
   }
 
-  public getPeopleQuery() {
+  public getPeopleQuery(schoolYear) {
+    this.initializeLists();
     this.attendanceService
-      .getPeople()
+      .getPeople(schoolYear)
       .then(roles => {
         Object.entries(roles).forEach(([role, people]) => {
           if (role === Roles.Student || role === Roles.Teacher) {
@@ -87,6 +93,7 @@ export class AttendanceComponent implements OnInit {
                 new PersonDTO({ Name: person[1], Grade: null })
               );
             });
+            console.log(this.students);
           }
         });
       })
@@ -96,6 +103,12 @@ export class AttendanceComponent implements OnInit {
   }
 
   public queryDailyAttendance() {
+    //check to make sure you are checking the correct roster.
+    //we have our roster of people based on every school year.
+    if (getSchoolYearFromDate(this.currentDate) !== this.schoolYear) {
+      this.schoolYear = getSchoolYearFromDate(this.currentDate);
+      this.getPeopleQuery(this.schoolYear);
+    }
     this.result = [];
     let toReturn: Set<Person>[] = [];
     this.attendanceService
@@ -138,6 +151,14 @@ export class AttendanceComponent implements OnInit {
             item.editable = true;
             item.editing = false;
           });
+          res.sort((a, b) => {
+            if (a.Name > b.Name) {
+              return 1;
+            } else {
+              return -1;
+            }
+          });
+          res = moveTeachersToBottom(res);
           this.loading = false;
           this.result.push(res);
         });
@@ -158,5 +179,11 @@ export class AttendanceComponent implements OnInit {
       this.currentDate,
       student
     );
+  }
+
+  public initializeLists() {
+    this.students = [[], [], [], [], [], []];
+    this.teachers = [[], [], [], [], [], []];
+    this.management = [[], []];
   }
 }
