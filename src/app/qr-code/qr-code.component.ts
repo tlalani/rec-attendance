@@ -29,6 +29,10 @@ export class QrCodeComponent implements OnInit {
     this.shouldExist = false;
   }
 
+  undoDelete() {
+    this.shouldExist = true;
+  }
+
   getDefaultUrl() {
     this.piclink = DEFAULT_USER_IMAGE;
   }

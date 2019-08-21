@@ -1,5 +1,12 @@
-<div fxLayout="column" class="qrobj" *ngIf="shouldExist">
-  <button class="noPrint" mat-icon-button>
+<div
+  fxLayout="column"
+  class="qrobj"
+  [ngClass]="{
+    'deleted': !this.shouldExist,
+    'noPrint': !this.shouldExist
+  }"
+>
+  <button *ngIf="this.shouldExist" class="noPrint" mat-icon-button>
     <mat-icon
       matTooltip="Delete this Person?"
       matTooltipPosition="after"
@@ -7,6 +14,15 @@
       (click)="sendDelete()"
       >block</mat-icon
     >
+  </button>
+  <button *ngIf="!this.shouldExist" class="noPrint" mat-icon-button>
+    <mat-icon
+      matTooltip="Undo Delete?"
+      matTooltipPosition="after"
+      color="primary"
+      (click)="undoDelete()"
+      >undo
+    </mat-icon>
   </button>
   <div fxLayout="row" class="text">
     <p>{{ person.Name }}</p>

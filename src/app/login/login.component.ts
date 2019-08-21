@@ -28,8 +28,8 @@ export class LoginComponent implements OnInit {
         }
       })
       .catch(error => {
-        this.router.navigate(["/home"]);
-        //alert("Login Unsuccessful, Please try again.");
+        //this.router.navigate(["/home"]);
+        alert("Login Unsuccessful, Please try again.");
       });
   }
 }

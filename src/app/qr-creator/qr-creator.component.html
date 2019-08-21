@@ -1,6 +1,12 @@
 <div class="container">
   <div class="noPrint">
-    <input hidden type="file" #fileInput (change)="handleFileInput($event)" />
+    <input
+      hidden
+      accept=".txt"
+      type="file"
+      #fileInput
+      (change)="handleFileInput($event)"
+    />
     <button color="primary" mat-raised-button (click)="fileInput.click()">
       Pick File
     </button>
@@ -12,8 +18,25 @@
     >
       Reset
     </button>
+    <button mat-raised-button color="warn" style="float:right" (click)="back()">
+      Back
+    </button>
     <br />
     <br />
+    <div fxLayout="column">
+      <p
+        style="width:400px; text-align: justify; text-justify: inter-word; margin-right:15px;"
+      >
+        Please create a text file like the one shown below and upload it to get
+        your QR Codes. When printing, QR Codes print 8 per page. Make sure to
+        keep page in portrait mode
+      </p>
+    </div>
+
+    <img
+      src="../../assets/pictures/QR_file.png"
+      style="width:400px;border:black 1px solid;"
+    />
   </div>
   <div *ngIf="fileUploaded" fxLayout="row wrap" class="print">
     <ng-container *ngFor="let person of result; let i = index">

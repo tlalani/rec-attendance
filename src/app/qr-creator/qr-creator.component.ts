@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { ELEMENT_DATA, Roles, Grades, PersonDTO } from "src/constants";
 import { isNumber } from "util";
 import { QrCodeService } from "../qr-code/qr-code.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-qr-creator",
@@ -12,7 +13,7 @@ export class QrCreatorComponent implements OnInit {
   public fileToUpload: File;
   public result: PersonDTO[];
   public fileUploaded: boolean = false;
-  constructor(private qrCodeService: QrCodeService) {}
+  constructor(private qrCodeService: QrCodeService, private router: Router) {}
 
   ngOnInit() {}
 
@@ -72,5 +73,9 @@ export class QrCreatorComponent implements OnInit {
     this.fileUploaded = false;
     this.fileToUpload = null;
     this.result = [];
+  }
+
+  back() {
+    this.router.navigate(["/home"]);
   }
 }
