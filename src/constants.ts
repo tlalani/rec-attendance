@@ -10,7 +10,8 @@ export const Grades = [
   "3rd Grade",
   "4th Grade",
   "5th Grade",
-  "6th Grade"
+  "6th Grade",
+  "Management"
 ];
 
 export const Type = {
@@ -25,6 +26,12 @@ export const Roles = {
   Management: "Management",
   Intern: "Intern"
 };
+
+export const Mgmt = {
+  Management: "Management",
+  Intern: "Intern"
+};
+
 const offset = -13;
 
 export function normalize(config) {
@@ -200,37 +207,74 @@ export function createSetArray(type: number) {
   return r;
 }
 
-export function getStudentsArray(studentSnapshot, role) {
-  //creates the set of people per grade
-  let result: Set<Person>[] = createSetArray(Type.Student);
-  //Firebase data
-  Object.entries(studentSnapshot).forEach(([gradeStr, peopleInGrade]) => {
-    let grade = getGradeFromString(gradeStr);
-    if (peopleInGrade) {
-      //for each person in the grade add them to their grade's list.
-      Object.entries(peopleInGrade).forEach(person => {
-        let name = person[0];
-        let p = new Person(person[1]);
-        p.Name = name;
-        p.Grade = gradeStr;
-        p.Role = role;
-        p.setStatus();
-        result[grade].add(p);
-      });
-    }
-  });
+export function getArray(snapshot, role) {
+  let result: Set<Person>[] = [];
+  if (role === "Student" || role === "Teacher") {
+    Object.entries(snapshot).forEach(([gradeStr, peopleInGrade]) => {
+      let grade = getGradeFromString(gradeStr);
+      if (peopleInGrade) {
+        //for each person in the grade add them to their grade's list.
+        Object.entries(peopleInGrade).forEach(person => {
+          let name = person[0];
+          let p = new Person(person[1]);
+          p.Name = name;
+          p.Grade = gradeStr;
+          p.Role = role;
+          p.setStatus();
+          while (!result[grade]) {
+            result.push(new Set());
+          }
+          result[grade].add(p);
+        });
+      }
+    });
+  } else {
+    Object.entries(snapshot).forEach(person => {
+      let name = person[0];
+      let p = new Person(person[1]);
+      p.Name = name;
+      p.setStatus();
+      p.Role = role;
+      let index = Object.keys(Mgmt).indexOf(role);
+      while (!result[index]) {
+        result.push(new Set());
+      }
+      result[index].add(p);
+    });
+  }
   return result;
 }
+// export function getStudentsArray(studentSnapshot, role) {
+//   //creates the set of people per grade
+//   let result: Set<Person>[] = createSetArray(Type.Student);
+//   //Firebase data
+//   Object.entries(studentSnapshot).forEach(([gradeStr, peopleInGrade]) => {
+//     let grade = getGradeFromString(gradeStr);
+//     if (peopleInGrade) {
+//       //for each person in the grade add them to their grade's list.
+//       Object.entries(peopleInGrade).forEach(person => {
+//         let name = person[0];
+//         let p = new Person(person[1]);
+//         p.Name = name;
+//         p.Grade = gradeStr;
+//         p.Role = role;
+//         p.setStatus();
+//         result[grade].add(p);
+//       });
+//     }
+//   });
+//   return result;
+// }
 
-export function getStaffArray(staffSnapshot) {
-  let result: Set<Person>[] = createSetArray(Type.Staff);
-  Object.entries(staffSnapshot).forEach(person => {
-    let name = person[0];
-    let p = new Person(person[1]);
-    p.Name = name;
-    p.setStatus();
-  });
-}
+// export function getStaffArray(staffSnapshot) {
+//   let result: Set<Person>[] = createSetArray(Type.Staff);
+//   Object.entries(staffSnapshot).forEach(person => {
+//     let name = person[0];
+//     let p = new Person(person[1]);
+//     p.Name = name;
+//     p.setStatus();
+//   });
+// }
 
 export class PersonDTO {
   Name: string;
@@ -241,10 +285,14 @@ export class PersonDTO {
   }
 
   public equals(other: Person | PersonDTO) {
-    return (
-      this.Name.replace(/ /g, "") == other.Name.replace(/ /g, "") &&
-      this.Grade.replace(/ /g, "") == other.Grade.replace(/ /g, "")
-    );
+    if (this.Role === other.Role && this.Role === "Student") {
+      return (
+        this.Name.replace(/ /g, "") == other.Name.replace(/ /g, "") &&
+        this.Grade.replace(/ /g, "") == other.Grade.replace(/ /g, "")
+      );
+    } else {
+      return this.Name.replace(/ /g, "") == other.Name.replace(/ /g, "");
+    }
   }
 
   public hasGrade() {
@@ -456,6 +504,17 @@ export function compareNames(personA, personB) {
     return -1;
   } else {
     return 0;
+  }
+}
+
+export function pushToInnerList(list: any[][], index: number, item: any) {
+  if (list[index]) {
+    list[index].push(item);
+  } else {
+    while (!list[index]) {
+      list.push([]);
+    }
+    list[index].push(item);
   }
 }
 

@@ -1,0 +1,39 @@
+<div class="container">
+  <div fxLayout="column">
+    <div fxLayout="row">
+      <mat-form-field #rolePicker fxFlex="45" appearance="outline">
+        <mat-label>Role</mat-label>
+        <mat-select (selectionChange)="onChange()" [(ngModel)]="selectedRole">
+          <mat-option *ngFor="let role of roles" [value]="role">
+            {{ role }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field fxFlex="45" appearance="outline">
+        <mat-label>Date</mat-label>
+        <input
+          class="datepicks"
+          matInput
+          [matDatepicker]="picker"
+          placeholder="Select a Date"
+          (dateChange)="changeDate($event)"
+          [(ngModel)]="currentDate"
+        />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <div
+      [ngClass]="{
+        foundData: this.data.datasets[0].data.length > 0,
+        noDataFound: this.data.datasets[0].data.length < 1
+      }"
+    >
+      <canvas #canvas id="canvas"> {{ chart }}</canvas>
+    </div>
+    <img
+      *ngIf="this.data.datasets[0].data.length < 1"
+      src="assets/pictures/2520b74d-bf2c-46d5-ae22-00f7836aa37b_200x200.png"
+    />
+  </div>
+</div>

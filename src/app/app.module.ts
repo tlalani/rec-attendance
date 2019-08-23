@@ -51,7 +51,7 @@ import { ContactDialogComponent } from "./contact-dialog/contact-dialog.componen
 import { ContactInfoComponent } from "./contact-info/contact-info.component";
 import { ManualQrComponent } from "./manual-qr/manual-qr.component";
 import { ToolbarComponent } from "./toolbar/toolbar.component";
-import { BlankComponent } from './blank/blank.component';
+import { ChartsComponent } from "./charts/charts.component";
 @NgModule({
   declarations: [
     AppComponent,
@@ -66,7 +66,7 @@ import { BlankComponent } from './blank/blank.component';
     ContactInfoComponent,
     ManualQrComponent,
     ToolbarComponent,
-    BlankComponent
+    ChartsComponent
   ],
   imports: [
     BrowserModule,
@@ -116,7 +116,8 @@ import { BlankComponent } from './blank/blank.component';
     SubmitDialogComponent,
     AttendanceTableComponent,
     ContactDialogComponent,
-    ToolbarComponent
+    ToolbarComponent,
+    ChartsComponent
   ]
 })
 export class AppModule {}

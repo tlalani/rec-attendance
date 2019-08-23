@@ -5,6 +5,7 @@ body {
 }
 
 gridster {
+  height: calc(100% - 64px);
   background: transparent;
   gridster-item {
     border-radius: 10px;

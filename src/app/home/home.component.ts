@@ -7,6 +7,7 @@ import { AngularFireAuth } from "angularfire2/auth";
 import { Router } from "@angular/router";
 import { QrCreatorComponent } from "../qr-creator/qr-creator.component";
 import { ManualQrComponent } from "../manual-qr/manual-qr.component";
+import { ChartsComponent } from "../charts/charts.component";
 
 @Component({
   selector: "app-home",
@@ -32,7 +33,7 @@ export class HomeComponent implements OnInit {
       {
         x: 0,
         y: 0,
-        rows: 2,
+        rows: 4,
         cols: 3,
         component: AttendanceComponent
       },
@@ -42,6 +43,13 @@ export class HomeComponent implements OnInit {
         rows: 2,
         cols: 2,
         component: ManualEntryComponent
+      },
+      {
+        x: 3,
+        y: 2,
+        rows: 2,
+        cols: 2,
+        component: ChartsComponent
       }
     ];
 

@@ -7,6 +7,7 @@ import { QrCreatorComponent } from "./qr-creator/qr-creator.component";
 import { ManualEntryComponent } from "./manual-entry/manual-entry.component";
 import { ContactInfoComponent } from "./contact-info/contact-info.component";
 import { ManualQrComponent } from "./manual-qr/manual-qr.component";
+import { ChartsComponent } from "./charts/charts.component";
 const routes: Routes = [
   { path: "login", component: LoginComponent },
   { path: "home", component: HomeComponent },
@@ -15,7 +16,8 @@ const routes: Routes = [
   { path: "attendance", component: AttendanceComponent },
   { path: "manual", component: ManualEntryComponent },
   { path: "contact-info", component: ContactInfoComponent },
-  { path: "manual-qr", component: ManualQrComponent }
+  { path: "manual-qr", component: ManualQrComponent },
+  { path: "chart", component: ChartsComponent }
 ];
 
 @NgModule({
@@ -27,5 +29,6 @@ export const routingModules = [
   LoginComponent,
   HomeComponent,
   AttendanceComponent,
-  QrCreatorComponent
+  QrCreatorComponent,
+  ChartsComponent
 ];

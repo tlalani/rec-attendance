@@ -14,7 +14,7 @@
   </div>
   <mat-tab-group>
     <ng-container *ngFor="let grade of result; let i = index">
-      <mat-tab *ngIf="grade.length > 0" [label]="grades[i]">
+      <mat-tab *ngIf="grade.length > 0" [label]="getTabLabel(i)">
         <div class="table">
           <app-attendance-table
             [dataSource]="grade"
