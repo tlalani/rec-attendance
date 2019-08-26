@@ -12,16 +12,13 @@ import { FlexLayoutModule } from "@angular/flex-layout";
 import { GridsterModule } from "angular-gridster2";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { environment } from "./../environments/environment";
-import { normalize } from "../constants";
 import {
   MatAutocompleteModule,
   MatCheckboxModule,
   MatDatepickerModule,
   MatFormFieldModule,
   MatInputModule,
-  MatRadioModule,
   MatSelectModule,
-  MatSliderModule,
   MatSlideToggleModule,
   MatTableModule,
   MatNativeDateModule,
@@ -32,7 +29,6 @@ import {
   MatTabsModule,
   MatDividerModule,
   MatDialogModule,
-  MatSidenavModule,
   MatListModule,
   MatIconModule,
   MatTooltipModule,
@@ -77,9 +73,7 @@ import { ChartsComponent } from "./charts/charts.component";
     MatDatepickerModule,
     MatFormFieldModule,
     MatInputModule,
-    MatRadioModule,
     MatSelectModule,
-    MatSliderModule,
     MatSlideToggleModule,
     HttpClientModule,
     LayoutModule,
@@ -99,7 +93,6 @@ import { ChartsComponent } from "./charts/charts.component";
     ReactiveFormsModule,
     MatDividerModule,
     MatDialogModule,
-    MatSidenavModule,
     MatListModule,
     MatIconModule,
     MatTooltipModule,
@@ -107,17 +100,6 @@ import { ChartsComponent } from "./charts/charts.component";
   ],
   providers: [MatDatepickerModule, MatNativeDateModule],
   bootstrap: [AppComponent],
-  entryComponents: [
-    HomeComponent,
-    AttendanceComponent,
-    LoginComponent,
-    QrCreatorComponent,
-    ManualEntryComponent,
-    SubmitDialogComponent,
-    AttendanceTableComponent,
-    ContactDialogComponent,
-    ToolbarComponent,
-    ChartsComponent
-  ]
+  entryComponents: [ManualEntryComponent, ChartsComponent]
 })
 export class AppModule {}

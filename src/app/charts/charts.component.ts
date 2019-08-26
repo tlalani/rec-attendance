@@ -5,7 +5,7 @@ import {
   ElementRef,
   AfterViewInit
 } from "@angular/core";
-import Chart from "chart.js";
+import { Chart } from "chart.js";
 import {
   Roles,
   getSchoolYearFromDate,

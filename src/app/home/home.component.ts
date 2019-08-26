@@ -1,12 +1,9 @@
 import { Component, OnInit } from "@angular/core";
-import { GridsterConfig, GridsterItem } from "angular-gridster2";
+import { GridsterConfig } from "angular-gridster2";
 import { AttendanceComponent } from "../attendance/attendance.component";
 import { ManualEntryComponent } from "../manual-entry/manual-entry.component";
-import { AttendanceTableComponent } from "../attendance-table/attendance-table.component";
 import { AngularFireAuth } from "angularfire2/auth";
 import { Router } from "@angular/router";
-import { QrCreatorComponent } from "../qr-creator/qr-creator.component";
-import { ManualQrComponent } from "../manual-qr/manual-qr.component";
 import { ChartsComponent } from "../charts/charts.component";
 
 @Component({

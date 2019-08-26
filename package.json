@@ -9,7 +9,8 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "build:stats": "ng build --stats-json",
-    "analyze": "webpack-bundle-analyzer dist/rec-attendance/stats.json"
+    "analyze": "webpack-bundle-analyzer dist/rec-attendance/stats.json",
+    "build-prod": "ng build --prod --build-optimizer --base-href 'https://tlalani.github.io/rec-attendance/'"
   },
   "private": true,
   "dependencies": {

@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 import { PersonDTO, Roles, Grades } from "src/constants";
-import { FormControl, FormGroup, Validators } from "@angular/forms";
 
 @Component({
   selector: "app-manual-qr",

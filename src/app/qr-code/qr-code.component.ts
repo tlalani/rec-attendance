@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
+import { Component, OnInit, Input } from "@angular/core";
 import { Person, PersonDTO, DEFAULT_USER_IMAGE } from "src/constants";
 import { QrCodeService } from "./qr-code.service";
 

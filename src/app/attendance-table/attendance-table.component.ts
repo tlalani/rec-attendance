@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { ELEMENT_DATA, ReasonsArray, Person, Statuses } from "src/constants";
-import { DataSource } from "@angular/cdk/table";
 import { MatDialog } from "@angular/material";
 import { ContactDialogComponent } from "../contact-dialog/contact-dialog.component";
 

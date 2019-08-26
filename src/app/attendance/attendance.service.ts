@@ -1,15 +1,12 @@
 import { Injectable } from "@angular/core";
 import { AngularFireDatabase } from "angularfire2/database";
-import { Observable } from "rxjs";
-import { first, map, isEmpty } from "rxjs/operators";
+import { first } from "rxjs/operators";
 import {
   Person,
   Roles,
   getGradeFromString,
   PersonDTO,
   pushToInnerList,
-  moveTeachersToBottom,
-  Mgmt,
   getArray,
   Statuses
 } from "src/constants";
@@ -100,32 +97,34 @@ export class AttendanceService {
     let student: Person[][] = [];
     let teacher: Person[][] = [];
     return this.queryAttendanceForSpecificDay(date)
-      .then((items: Object) => {
-        Object.entries(items).forEach(([role, snapShot]) => {
-          let r = getArray(snapShot, role);
-          //console.log(role, r);
-          switch (role) {
-            case Roles.Student:
-              r.forEach(classroom => {
-                student.push(Array.from(classroom));
-              });
-              break;
-            case Roles.Teacher:
-              r.forEach(classroom => {
-                teacher.push(Array.from(classroom));
-              });
-              break;
-            case Roles.Management:
-              management[0] = Array.from(r[0]);
-              break;
-            case Roles.Intern:
-              support[0] = Array.from(r[0]);
-          }
-        });
-        return { student, teacher, management, support };
+      .then(items => {
+        if (items) {
+          Object.entries(items).forEach(([role, snapShot]) => {
+            let r = getArray(snapShot, role);
+            //console.log(role, r);
+            switch (role) {
+              case Roles.Student:
+                r.forEach(classroom => {
+                  student.push(Array.from(classroom));
+                });
+                break;
+              case Roles.Teacher:
+                r.forEach(classroom => {
+                  teacher.push(Array.from(classroom));
+                });
+                break;
+              case Roles.Management:
+                management[0] = Array.from(r[0]);
+                break;
+              case Roles.Intern:
+                support[0] = Array.from(r[0]);
+            }
+          });
+          return { student, teacher, management, support };
+        }
       })
       .catch(error => {
-        // //console.log(error);
+        console.log(error);
         // this.loading = false;
         console.error(
           "This day",

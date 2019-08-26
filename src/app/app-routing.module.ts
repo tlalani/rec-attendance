@@ -4,8 +4,6 @@ import { LoginComponent } from "./login/login.component";
 import { HomeComponent } from "./home/home.component";
 import { AttendanceComponent } from "./attendance/attendance.component";
 import { QrCreatorComponent } from "./qr-creator/qr-creator.component";
-import { ManualEntryComponent } from "./manual-entry/manual-entry.component";
-import { ContactInfoComponent } from "./contact-info/contact-info.component";
 import { ManualQrComponent } from "./manual-qr/manual-qr.component";
 import { ChartsComponent } from "./charts/charts.component";
 const routes: Routes = [
@@ -14,10 +12,7 @@ const routes: Routes = [
   { path: "", redirectTo: "login", pathMatch: "full" },
   { path: "createqr", component: QrCreatorComponent },
   { path: "attendance", component: AttendanceComponent },
-  { path: "manual", component: ManualEntryComponent },
-  { path: "contact-info", component: ContactInfoComponent },
-  { path: "manual-qr", component: ManualQrComponent },
-  { path: "chart", component: ChartsComponent }
+  { path: "manual-qr", component: ManualQrComponent }
 ];
 
 @NgModule({
