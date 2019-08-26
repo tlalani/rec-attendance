@@ -11,7 +11,8 @@ import {
   getSchoolYearFromDate,
   Person,
   PersonDTO,
-  Statuses
+  Statuses,
+  getAppRole
 } from "src/constants";
 import { AttendanceService } from "../attendance/attendance.service";
 import { MatDatepickerInputEvent } from "@angular/material";
@@ -27,19 +28,18 @@ export class ChartsComponent implements OnInit, AfterViewInit {
   public selectedRole: string = "Student";
   public currentDate: Date;
   public schoolYear: string;
-  public students: PersonDTO[][];
-  public teachers: PersonDTO[][];
-  public management: PersonDTO[][];
+  public people = {
+    student: <PersonDTO[][]>[],
+    teacher: <PersonDTO[][]>[],
+    management: <PersonDTO[][]>[],
+    support: <PersonDTO[][]>[]
+  };
   public currentData: any;
-  private canvas: ElementRef;
-  @ViewChild("canvas") set content(content: ElementRef) {
-    this.canvas = content;
-  }
   public data = {
     datasets: [
       {
         //absent, tardy, present
-        data: [],
+        data: [3, 1, 4],
         backgroundColor: ["#FF6384", "#FFCD56", "#36A2EB"]
       }
     ],
@@ -53,6 +53,16 @@ export class ChartsComponent implements OnInit, AfterViewInit {
     this.currentDate = new Date();
     this.schoolYear = getSchoolYearFromDate(this.currentDate);
     this.makeFullQuery();
+    this.myChart = new Chart("doughnutChart", {
+      type: "doughnut",
+      data: this.data,
+      options: {
+        legend: {
+          display: true,
+          position: "right"
+        }
+      }
+    });
   }
 
   public getPeopleFormatted() {
@@ -66,19 +76,10 @@ export class ChartsComponent implements OnInit, AfterViewInit {
   public queryAttendanceFormatted(currentData = null) {
     if (currentData) {
       let currList = [];
-      if (this.selectedRole === Roles.Student) {
-        //students
-        let currStud = currentData.students;
-        currList = this.addAbsentPeople(currStud, this.students);
-      } else if (this.selectedRole === Roles.Teacher) {
-        //teachers
-        let currTeach = currentData.teachers;
-        currList = this.addAbsentPeople(currTeach, this.teachers);
-      } else if (this.selectedRole === Roles.Management) {
-        //management
-        let currManage = currentData.management;
-        currList = this.addAbsentPeople(currManage, this.management);
-      }
+      let role = "";
+      if (this.selectedRole === Roles.Intern) role = "support";
+      else role = this.selectedRole.toLowerCase();
+      currList = this.addAbsentPeople(currentData[role], this.people[role]);
       return new Promise((resolve, reject) => {
         resolve(currList);
       });
@@ -89,33 +90,22 @@ export class ChartsComponent implements OnInit, AfterViewInit {
           if (res) {
             this.currentData = res;
             let currList = [];
-
-            if (this.selectedRole === Roles.Student) {
-              //students
-              let currStud = res.student;
-              currList = this.addAbsentPeople(currStud, this.students);
-            } else if (this.selectedRole === Roles.Teacher) {
-              //teachers
-              let currTeach = res.teacher;
-              currList = this.addAbsentPeople(currTeach, this.teachers);
-            } else if (this.selectedRole === Roles.Management) {
-              //management
-              let currManage = res.management;
-              currList = this.addAbsentPeople(currManage, this.management);
-            }
-
+            let role = "";
+            if (this.selectedRole === Roles.Intern) role = "support";
+            else role = this.selectedRole.toLowerCase();
+            currList = this.addAbsentPeople(res[role], this.people[role]);
             return currList;
           }
         });
     }
   }
-
   makeFullQuery() {
     this.getPeopleFormatted().then(result => {
       if (result) {
-        this.students = result.student;
-        this.teachers = result.teacher;
-        this.management = result.management;
+        this.people.student = result.student;
+        this.people.teacher = result.teacher;
+        this.people.management = result.management;
+        this.people.support = result.support;
         this.queryAttendanceFormatted().then((result: Person[]) => {
           if (result) {
             let newData = [0, 0, 0];
@@ -141,18 +131,7 @@ export class ChartsComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngAfterViewInit() {
-    this.myChart = new Chart(this.canvas.nativeElement.getContext("2d"), {
-      type: "doughnut",
-      data: this.data,
-      options: {
-        legend: {
-          display: true,
-          position: "right"
-        }
-      }
-    });
-  }
+  ngAfterViewInit() {}
 
   changeDate(event: MatDatepickerInputEvent<Date>) {
     this.currentDate = event.value;

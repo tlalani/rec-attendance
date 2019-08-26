@@ -495,6 +495,20 @@ export function pushToInnerList(list: any[][], index: number, item: any) {
   }
 }
 
+export function getAppRole(role: string) {
+  role = role.toLowerCase();
+  let roles = Object.keys(Roles);
+  let role1 = roles.map(item => item.toLowerCase());
+  for (let i = 0; i < role1.length; i++) {
+    if (role === "support") {
+      return Roles.Intern;
+    }
+    if (role1[i] === role) {
+      return roles[i];
+    }
+  }
+}
+
 export function moveTeachersToBottom(list: Person[]) {
   for (let i = list.length - 1; i >= 0; i--) {
     if (list[i].Role === "Teacher") {

@@ -10,7 +10,8 @@ import {
   getSchoolYearFromDate,
   Mgmt,
   pushToInnerList,
-  Roles
+  Roles,
+  getAppRole
 } from "src/constants";
 import { AngularFireAuth } from "angularfire2/auth";
 
@@ -89,7 +90,7 @@ export class AttendanceComponent implements OnInit {
         if (totalResult) {
           Object.keys(totalResult).forEach(role => {
             let result = totalResult[role];
-            let roleFound = this.roleInRoles(role);
+            let roleFound = getAppRole(role);
             if (result.length > 0) {
               for (let i = 0; i < this.people[role].length; i++) {
                 for (let personInGrade of this.people[role][i]) {
@@ -145,19 +146,6 @@ export class AttendanceComponent implements OnInit {
           this.loading = false;
         }
       });
-  }
-
-  public roleInRoles(role) {
-    let roles = Object.keys(Roles);
-    let role1 = roles.map(item => item.toLowerCase());
-    for (let i = 0; i < role1.length; i++) {
-      if (role === "support") {
-        return Roles.Intern;
-      }
-      if (role1[i] === role) {
-        return roles[i];
-      }
-    }
   }
 
   public getTabLabel(index: number) {
