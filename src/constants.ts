@@ -62,6 +62,13 @@ export const Statuses = {
   Excused: "E"
 };
 
+export const longStatuses = {
+  Present: "Present",
+  Absent: "Absent",
+  Tardy: "Tardy",
+  Excused: "Excused"
+};
+
 export const contactStatuses = {
   Working: "W",
   Innacurate: "I"
@@ -97,7 +104,7 @@ export class Person {
   }
 
   public isAbsent() {
-    return this.Status === Statuses.Absent;
+    return this.Status && this.Status === Statuses.Absent;
   }
 
   public isExcused() {
@@ -138,6 +145,10 @@ export class Person {
         }
       } else {
         this.Status = Statuses.Absent;
+      }
+    } else {
+      if (Object.keys(longStatuses).indexOf(this.Status) !== -1) {
+        this.Status = Statuses[this.Status];
       }
     }
   }
@@ -229,52 +240,18 @@ export function getArray(snapshot, role) {
       }
     });
   } else {
+    result.push(new Set());
     Object.entries(snapshot).forEach(person => {
       let name = person[0];
       let p = new Person(person[1]);
       p.Name = name;
       p.setStatus();
       p.Role = role;
-      let index = Object.keys(Mgmt).indexOf(role);
-      while (!result[index]) {
-        result.push(new Set());
-      }
-      result[index].add(p);
+      result[0].add(p);
     });
   }
   return result;
 }
-// export function getStudentsArray(studentSnapshot, role) {
-//   //creates the set of people per grade
-//   let result: Set<Person>[] = createSetArray(Type.Student);
-//   //Firebase data
-//   Object.entries(studentSnapshot).forEach(([gradeStr, peopleInGrade]) => {
-//     let grade = getGradeFromString(gradeStr);
-//     if (peopleInGrade) {
-//       //for each person in the grade add them to their grade's list.
-//       Object.entries(peopleInGrade).forEach(person => {
-//         let name = person[0];
-//         let p = new Person(person[1]);
-//         p.Name = name;
-//         p.Grade = gradeStr;
-//         p.Role = role;
-//         p.setStatus();
-//         result[grade].add(p);
-//       });
-//     }
-//   });
-//   return result;
-// }
-
-// export function getStaffArray(staffSnapshot) {
-//   let result: Set<Person>[] = createSetArray(Type.Staff);
-//   Object.entries(staffSnapshot).forEach(person => {
-//     let name = person[0];
-//     let p = new Person(person[1]);
-//     p.Name = name;
-//     p.setStatus();
-//   });
-// }
 
 export class PersonDTO {
   Name: string;

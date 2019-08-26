@@ -22,19 +22,6 @@
       </mat-cell>
     </ng-container>
 
-    <ng-container matColumnDef="grade">
-      <mat-header-cell *matHeaderCellDef> Grade </mat-header-cell>
-      <mat-cell
-        [ngClass]="{
-          absent: (person.isAbsent() || person.isExcused()) && !person.Reason,
-          finished: person.isAbsent() && person.Reason && !person.editing
-        }"
-        *matCellDef="let person"
-      >
-        {{ person.Grade }}
-      </mat-cell>
-    </ng-container>
-
     <!-- Weight Column -->
     <ng-container matColumnDef="status">
       <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>

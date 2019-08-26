@@ -8,7 +8,9 @@ import {
   Grades,
   moveTeachersToBottom,
   getSchoolYearFromDate,
-  Mgmt
+  Mgmt,
+  pushToInnerList,
+  Roles
 } from "src/constants";
 import { AngularFireAuth } from "angularfire2/auth";
 
@@ -21,9 +23,12 @@ export class AttendanceComponent implements OnInit {
   public result: any[] = [];
   public reasons = ReasonsArray;
   public currentDate: Date;
-  public students: PersonDTO[][];
-  public teachers: PersonDTO[][];
-  public management: PersonDTO[][];
+  public people = {
+    student: <PersonDTO[][]>[],
+    teacher: <PersonDTO[][]>[],
+    management: <PersonDTO[][]>[],
+    support: <PersonDTO[][]>[]
+  };
   public loading: boolean = false;
   public grades = Grades;
   public schoolYear: string;
@@ -62,9 +67,10 @@ export class AttendanceComponent implements OnInit {
   public getPeopleQuery(schoolYear) {
     this.attendanceService.getPeopleFormatted(schoolYear).then(result => {
       if (result) {
-        this.management = result.management;
-        this.students = result.students;
-        this.teachers = result.teachers;
+        this.people.student = result.student;
+        this.people.management = result.management;
+        this.people.teacher = result.teacher;
+        this.people.support = result.support;
       }
     });
   }
@@ -81,182 +87,77 @@ export class AttendanceComponent implements OnInit {
       .queryAttendanceForSpecificDayFormatted(this.currentDate)
       .then(totalResult => {
         if (totalResult) {
-          //students
-          let result = totalResult.students;
-          for (let i = 0; i < result.length; i++) {
-            if (result[i].length > 0) {
-              for (let personInGrade of this.students[i]) {
-                let contains = false;
-                result[i].forEach(personPresent => {
-                  if (personInGrade.equals(personPresent)) {
-                    contains = true;
+          Object.keys(totalResult).forEach(role => {
+            let result = totalResult[role];
+            let roleFound = this.roleInRoles(role);
+            if (result.length > 0) {
+              for (let i = 0; i < this.people[role].length; i++) {
+                for (let personInGrade of this.people[role][i]) {
+                  personInGrade.Role = roleFound;
+                  if (result[i]) {
+                    let contains = false;
+                    result[i].forEach(personPresent => {
+                      if (personInGrade.equals(personPresent)) contains = true;
+                    });
+                    if (!contains) {
+                      pushToInnerList(result, i, new Person(personInGrade));
+                    }
+                  } else {
+                    pushToInnerList(result, i, new Person(personInGrade));
                   }
-                });
-                if (!contains) {
-                  result[i].push(new Person(personInGrade));
                 }
               }
-            }
-          }
-          result.forEach(items => {
-            let res = Array.from(items);
-            res.map((item: Person) => {
-              item.editable = true;
-              item.editing = false;
-            });
-            res.sort((a, b) => {
-              if (a.Name > b.Name) {
-                return 1;
-              } else {
-                return -1;
-              }
-            });
-            this.result.push(res);
-          });
-          //teachers
-          let result1 = totalResult.teachers;
-          for (let i = 0; i < result1.length; i++) {
-            if (result1[i].length > 0) {
-              for (let personInGrade of this.teachers[i]) {
-                let contains = false;
-                result1[i].forEach(personPresent => {
-                  if (personInGrade.equals(personPresent)) {
-                    contains = true;
-                  }
+            } else {
+              for (let i = 0; i < this.people[role].length; i++) {
+                this.people[role][i].forEach(person => {
+                  person.Role = roleFound;
+                  pushToInnerList(result, i, new Person(person));
                 });
-                if (!contains) {
-                  result1[i].push(new Person(personInGrade));
-                }
               }
             }
-          }
-          for (let i = 0; i < result1.length; i++) {
-            let res = result1[i];
-            res.map((item: Person) => {
-              item.editable = true;
-              item.editing = false;
-            });
-            res.sort((a, b) => {
-              if (a.Name > b.Name) {
-                return 1;
-              } else {
-                return -1;
-              }
-            });
-            if (res.length > 0) {
-              res.forEach(item => {
-                this.result[i].push(item);
+            for (let i = 0; i < result.length; i++) {
+              let res = result[i];
+              res.map((item: Person) => {
+                item.editable = true;
+                item.editing = false;
               });
-            }
-          }
-          //management
-          let result2 = totalResult.management;
-          console.log(result2);
-          for (let i = 0; i < result2.length; i++) {
-            if (result2[i].length > 0) {
-              for (let personInGrade of this.management[i]) {
-                let contains = false;
-                result2[i].forEach(personPresent => {
-                  if (personInGrade.equals(personPresent)) {
-                    contains = true;
-                  }
-                });
-                if (!contains) {
-                  result2[i].push(new Person(personInGrade));
+              res.sort((a, b) => {
+                if (a.Name > b.Name) {
+                  return 1;
+                } else {
+                  return -1;
+                }
+              });
+              if (res.length > 0) {
+                if (
+                  roleFound === Roles.Teacher ||
+                  roleFound === Roles.Student
+                ) {
+                  res.forEach(item => {
+                    pushToInnerList(this.result, i, item);
+                  });
+                } else {
+                  this.result.push(res);
                 }
               }
             }
-          }
-          result2.forEach(items => {
-            let res = Array.from(items);
-            res.map((item: Person) => {
-              item.editable = true;
-              item.editing = false;
-            });
-            res.sort((a, b) => {
-              if (a.Name > b.Name) {
-                return 1;
-              } else {
-                return -1;
-              }
-            });
-            this.result.push(res);
-            this.loading = false;
-            console.log(this.result.length, this.grades.length);
           });
-        } else {
           this.loading = false;
         }
-        //   if (totalResult) {
-        //     let result = totalResult.studentsAndTeachers;
-        //     for (let i = 0; i < result.length; i++) {
-        //       if (result[i].size > 0) {
-        //         for (let personInGrade of this.students[i]) {
-        //           let contains = false;
-        //           result[i].forEach(personPresent => {
-        //             if (personInGrade.equals(personPresent)) {
-        //               contains = true;
-        //             }
-        //           });
-        //           if (!contains) {
-        //             result[i].add(new Person(personInGrade));
-        //           }
-        //         }
-        //       }
-        //     }
-        //     result.forEach(items => {
-        //       let res = Array.from(items);
-        //       res.map((item: Person) => {
-        //         item.editable = true;
-        //         item.editing = false;
-        //       });
-        //       res.sort((a, b) => {
-        //         if (a.Name > b.Name) {
-        //           return 1;
-        //         } else {
-        //           return -1;
-        //         }
-        //       });
-        //       res = moveTeachersToBottom(res);
-        //       this.result.push(res);
-        //     });
-        //     let result1 = totalResult.management;
-        //     for (let i = 0; i < result1.length; i++) {
-        //       if (result1[i].size > 0) {
-        //         for (let person of this.management[i]) {
-        //           let contains = false;
-        //           result1[i].forEach(personPresent => {
-        //             if (person.equals(personPresent)) {
-        //               contains = true;
-        //             }
-        //           });
-        //           if (!contains) {
-        //             result1[i].add(new Person(person));
-        //           }
-        //         }
-        //       }
-        //     }
-        //     result1.forEach(items => {
-        //       let res = Array.from(items);
-        //       res.map((item: Person) => {
-        //         item.editable = true;
-        //         item.editing = false;
-        //       });
-        //       // res.sort((a, b) => {
-        //       //   if (a.Name > b.Name) {
-        //       //     return 1;
-        //       //   } else {
-        //       //     return -1;
-        //       //   }
-        //       // });
-        //       this.result.push(res);
-        //       this.loading = false;
-        //       console.log(this.result);
-        //     });
-        //   } else {
-        //     this.loading = false;
-        //   }
       });
+  }
+
+  public roleInRoles(role) {
+    let roles = Object.keys(Roles);
+    let role1 = roles.map(item => item.toLowerCase());
+    for (let i = 0; i < role1.length; i++) {
+      if (role === "support") {
+        return Roles.Intern;
+      }
+      if (role1[i] === role) {
+        return roles[i];
+      }
+    }
   }
 
   public getTabLabel(index: number) {
@@ -268,7 +169,6 @@ export class AttendanceComponent implements OnInit {
   }
 
   public saveEdits(student: Person) {
-    console.log(student);
     const res = this.attendanceService.sendToDatabase(
       this.currentDate,
       student

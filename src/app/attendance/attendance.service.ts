@@ -32,9 +32,10 @@ export class AttendanceService {
   }
 
   public getPeopleFormatted(schoolYear) {
-    let students: PersonDTO[][] = [];
-    let teachers: PersonDTO[][] = [];
+    let student: PersonDTO[][] = [];
+    let teacher: PersonDTO[][] = [];
     let management: PersonDTO[][] = [];
+    let support: PersonDTO[][] = [];
     return this.getPeople(schoolYear)
       .then(roles => {
         Object.entries(roles).forEach(([role, people]) => {
@@ -44,13 +45,13 @@ export class AttendanceService {
               Object.entries(peopleInGrade).forEach(person => {
                 if (role === Roles.Teacher) {
                   pushToInnerList(
-                    teachers,
+                    teacher,
                     grade,
                     new PersonDTO({ Name: person[1], Grade: gradeStr })
                   );
                 } else {
                   pushToInnerList(
-                    students,
+                    student,
                     grade,
                     new PersonDTO({ Name: person[1], Grade: gradeStr })
                   );
@@ -59,16 +60,23 @@ export class AttendanceService {
             });
           } else {
             Object.entries(people).forEach(person => {
-              let index = Object.keys(Mgmt).indexOf(role);
-              pushToInnerList(
-                management,
-                index,
-                new PersonDTO({ Name: person[1], Grade: null })
-              );
+              if (role === Roles.Management) {
+                pushToInnerList(
+                  management,
+                  0,
+                  new PersonDTO({ Name: person[1], Grade: null })
+                );
+              } else {
+                pushToInnerList(
+                  support,
+                  0,
+                  new PersonDTO({ Name: person[1], Grade: null })
+                );
+              }
             });
           }
         });
-        return { students, teachers, management };
+        return { student, teacher, management, support };
       })
       .catch(error => {
         console.error("People doesn't exist.");
@@ -88,27 +96,33 @@ export class AttendanceService {
 
   public queryAttendanceForSpecificDayFormatted(date: Date) {
     let management: Person[][] = [];
-    let students: Person[][] = [];
-    let teachers: Person[][] = [];
+    let support: Person[][] = [];
+    let student: Person[][] = [];
+    let teacher: Person[][] = [];
     return this.queryAttendanceForSpecificDay(date)
       .then((items: Object) => {
         Object.entries(items).forEach(([role, snapShot]) => {
           let r = getArray(snapShot, role);
-          if (role === Roles.Student) {
-            r.forEach(classroom => {
-              students.push(Array.from(classroom));
-            });
-          } else if (role === Roles.Teacher) {
-            r.forEach(classroom => {
-              teachers.push(Array.from(classroom));
-            });
-          } else {
-            r.forEach(mgmtRole => {
-              management.push(Array.from(mgmtRole));
-            });
+          //console.log(role, r);
+          switch (role) {
+            case Roles.Student:
+              r.forEach(classroom => {
+                student.push(Array.from(classroom));
+              });
+              break;
+            case Roles.Teacher:
+              r.forEach(classroom => {
+                teacher.push(Array.from(classroom));
+              });
+              break;
+            case Roles.Management:
+              management[0] = Array.from(r[0]);
+              break;
+            case Roles.Intern:
+              support[0] = Array.from(r[0]);
           }
         });
-        return { students, teachers, management };
+        return { student, teacher, management, support };
       })
       .catch(error => {
         // //console.log(error);
@@ -123,6 +137,7 @@ export class AttendanceService {
 
   public sendToDatabase(date: Date, person: Person) {
     const schoolYear = getSchoolYearFromDate(date);
+    console.log(person);
     let queryString = schoolYear + "/" + formatDate(date, "MMM d, y", "en-US");
     if (person.Role === Roles.Student) {
       queryString += "/Student/" + person.Grade + "/" + person.Name;
@@ -143,11 +158,17 @@ export class AttendanceService {
     if (person.Status) {
       obj["Status"] = person.Status;
     }
-    if (obj["Status"] === Statuses.Present && person.Reason) {
+    if (obj["Status"] === Statuses.Present && (person.Reason || !person.Time)) {
       if (person.Role === Roles.Management || person.Role === Roles.Teacher) {
         obj["Time"] = "10:10 AM";
       } else {
         obj["Time"] = "10:30 AM";
+      }
+    } else if (obj["Status"] === Statuses.Tardy) {
+      if (person.Role === Roles.Management || person.Role === Roles.Teacher) {
+        obj["Time"] = "10:15 AM";
+      } else {
+        obj["Time"] = "10:41 AM";
       }
     } else if (person.Time) {
       obj["Time"] = person.Time;

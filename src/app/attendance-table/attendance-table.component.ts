@@ -14,7 +14,6 @@ export class AttendanceTableComponent implements OnInit {
   @Output() changes = new EventEmitter<Person>();
   public displayedColumns: string[] = [
     "name",
-    "grade",
     "status",
     "reason",
     "comments",

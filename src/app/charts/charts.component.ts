@@ -92,11 +92,11 @@ export class ChartsComponent implements OnInit, AfterViewInit {
 
             if (this.selectedRole === Roles.Student) {
               //students
-              let currStud = res.students;
+              let currStud = res.student;
               currList = this.addAbsentPeople(currStud, this.students);
             } else if (this.selectedRole === Roles.Teacher) {
               //teachers
-              let currTeach = res.teachers;
+              let currTeach = res.teacher;
               currList = this.addAbsentPeople(currTeach, this.teachers);
             } else if (this.selectedRole === Roles.Management) {
               //management
@@ -113,8 +113,8 @@ export class ChartsComponent implements OnInit, AfterViewInit {
   makeFullQuery() {
     this.getPeopleFormatted().then(result => {
       if (result) {
-        this.students = result.students;
-        this.teachers = result.teachers;
+        this.students = result.student;
+        this.teachers = result.teacher;
         this.management = result.management;
         this.queryAttendanceFormatted().then((result: Person[]) => {
           if (result) {
@@ -176,8 +176,6 @@ export class ChartsComponent implements OnInit, AfterViewInit {
             newData[2] += 1;
           }
         });
-        console.log(newData);
-        console.log(result);
         this.data.datasets[0].data = newData;
         this.myChart.update();
       } else {
