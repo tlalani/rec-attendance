@@ -11,6 +11,15 @@
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
+    <button
+      style="float:right"
+      mat-stroked-button
+      color="primary"
+      matTooltip="Download Attendance"
+      (click)="downloadTodayAttendance()"
+    >
+      <i class="fas fa-download"></i>
+    </button>
   </div>
   <mat-tab-group>
     <ng-container *ngFor="let grade of result; let i = index">

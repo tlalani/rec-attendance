@@ -1,19 +1,21 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { MatDatepickerInputEvent } from "@angular/material";
 import { AttendanceService } from "./attendance.service";
+import { Angular5Csv } from "angular5-csv/dist/Angular5-csv";
 import {
   Person,
   PersonDTO,
   ReasonsArray,
   Grades,
-  moveTeachersToBottom,
   getSchoolYearFromDate,
   Mgmt,
   pushToInnerList,
   Roles,
-  getAppRole
+  getAppRole,
+  makePeopleObject
 } from "src/constants";
 import { AngularFireAuth } from "angularfire2/auth";
+import { formatDate } from "@angular/common";
 
 @Component({
   selector: "app-attendance",
@@ -24,12 +26,7 @@ export class AttendanceComponent implements OnInit {
   public result: any[] = [];
   public reasons = ReasonsArray;
   public currentDate: Date;
-  public people = {
-    student: <PersonDTO[][]>[],
-    teacher: <PersonDTO[][]>[],
-    management: <PersonDTO[][]>[],
-    support: <PersonDTO[][]>[]
-  };
+  public people = makePeopleObject();
   public loading: boolean = false;
   public grades = Grades;
   public schoolYear: string;
@@ -153,6 +150,46 @@ export class AttendanceComponent implements OnInit {
       return this.grades[index];
     } else {
       return this.mgmtroles[index % this.mgmtroles.length];
+    }
+  }
+
+  public downloadTodayAttendance() {
+    let peopleDownload = [];
+    if (this.result) {
+      for (let i = 0; i < this.result.length; i++) {
+        this.result[i].forEach(person => {
+          peopleDownload.push({
+            Role: person.Role,
+            Grade: person.Grade || null,
+            Name: person.Name,
+            Status: person.Status
+          });
+        });
+      }
+      peopleDownload.sort((a, b) => {
+        if (
+          Object.keys(Roles).indexOf(a.Role) >
+          Object.keys(Roles).indexOf(b.Role)
+        )
+          return 1;
+        if (
+          Object.keys(Roles).indexOf(a.Role) <
+          Object.keys(Roles).indexOf(b.Role)
+        )
+          return -1;
+        if (a.Grade > b.Grade) return 1;
+        if (a.Grade < b.Grade) return -1;
+
+        if (a.Status > b.Status) return -1;
+        if (a.Status < b.Status) return 1;
+      });
+      let date = formatDate(this.currentDate, "MM-dd-yyyy", "en-US");
+      let options = {
+        nullToEmptyString: true,
+        headers: ["Role", "Grade", "Name", "Status"]
+      };
+      let string = "attendance_" + date;
+      new Angular5Csv(peopleDownload, string, options);
     }
   }
 

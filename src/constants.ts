@@ -10,8 +10,7 @@ export const Grades = [
   "3rd Grade",
   "4th Grade",
   "5th Grade",
-  "6th Grade",
-  "Management"
+  "6th Grade"
 ];
 
 export const Type = {
@@ -87,8 +86,8 @@ export class Person {
   Comments: string;
   Grade: string;
   Status: string;
-  editing: boolean = false;
-  editable: boolean = false;
+  editing?: boolean = false;
+  editable?: boolean = false;
   Date?: string;
   constructor(obj) {
     obj && Object.assign(this, obj).setStatus();
@@ -509,12 +508,11 @@ export function getAppRole(role: string) {
   }
 }
 
-export function moveTeachersToBottom(list: Person[]) {
-  for (let i = list.length - 1; i >= 0; i--) {
-    if (list[i].Role === "Teacher") {
-      list.push(list[i]);
-      list.splice(i, 1);
-    }
-  }
-  return list;
+export function makePeopleObject() {
+  return {
+    student: <PersonDTO[][]>[],
+    teacher: <PersonDTO[][]>[],
+    management: <PersonDTO[][]>[],
+    support: <PersonDTO[][]>[]
+  };
 }
