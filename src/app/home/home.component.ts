@@ -26,6 +26,9 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (!this.afAuth.user) {
+      this.router.navigate(["/login"]);
+    }
     this.dashboard = [
       {
         x: 0,

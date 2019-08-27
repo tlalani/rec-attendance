@@ -11,24 +11,48 @@ export class LoginComponent implements OnInit {
   public email: string = "";
   public password: string = "";
   public logoLink = "assets/pictures/logo.png";
-  constructor(private router: Router, private auth: AngularFireAuth) {}
+  private type: string = "password";
+  constructor(private router: Router, private afAuth: AngularFireAuth) {}
 
   ngOnInit() {}
 
   public onLoginClick() {
-    this.auth.auth
-      .signInWithEmailAndPassword(this.email, this.password)
+    this.signIn()
       .then(user => {
         if (user) {
           this.router.navigate(["/home"]);
         } else {
-          console.log("ERROR");
-          this.router.navigate(["/home"]);
+          alert("Could not sign you in");
         }
       })
       .catch(error => {
-        //this.router.navigate(["/home"]);
-        alert("Login Unsuccessful, Please try again.");
+        console.log(error);
       });
+  }
+
+  public signIn() {
+    return this.afAuth.auth
+      .setPersistence("session")
+      .then(() => {
+        return this.afAuth.auth.signInWithEmailAndPassword(
+          this.email,
+          this.password
+        );
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
+  public getType() {
+    return this.type;
+  }
+
+  public changeType() {
+    if (this.type === "text") {
+      this.type = "password";
+    } else {
+      this.type = "text";
+    }
   }
 }

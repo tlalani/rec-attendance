@@ -20,10 +20,13 @@
         class="primary-text-color"
         matInput
         id="pw-input"
-        type="password"
+        [type]="getType()"
         [(ngModel)]="password"
         (keydown.enter)="onLoginClick()"
       />
+      <button mat-icon-button matSuffix (click)="changeType()">
+        <mat-icon>remove_red_eye</mat-icon>
+      </button>
     </mat-form-field>
     <br />
     <br />

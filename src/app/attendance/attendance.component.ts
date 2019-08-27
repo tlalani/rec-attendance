@@ -4,7 +4,6 @@ import { AttendanceService } from "./attendance.service";
 import { Angular5Csv } from "angular5-csv/dist/Angular5-csv";
 import {
   Person,
-  PersonDTO,
   ReasonsArray,
   Grades,
   getSchoolYearFromDate,
