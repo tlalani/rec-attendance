@@ -25,7 +25,12 @@
         (keydown.enter)="onLoginClick()"
       />
       <button mat-icon-button matSuffix (click)="changeType()">
-        <mat-icon>remove_red_eye</mat-icon>
+        <mat-icon
+          [ngClass]="{
+            showing: this.type === 'text'
+          }"
+          >remove_red_eye</mat-icon
+        >
       </button>
     </mat-form-field>
     <br />

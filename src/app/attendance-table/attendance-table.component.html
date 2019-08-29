@@ -5,20 +5,31 @@
         Name
       </mat-header-cell>
       <mat-cell *matCellDef="let person">
-        <button
+        <span
+          [ngClass]="{
+            normal: person.isPresent() || person.isTardy(),
+            absent: (person.isAbsent() || person.isExcused()) && !person.Reason,
+            finished:
+              (person.isAbsent() || person.isExcused()) &&
+              person.Reason &&
+              !person.editing
+          }"
+          >{{ person.Name }}</span
+        >
+        <!-- <button
           mat-button
-          disabled="true"
-          style="color: black; padding: 0px 10px;"
+          disabled="false"
           [matTooltip]="person.Name"
           matTooltipPosition="above"
           [ngClass]="{
+            normal: person.isPresent() || person.isTardy(),
             absent: (person.isAbsent() || person.isExcused()) && !person.Reason,
             finished: person.isAbsent() && person.Reason && !person.editing
           }"
           (click)="openDialog(person)"
         >
           {{ person.firstAndLastName().substring(0, 18) }}
-        </button>
+        </button> -->
       </mat-cell>
     </ng-container>
 

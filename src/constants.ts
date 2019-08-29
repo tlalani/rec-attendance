@@ -99,7 +99,7 @@ export class Person {
   }
 
   public isPresent() {
-    return this.Status === Statuses.Present;
+    return this.Status && this.Status === Statuses.Present;
   }
 
   public isAbsent() {
@@ -107,7 +107,11 @@ export class Person {
   }
 
   public isExcused() {
-    return this.Status === Statuses.Excused;
+    return this.Status && this.Status === Statuses.Excused;
+  }
+
+  public isTardy() {
+    return this.Status && this.Status === Statuses.Tardy;
   }
 
   public isTeacher() {

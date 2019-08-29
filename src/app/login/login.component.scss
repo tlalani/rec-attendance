@@ -17,6 +17,20 @@ mat-card {
   // border: black 1px solid;
 }
 
+.showing:before {
+  content: "";
+  position: absolute;
+  top: 16px;
+  right: 5px;
+  justify-content: center;
+  display: block;
+  background-color: black;
+  opacity: 0.8;
+  height: 2px;
+  width: 72%;
+  transform: rotate(-45deg);
+}
+
 mat-card-title {
   .fa-fingerprint {
     color: black;

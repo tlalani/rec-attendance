@@ -53,11 +53,18 @@ mat-header-cell {
 }
 
 .absent {
+  font-weight: bold;
   color: red;
 }
 
 .finished {
+  font-weight: bold;
   color: teal;
+}
+
+.normal {
+  font-weight: bold;
+  color: black;
 }
 
 mat-spinner {

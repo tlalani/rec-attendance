@@ -1,18 +1,11 @@
-import {
-  Component,
-  OnInit,
-  ViewChild,
-  ElementRef,
-  AfterViewInit
-} from "@angular/core";
+import { Component, OnInit, AfterViewInit } from "@angular/core";
 import { Chart } from "chart.js";
 import {
   Roles,
   getSchoolYearFromDate,
   Person,
   PersonDTO,
-  Statuses,
-  getAppRole
+  Statuses
 } from "src/constants";
 import { AttendanceService } from "../attendance/attendance.service";
 import { MatDatepickerInputEvent } from "@angular/material";
@@ -39,13 +32,13 @@ export class ChartsComponent implements OnInit, AfterViewInit {
     datasets: [
       {
         //absent, tardy, present
-        data: [3, 1, 4],
-        backgroundColor: ["#FF6384", "#FFCD56", "#36A2EB"]
+        data: [],
+        backgroundColor: ["#FF6384", "#FFCD56", "#36A2EB", "#1FCF85"]
       }
     ],
 
     // These labels appear in the legend and in the tooltips when hovering different arcs
-    labels: ["Absent", "Tardy", "Present"]
+    labels: ["Absent", "Tardy", "Present", "Excused"]
   };
   constructor(private attendanceService: AttendanceService) {}
 
@@ -116,6 +109,8 @@ export class ChartsComponent implements OnInit, AfterViewInit {
                 newData[1] += 1;
               } else if (person.Status === Statuses.Present) {
                 newData[2] += 1;
+              } else if (person.Status === Statuses.Excused) {
+                newData[3] += 1;
               }
             });
             this.data.datasets[0].data = newData;
@@ -142,7 +137,7 @@ export class ChartsComponent implements OnInit, AfterViewInit {
   onChange() {
     this.queryAttendanceFormatted(this.currentData).then((result: Person[]) => {
       if (result) {
-        let newData = [0, 0, 0];
+        let newData = [0, 0, 0, 0];
         result.forEach(person => {
           if (!person.Status) {
             person.setStatus();
@@ -153,6 +148,8 @@ export class ChartsComponent implements OnInit, AfterViewInit {
             newData[1] += 1;
           } else if (person.Status === Statuses.Present) {
             newData[2] += 1;
+          } else if (person.Status === Statuses.Excused) {
+            newData[3] += 1;
           }
         });
         this.data.datasets[0].data = newData;

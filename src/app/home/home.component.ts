@@ -77,7 +77,7 @@ export class HomeComponent implements OnInit {
 
   performLogOut() {
     this.afAuth.auth.signOut().then(() => {
-      this.router.navigate(["login"]);
+      this.router.navigate([""]);
     });
   }
 }
