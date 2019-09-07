@@ -5,7 +5,8 @@ import {
   getSchoolYearFromDate,
   Person,
   PersonDTO,
-  Statuses
+  Statuses,
+  getSaturday
 } from "src/constants";
 import { AttendanceService } from "../attendance/attendance.service";
 import { MatDatepickerInputEvent } from "@angular/material";
@@ -33,7 +34,18 @@ export class ChartsComponent implements OnInit, AfterViewInit {
       {
         //absent, tardy, present
         data: [],
-        backgroundColor: ["#FF6384", "#FFCD56", "#36A2EB", "#1FCF85"]
+        backgroundColor: [
+          "rgba(255,99,132, 0.7)",
+          "rgba(255,205,86, 0.7)",
+          "rgba(54,162,235, 0.7)",
+          "rgba(31,207,133, 0.7)"
+        ],
+        borderColor: [
+          "rgba(255,99,132, 1)",
+          "rgba(255,205,86, 1)",
+          "rgba(54,162,235, 1)",
+          "rgba(31,207,133, 1)"
+        ]
       }
     ],
 
@@ -43,7 +55,7 @@ export class ChartsComponent implements OnInit, AfterViewInit {
   constructor(private attendanceService: AttendanceService) {}
 
   ngOnInit() {
-    this.currentDate = new Date();
+    this.currentDate = getSaturday(new Date());
     this.schoolYear = getSchoolYearFromDate(this.currentDate);
     this.makeFullQuery();
     this.myChart = new Chart("doughnutChart", {
@@ -53,6 +65,27 @@ export class ChartsComponent implements OnInit, AfterViewInit {
         legend: {
           display: true,
           position: "right"
+        },
+        tooltips: {
+          callbacks: {
+            title: function(tooltipItem, data) {
+              return data["labels"][tooltipItem[0]["index"]];
+            },
+            label: function(tooltipItem, data) {
+              var dataset = data["datasets"][0];
+              var percent = Math.round(
+                (dataset["data"][tooltipItem["index"]] /
+                  dataset["_meta"][0]["total"]) *
+                  100
+              );
+              return (
+                data["datasets"][0]["data"][tooltipItem["index"]] +
+                " (" +
+                percent +
+                "%)"
+              );
+            }
+          }
         }
       }
     });
@@ -101,7 +134,7 @@ export class ChartsComponent implements OnInit, AfterViewInit {
         this.people.support = result.support;
         this.queryAttendanceFormatted().then((result: Person[]) => {
           if (result) {
-            let newData = [0, 0, 0];
+            let newData = [0, 0, 0, 0];
             result.forEach(person => {
               if (person.Status === Statuses.Absent) {
                 newData[0] += 1;

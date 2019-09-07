@@ -1,21 +1,25 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, AfterViewInit } from "@angular/core";
 import { GridsterConfig } from "angular-gridster2";
 import { AttendanceComponent } from "../attendance/attendance.component";
 import { ManualEntryComponent } from "../manual-entry/manual-entry.component";
 import { AngularFireAuth } from "angularfire2/auth";
 import { Router } from "@angular/router";
 import { ChartsComponent } from "../charts/charts.component";
-
+import { TourService } from "ngx-tour-md-menu";
 @Component({
   selector: "app-home",
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.scss"]
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewInit {
   public options: GridsterConfig;
   public dashboard;
   public tabActive;
-  constructor(private afAuth: AngularFireAuth, public router: Router) {}
+  constructor(
+    private afAuth: AngularFireAuth,
+    public router: Router,
+    private tourService: TourService
+  ) {}
 
   itemChange(item, itemComponent) {
     //console.info("itemChanged", item, itemComponent);
@@ -65,6 +69,139 @@ export class HomeComponent implements OnInit {
     };
   }
 
+  ngAfterViewInit() {
+    this.tourService.initialize([
+      {
+        anchorId: "start_off",
+        content:
+          "Welcome to the attendance editing and analysis system. " +
+          "Let's start by going through some of the tools.",
+        title: "Welcome",
+        enableBackdrop: true
+      },
+      {
+        anchorId: "attendance_attendance",
+        content:
+          "This is the attendance table. " +
+          "You will find teachers below the students for every grade",
+        title: "Attendance",
+        enableBackdrop: true
+      },
+      {
+        anchorId: "attendance_tab",
+        content: "You can switch between grades and roles with these tabs",
+        title: "Attendance",
+        enableBackdrop: true
+      },
+      {
+        anchorId: "attendance_name",
+        content:
+          "Student's names are color coded. BLACK means everything is okay, " +
+          "RED means you need to edit something, and TEAL means that it was edited and is now okay.",
+        title: "Attendance",
+        enableBackdrop: true
+      },
+      {
+        anchorId: "attendance_edit",
+        content:
+          "Clicking here will allow you to edit things about a student's attendance. " +
+          "Make sure to click finish in this exact spot when complete to submit the changes.",
+        title: "Attendance",
+        enableBackdrop: true
+      },
+      {
+        anchorId: "attendance_date",
+        content: "You can click here to change the attendance date.",
+        title: "Attendance",
+        enableBackdrop: true
+      },
+      {
+        anchorId: "attendance_download",
+        content:
+          "You can click here to download the attendance data for the selected date.",
+        title: "Attendance",
+        enableBackdrop: true
+      },
+      {
+        anchorId: "chart_chart",
+        content: "This chart shows the breakdown of attendance on a date.",
+        title: "Chart",
+        enableBackdrop: true
+      },
+      {
+        anchorId: "chart_date",
+        content: "You can change the date here",
+        title: "Chart",
+        enableBackdrop: true
+      },
+      {
+        anchorId: "chart_role",
+        content:
+          "You can also change the role to see the breakdown of teachers, management etc.",
+        title: "Chart",
+        enableBackdrop: true
+      },
+      {
+        anchorId: "manual_entry",
+        content:
+          "Here you can manually enter a person who may have been missed, or needs a time change." +
+          "Make sure to enter all relevant information before submitting.",
+        title: "Manual Entry",
+        enableBackdrop: true
+      },
+      {
+        anchorId: "qr_code",
+        content: "Up here you can go through all the qr codes.",
+        title: "QR Codes",
+        enableBackdrop: true
+      },
+      {
+        anchorId: "qr_code_file",
+        content: "Upload your file here to get new qr_codes.",
+        title: "QR Codes",
+        enableBackdrop: true,
+        route: "/createqr"
+      },
+      {
+        anchorId: "qr_code_pic",
+        content:
+          "Use this picture to help you figure out how to create the file.",
+        title: "QR Codes",
+        enableBackdrop: true
+      },
+      {
+        anchorId: "qr_code_reset",
+        content: "You can clear and reset everything with this button.",
+        title: "QR Codes",
+        enableBackdrop: true
+      },
+      {
+        anchorId: "qr_code_back",
+        content: "And You can go back with this button",
+        title: "QR Codes",
+        enableBackdrop: true
+      },
+      {
+        anchorId: "home_avatar",
+        content:
+          "Click here to access options with your account. Use this to logout when you are finished." +
+          "You will also automatically be logged out when you close the tab, or browser.",
+        title: "Avatar",
+        enableBackdrop: true,
+        route: "/home"
+      },
+      {
+        anchorId: "end",
+        content: "Thats all for now.",
+        title: "Complete",
+        enableBackdrop: false
+      }
+    ]);
+    // setTimeout(() => {
+    //   this.startTour();
+    // }, 10000);
+  }
+
   changedOptions() {
     this.options.api.optionsChanged();
   }
@@ -79,5 +216,9 @@ export class HomeComponent implements OnInit {
     this.afAuth.auth.signOut().then(() => {
       this.router.navigate([""]);
     });
+  }
+
+  startTour() {
+    this.tourService.start();
   }
 }

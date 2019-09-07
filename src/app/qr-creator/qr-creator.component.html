@@ -7,10 +7,16 @@
       #fileInput
       (change)="handleFileInput($event)"
     />
-    <button color="primary" mat-raised-button (click)="fileInput.click()">
+    <button
+      tourAnchor="qr_code_file"
+      color="primary"
+      mat-raised-button
+      (click)="fileInput.click()"
+    >
       Pick File
     </button>
     <button
+      tourAnchor="qr_code_reset"
       color="warn"
       [disabled]="this.fileUploaded == false"
       mat-button
@@ -18,7 +24,13 @@
     >
       Reset
     </button>
-    <button mat-raised-button color="warn" style="float:right" (click)="back()">
+    <button
+      tourAnchor="qr_code_back"
+      mat-raised-button
+      color="warn"
+      style="float:right"
+      (click)="back()"
+    >
       Back
     </button>
     <br />
@@ -34,6 +46,7 @@
     </div>
 
     <img
+      tourAnchor="qr_code_pic"
       src="assets/pictures/QR_file.png"
       style="width:400px;border:black 1px solid;"
     />

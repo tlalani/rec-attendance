@@ -12,6 +12,7 @@ import { FlexLayoutModule } from "@angular/flex-layout";
 import { GridsterModule } from "angular-gridster2";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { environment } from "./../environments/environment";
+import { TourMatMenuModule } from "ngx-tour-md-menu";
 import {
   MatAutocompleteModule,
   MatCheckboxModule,
@@ -96,7 +97,8 @@ import { ChartsComponent } from "./charts/charts.component";
     MatListModule,
     MatIconModule,
     MatTooltipModule,
-    MatMenuModule
+    MatMenuModule,
+    TourMatMenuModule.forRoot()
   ],
   providers: [MatDatepickerModule, MatNativeDateModule],
   bootstrap: [AppComponent],

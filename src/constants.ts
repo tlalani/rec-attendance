@@ -512,6 +512,17 @@ export function getAppRole(role: string) {
   }
 }
 
+export function getSaturday(date) {
+  let dateCopy = new Date(date);
+  if (date.getDay() < 6) {
+    let sub = date.getDay() + 1;
+    dateCopy.setDate(date.getDate() - sub);
+  } else if (date.getHours() < 10) {
+    dateCopy.setDate(date.getDate() - 7);
+  }
+  return dateCopy;
+}
+
 export function makePeopleObject() {
   return {
     student: <PersonDTO[][]>[],

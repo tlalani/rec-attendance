@@ -11,7 +11,8 @@ import {
   pushToInnerList,
   Roles,
   getAppRole,
-  makePeopleObject
+  makePeopleObject,
+  getSaturday
 } from "src/constants";
 import { AngularFireAuth } from "angularfire2/auth";
 import { formatDate } from "@angular/common";
@@ -43,12 +44,7 @@ export class AttendanceComponent implements OnInit {
     // }, 2000);
     this.loading = true;
     let date = new Date();
-    if (date.getDay() < 6) {
-      let sub = date.getDay() + 1;
-      date.setDate(date.getDate() - sub);
-    } else if (date.getHours() < 10) {
-      date.setDate(date.getDate() - 7);
-    }
+    date = getSaturday(date);
     this.currentDate = date;
     this.schoolYear = getSchoolYearFromDate(date);
     this.getPeopleQuery(this.schoolYear);

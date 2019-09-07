@@ -4,8 +4,10 @@
       <mat-header-cell *matHeaderCellDef>
         Name
       </mat-header-cell>
-      <mat-cell *matCellDef="let person">
+      <mat-cell *matCellDef="let person; let i = index">
         <span
+          *ngIf="anchorTable && i === 0"
+          tourAnchor="attendance_name"
           [ngClass]="{
             normal: person.isPresent() || person.isTardy(),
             absent: (person.isAbsent() || person.isExcused()) && !person.Reason,
@@ -14,8 +16,21 @@
               person.Reason &&
               !person.editing
           }"
-          >{{ person.Name }}</span
-        >
+          >{{ person.Name }}
+        </span>
+        <span
+          *ngIf="!anchorTable || i !== 0"
+          [ngClass]="{
+            normal: person.isPresent() || person.isTardy(),
+            absent: (person.isAbsent() || person.isExcused()) && !person.Reason,
+            finished:
+              (person.isAbsent() || person.isExcused()) &&
+              person.Reason &&
+              !person.editing
+          }"
+          >{{ person.Name }}
+        </span>
+        <!-- Below is if we want a dialog to open for contact info on that student-->
         <!-- <button
           mat-button
           disabled="false"
@@ -101,14 +116,19 @@
 
     <ng-container matColumnDef="edit">
       <mat-header-cell *matHeaderCellDef> </mat-header-cell>
-      <mat-cell *matCellDef="let person">
+      <mat-cell *matCellDef="let person; let i = index">
         <button
           *ngIf="!person.editing"
           mat-raised-button
           color="primary"
           (click)="startEditing(person)"
         >
-          Edit
+          <div *ngIf="anchorTable && i === 0" tourAnchor="attendance_edit">
+            Edit
+          </div>
+          <div *ngIf="!anchorTable || i !== 0" tourAnchor="attendance_edit">
+            Edit
+          </div>
         </button>
         <button
           *ngIf="person.editing"

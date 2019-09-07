@@ -10,6 +10,7 @@ import { ContactDialogComponent } from "../contact-dialog/contact-dialog.compone
 })
 export class AttendanceTableComponent implements OnInit {
   @Input() dataSource;
+  @Input() anchorTable: boolean = false;
   @Output() changes = new EventEmitter<Person>();
   public displayedColumns: string[] = [
     "name",
