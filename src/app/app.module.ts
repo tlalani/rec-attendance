@@ -13,6 +13,7 @@ import { GridsterModule } from "angular-gridster2";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { environment } from "./../environments/environment";
 import { TourMatMenuModule } from "ngx-tour-md-menu";
+import { CookieService } from "ngx-cookie-service";
 import {
   MatAutocompleteModule,
   MatCheckboxModule,
@@ -35,11 +36,7 @@ import {
   MatTooltipModule,
   MatMenuModule
 } from "@angular/material";
-import { AttendanceComponent } from "./attendance/attendance.component";
-import { HomeComponent } from "./home/home.component";
-import { LoginComponent } from "./login/login.component";
 import { QrCreatorComponent } from "./qr-creator/qr-creator.component";
-import { ManualEntryComponent } from "./manual-entry/manual-entry.component";
 import { SubmitDialogComponent } from "./submit-dialog/submit-dialog.component";
 import { AttendanceTableComponent } from "./attendance-table/attendance-table.component";
 import { GenericTableComponent } from "./generic-table/generic-table.component";
@@ -54,7 +51,6 @@ import { ChartsComponent } from "./charts/charts.component";
     AppComponent,
     routingModules,
     QrCreatorComponent,
-    ManualEntryComponent,
     SubmitDialogComponent,
     AttendanceTableComponent,
     GenericTableComponent,
@@ -69,9 +65,9 @@ import { ChartsComponent } from "./charts/charts.component";
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MatAutocompleteModule,
     MatCheckboxModule,
     MatDatepickerModule,
+    MatNativeDateModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -79,7 +75,6 @@ import { ChartsComponent } from "./charts/charts.component";
     HttpClientModule,
     LayoutModule,
     MatTableModule,
-    MatNativeDateModule,
     FlexLayoutModule,
     GridsterModule,
     FormsModule,
@@ -92,7 +87,6 @@ import { ChartsComponent } from "./charts/charts.component";
     MatToolbarModule,
     MatTabsModule,
     ReactiveFormsModule,
-    MatDividerModule,
     MatDialogModule,
     MatListModule,
     MatIconModule,
@@ -100,8 +94,8 @@ import { ChartsComponent } from "./charts/charts.component";
     MatMenuModule,
     TourMatMenuModule.forRoot()
   ],
-  providers: [MatDatepickerModule, MatNativeDateModule],
+  providers: [MatDatepickerModule, MatNativeDateModule, CookieService],
   bootstrap: [AppComponent],
-  entryComponents: [ManualEntryComponent, ChartsComponent]
+  entryComponents: [ChartsComponent]
 })
 export class AppModule {}

@@ -8,6 +8,7 @@
         <span
           *ngIf="anchorTable && i === 0"
           tourAnchor="attendance_name"
+          class="attendance_name"
           [ngClass]="{
             normal: person.isPresent() || person.isTardy(),
             absent: (person.isAbsent() || person.isExcused()) && !person.Reason,
@@ -126,7 +127,7 @@
           <div *ngIf="anchorTable && i === 0" tourAnchor="attendance_edit">
             Edit
           </div>
-          <div *ngIf="!anchorTable || i !== 0" tourAnchor="attendance_edit">
+          <div *ngIf="!anchorTable || i !== 0">
             Edit
           </div>
         </button>
