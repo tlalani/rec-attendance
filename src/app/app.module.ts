@@ -14,8 +14,8 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { environment } from "./../environments/environment";
 import { TourMatMenuModule } from "ngx-tour-md-menu";
 import { CookieService } from "ngx-cookie-service";
+import { FlipModule } from "ngx-flip";
 import {
-  MatAutocompleteModule,
   MatCheckboxModule,
   MatDatepickerModule,
   MatFormFieldModule,
@@ -29,7 +29,6 @@ import {
   MatProgressSpinnerModule,
   MatToolbarModule,
   MatTabsModule,
-  MatDividerModule,
   MatDialogModule,
   MatListModule,
   MatIconModule,
@@ -46,6 +45,8 @@ import { ContactInfoComponent } from "./contact-info/contact-info.component";
 import { ManualQrComponent } from "./manual-qr/manual-qr.component";
 import { ToolbarComponent } from "./toolbar/toolbar.component";
 import { ChartsComponent } from "./charts/charts.component";
+import { RecOptionsDialogComponent } from "./rec-options-dialog/rec-options-dialog.component";
+import { AuthService } from "./auth.service";
 @NgModule({
   declarations: [
     AppComponent,
@@ -59,7 +60,8 @@ import { ChartsComponent } from "./charts/charts.component";
     ContactInfoComponent,
     ManualQrComponent,
     ToolbarComponent,
-    ChartsComponent
+    ChartsComponent,
+    RecOptionsDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -92,10 +94,16 @@ import { ChartsComponent } from "./charts/charts.component";
     MatIconModule,
     MatTooltipModule,
     MatMenuModule,
+    FlipModule,
     TourMatMenuModule.forRoot()
   ],
-  providers: [MatDatepickerModule, MatNativeDateModule, CookieService],
+  providers: [
+    MatDatepickerModule,
+    MatNativeDateModule,
+    CookieService,
+    AuthService
+  ],
   bootstrap: [AppComponent],
-  entryComponents: [ChartsComponent]
+  entryComponents: [ChartsComponent, RecOptionsDialogComponent]
 })
 export class AppModule {}

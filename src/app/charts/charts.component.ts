@@ -6,10 +6,12 @@ import {
   Person,
   PersonDTO,
   Statuses,
-  getSaturday
+  Days,
+  getDay
 } from "src/constants";
 import { AttendanceService } from "../attendance/attendance.service";
 import { MatDatepickerInputEvent } from "@angular/material";
+import { AuthService } from "../auth.service";
 
 @Component({
   selector: "app-charts",
@@ -52,10 +54,13 @@ export class ChartsComponent implements OnInit, AfterViewInit {
     // These labels appear in the legend and in the tooltips when hovering different arcs
     labels: ["Absent", "Tardy", "Present", "Excused"]
   };
-  constructor(private attendanceService: AttendanceService) {}
+  constructor(
+    private attendanceService: AttendanceService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
-    this.currentDate = getSaturday(new Date());
+    this.currentDate = getDay(new Date(), Days.Saturday);
     this.schoolYear = getSchoolYearFromDate(this.currentDate);
     this.makeFullQuery();
     this.myChart = new Chart("doughnutChart", {
@@ -93,7 +98,7 @@ export class ChartsComponent implements OnInit, AfterViewInit {
 
   public getPeopleFormatted() {
     return this.attendanceService
-      .getPeopleFormatted(this.schoolYear)
+      .getPeopleFormatted(this.schoolYear, this.authService.getCurrentConfig())
       .then(result => {
         return result;
       });
@@ -111,7 +116,10 @@ export class ChartsComponent implements OnInit, AfterViewInit {
       });
     } else {
       return this.attendanceService
-        .queryAttendanceForSpecificDayFormatted(this.currentDate)
+        .queryAttendanceForSpecificDayFormatted(
+          this.currentDate,
+          this.authService.getCurrentConfig()
+        )
         .then(res => {
           if (res) {
             this.currentData = res;
@@ -119,6 +127,7 @@ export class ChartsComponent implements OnInit, AfterViewInit {
             let role = "";
             if (this.selectedRole === Roles.Intern) role = "support";
             else role = this.selectedRole.toLowerCase();
+            console.log(this.people);
             currList = this.addAbsentPeople(res[role], this.people[role]);
             return currList;
           }

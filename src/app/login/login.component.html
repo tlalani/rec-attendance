@@ -1,48 +1,104 @@
-<div class="background-color dark-primary-color">
-  <div class="background-image"></div>
-</div>
-
-<mat-card class="default-primary-color mat-elevation-z8">
-  <mat-card-title>
-    <img [src]="logoLink" />
-    <p class="text-primary-color">LOGIN</p>
-  </mat-card-title>
-  <mat-card-content>
-    <mat-form-field color="accent" appearance="fill">
-      <mat-label>Email</mat-label>
-      <input matInput id="email-input" type="text" [(ngModel)]="email" />
-    </mat-form-field>
-    <br />
-    <br />
-    <mat-form-field color="accent" appearance="fill">
-      <mat-label>Password</mat-label>
-      <input
-        class="primary-text-color"
-        matInput
-        id="pw-input"
-        [type]="getType()"
-        [(ngModel)]="password"
-        (keydown.enter)="onLoginClick()"
-      />
-      <button mat-icon-button matSuffix (click)="changeType()">
-        <mat-icon
-          [ngClass]="{
-            showing: this.type === 'text'
-          }"
-          >remove_red_eye</mat-icon
+<div class="background-image"></div>
+<ngx-flip [flip]="flipDiv">
+  <div front>
+    <mat-card class="default-primary-color mat-elevation-z8">
+      <mat-card-title>
+        <img [src]="logoLink" />
+        <p class="text-primary-color">LOGIN</p>
+      </mat-card-title>
+      <mat-card-content>
+        <mat-form-field color="accent" appearance="fill">
+          <mat-label>Email</mat-label>
+          <input matInput id="email-input" type="text" [(ngModel)]="email" />
+        </mat-form-field>
+        <br />
+        <br />
+        <mat-form-field color="accent" appearance="fill">
+          <mat-label>Password</mat-label>
+          <input
+            class="primary-text-color"
+            matInput
+            id="pw-input"
+            [type]="getType()"
+            [(ngModel)]="password"
+            (keydown.enter)="onLoginClick()"
+          />
+          <button mat-icon-button matSuffix (click)="changeType()">
+            <mat-icon
+              [ngClass]="{
+                showing: this.type === 'text'
+              }"
+              >remove_red_eye</mat-icon
+            >
+          </button>
+        </mat-form-field>
+        <br />
+        <br />
+        <button
+          mat-raised-button
+          class="light-primary-color"
+          (click)="onLoginClick()"
         >
-      </button>
-    </mat-form-field>
-    <br />
-    <br />
-    <button
-      mat-raised-button
-      class="light-primary-color"
-      (click)="onLoginClick()"
-    >
-      SUBMIT
-    </button>
-    <br />
-    <br />
-  </mat-card-content>
-</mat-card>
+          SUBMIT
+        </button>
+        <br />
+        <br />
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div back>
+    <mat-card class="default-primary-color mat-elevation-z8">
+      <a class="link" (click)="goBack()"><i class="fa fa-arrow-left"></i></a>
+      <mat-card-title>
+        <img [src]="logoLink" />
+        <p class="text-primary-color">LOGIN</p>
+      </mat-card-title>
+      <mat-card-content
+        fxLayout="column"
+        fxLayoutGap="3%"
+        fxLayoutAlign="center center"
+      >
+        <mat-form-field fxFlex="30%" color="accent" appearance="fill">
+          <mat-select
+            [(ngModel)]="this.currentConfig.center"
+            placeholder="Center"
+            (selectionChange)="makeChange(0)"
+          >
+            <mat-option *ngFor="let center of this.centers" [value]="center">
+              {{ center }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field fxFlex="30%" color="accent" appearance="fill">
+          <mat-select
+            [(ngModel)]="this.currentConfig.class"
+            placeholder="Class"
+            (selectionChange)="makeChange(1)"
+          >
+            <mat-option *ngFor="let class of this.classes" [value]="class">
+              {{ class }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field fxFlex="30%" color="accent" appearance="fill">
+          <mat-select
+            [(ngModel)]="this.currentConfig.shift"
+            placeholder="Shifts"
+            (selectionChange)="makeChange(2)"
+          >
+            <mat-option *ngFor="let shift of this.shifts" [value]="shift">
+              {{ shift }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <button
+          mat-raised-button
+          class="light-primary-color"
+          (click)="goToApp()"
+        >
+          SUBMIT
+        </button>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</ngx-flip>

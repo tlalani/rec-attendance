@@ -4,6 +4,21 @@ const alpha = "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".
 
 export const DEFAULT_USER_IMAGE = "assets/pictures/no_picture.png";
 
+export interface Config {
+  center: string;
+  classes: string[];
+}
+
+export const Days = {
+  Sunday: 0,
+  Monday: 1,
+  Tuesday: 2,
+  Wednesday: 3,
+  Thursday: 4,
+  Friday: 5,
+  Saturday: 6
+};
+
 export const Grades = [
   "1st Grade",
   "2nd Grade",
@@ -14,9 +29,8 @@ export const Grades = [
 ];
 
 export const Type = {
-  Student: 1,
-  Staff: 2,
-  Both: 3
+  Text: "text",
+  Password: "password"
 };
 
 export const Roles = {
@@ -202,23 +216,6 @@ export class Person {
       this.Grade.replace(/ /g, "") == other.Grade.replace(/ /g, "")
     );
   }
-}
-
-export function createSetArray(type: number) {
-  let r = [];
-  Object.values(Roles).forEach(role => {
-    if (type === Type.Student || type === Type.Both) {
-      if (role === Roles.Student) {
-        Grades.forEach(() => r.push(new Set()));
-      }
-    }
-    if (type === Type.Staff || type === Type.Both) {
-      if (role !== Roles.Student || role !== Roles.Teacher) {
-        r.push(new Set());
-      }
-    }
-  });
-  return r;
 }
 
 export function getArray(snapshot, role) {
@@ -512,9 +509,9 @@ export function getAppRole(role: string) {
   }
 }
 
-export function getSaturday(date) {
+export function getDay(date, dayOfWeek) {
   let dateCopy = new Date(date);
-  if (date.getDay() < 6) {
+  if (date.getDay() < dayOfWeek) {
     let sub = date.getDay() + 1;
     dateCopy.setDate(date.getDate() - sub);
   } else if (date.getHours() < 10) {

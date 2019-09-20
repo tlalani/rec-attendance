@@ -37,6 +37,7 @@
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "ngx-cookie-service": "^2.2.0",
+    "ngx-flip": "^7.1.0",
     "ngx-tour-core": "^4.0.1",
     "ngx-tour-md-menu": "^4.0.1",
     "rxjs": "~6.3.3",

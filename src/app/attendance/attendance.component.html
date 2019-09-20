@@ -1,4 +1,8 @@
-<div class="container-dates" tourAnchor="attendance_attendance">
+<div
+  *ngIf="this.schoolYear"
+  class="container-dates"
+  tourAnchor="attendance_attendance"
+>
   <div class="date">
     <mat-form-field tourAnchor="attendance_date">
       <input
@@ -14,7 +18,7 @@
     <button
       tourAnchor="attendance_download"
       style="float:right"
-      mat-stroked-button
+      mat-button
       color="primary"
       matTooltip="Download Attendance"
       (click)="downloadTodayAttendance()"

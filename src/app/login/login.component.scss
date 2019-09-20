@@ -1,19 +1,28 @@
-.background-color {
+html,
+body {
+  margin: 0;
   height: 100%;
+  overflow: hidden;
 }
 
-.background-image {
-  height: inherit;
+ngx-flip {
   background: url("../../assets/pictures/login-screen.jpg");
-  opacity: 0.3;
+  height: 100%;
+  div {
+    height: inherit;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+  overflow: hidden;
 }
 mat-card {
   border-radius: 15px;
-  position: absolute;
+  //transform: translate(-50%, -50%);
+  opacity: 0.97;
   width: 400px;
-  top: 12%;
-  right: 35%;
-  opacity: 0.9;
+  margin: 10px auto;
   // border: black 1px solid;
 }
 
@@ -48,4 +57,8 @@ mat-card-content {
     width: 80%;
     display: inline-block;
   }
+}
+
+.link {
+  cursor: pointer;
 }

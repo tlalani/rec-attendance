@@ -6,6 +6,7 @@ import { Router } from "@angular/router";
 import { ChartsComponent } from "../charts/charts.component";
 import { TourService } from "ngx-tour-md-menu";
 import { CookieService } from "ngx-cookie-service";
+import { AuthService } from "../auth.service";
 @Component({
   selector: "app-home",
   templateUrl: "./home.component.html",
@@ -17,7 +18,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   public tabActive;
   public cookieValue: string;
   constructor(
-    private afAuth: AngularFireAuth,
+    private authService: AuthService,
     public router: Router,
     private tourService: TourService,
     private cookieService: CookieService
@@ -32,7 +33,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    if (!this.afAuth.user) {
+    if (!this.authService.getUser()) {
       this.router.navigate(["/login"]);
     }
     this.dashboard = [
@@ -206,12 +207,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
   addItem() {
     this.dashboard.push({ x: 0, y: 0, rows: 0, cols: 0 });
-  }
-
-  performLogOut() {
-    this.afAuth.auth.signOut().then(() => {
-      this.router.navigate([""]);
-    });
   }
 
   startTour() {

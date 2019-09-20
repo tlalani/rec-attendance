@@ -19,8 +19,7 @@ import { formatDate } from "@angular/common";
 export class AttendanceService {
   constructor(private db: AngularFireDatabase) {}
 
-  public getPeople(schoolYear) {
-    const queryString = "People/" + schoolYear;
+  public get(queryString) {
     return this.db
       .object(queryString)
       .valueChanges()
@@ -28,14 +27,35 @@ export class AttendanceService {
       .toPromise();
   }
 
-  public getPeopleFormatted(schoolYear) {
+  public getPeople(schoolYear, config) {
+    let cc = config;
+    let shift = cc.shift.replace(", ", "/");
+    const queryString =
+      "REC/" +
+      cc.center +
+      "/" +
+      cc.class +
+      "/Shifts/" +
+      shift +
+      "/People/" +
+      schoolYear;
+    console.log(queryString);
+    return this.db
+      .object(queryString)
+      .valueChanges()
+      .pipe(first())
+      .toPromise();
+  }
+
+  public getPeopleFormatted(schoolYear, config) {
     let student: PersonDTO[][] = [];
     let teacher: PersonDTO[][] = [];
     let management: PersonDTO[][] = [];
     let support: PersonDTO[][] = [];
-    return this.getPeople(schoolYear)
+    return this.getPeople(schoolYear, config)
       .then(roles => {
         Object.entries(roles).forEach(([role, people]) => {
+          console.log(role);
           if (role === Roles.Student || role === Roles.Teacher) {
             Object.entries(people).forEach(([gradeStr, peopleInGrade]) => {
               let grade = getGradeFromString(gradeStr);
@@ -76,14 +96,25 @@ export class AttendanceService {
         return { student, teacher, management, support };
       })
       .catch(error => {
+        console.log(error);
         console.error("People doesn't exist.");
       });
   }
 
-  public queryAttendanceForSpecificDay(date) {
+  public queryAttendanceForSpecificDay(date, config) {
     const schoolYear = getSchoolYearFromDate(date);
+    let shift = config.shift.replace(", ", "/");
     const queryString =
-      schoolYear + "/" + formatDate(date, "MMM d, y", "en-US");
+      "REC/" +
+      config.center +
+      "/" +
+      config.class +
+      "/Shifts/" +
+      shift +
+      "/Dates/" +
+      schoolYear +
+      "/" +
+      formatDate(date, "MMM d, y", "en-US");
     return this.db
       .object(queryString)
       .valueChanges()
@@ -91,12 +122,12 @@ export class AttendanceService {
       .toPromise();
   }
 
-  public queryAttendanceForSpecificDayFormatted(date: Date) {
+  public queryAttendanceForSpecificDayFormatted(date: Date, config) {
     let management: Person[][] = [];
     let support: Person[][] = [];
     let student: Person[][] = [];
     let teacher: Person[][] = [];
-    return this.queryAttendanceForSpecificDay(date)
+    return this.queryAttendanceForSpecificDay(date, config)
       .then(items => {
         if (items) {
           Object.entries(items).forEach(([role, snapShot]) => {
@@ -134,10 +165,20 @@ export class AttendanceService {
       });
   }
 
-  public sendToDatabase(date: Date, person: Person) {
+  public sendToDatabase(date: Date, person: Person, config: any) {
     const schoolYear = getSchoolYearFromDate(date);
-    console.log(person);
-    let queryString = schoolYear + "/" + formatDate(date, "MMM d, y", "en-US");
+    let shift = config.shift.replace(", ", "/");
+    let queryString =
+      "REC/" +
+      config.center +
+      "/" +
+      config.class +
+      "/Shifts/" +
+      shift +
+      "/Dates" +
+      schoolYear +
+      "/" +
+      formatDate(date, "MMM d, y", "en-US");
     if (person.Role === Roles.Student) {
       queryString += "/Student/" + person.Grade + "/" + person.Name;
     } else if (person.Role === Roles.Teacher) {
@@ -152,7 +193,6 @@ export class AttendanceService {
     } else {
       queryString += "/Intern/" + person.Name;
     }
-
     let obj = {};
     if (person.Status) {
       obj["Status"] = person.Status;

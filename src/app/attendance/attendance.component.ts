@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
-import { MatDatepickerInputEvent } from "@angular/material";
+import { Component, OnInit, Input } from "@angular/core";
+import { MatDatepickerInputEvent, MatDialog } from "@angular/material";
 import { AttendanceService } from "./attendance.service";
 import { Angular5Csv } from "angular5-csv/dist/Angular5-csv";
 import {
@@ -12,11 +12,14 @@ import {
   Roles,
   getAppRole,
   makePeopleObject,
-  getSaturday
+  getDay,
+  Days
 } from "src/constants";
-import { AngularFireAuth } from "angularfire2/auth";
 import { formatDate } from "@angular/common";
-
+import { AuthService } from "../auth.service";
+import { RecOptionsDialogComponent } from "../rec-options-dialog/rec-options-dialog.component";
+import { first } from "rxjs/operators";
+import { Router } from "@angular/router";
 @Component({
   selector: "app-attendance",
   templateUrl: "./attendance.component.html",
@@ -31,20 +34,27 @@ export class AttendanceComponent implements OnInit {
   public grades = Grades;
   public schoolYear: string;
   public mgmtroles = Object.keys(Mgmt);
+  public centers: string[];
+  public classes: string[];
+  public shifts: string[];
+  currentConfig: any = {};
   constructor(
     private attendanceService: AttendanceService,
-    private afAuth: AngularFireAuth
+    private dialog: MatDialog,
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
-    // this.loading = true;
     // setTimeout(() => {
     //   this.loading = false;
     //   this.result = makeSampleData();
     // }, 2000);
+    this.getCurrentConfig();
     this.loading = true;
     let date = new Date();
-    date = getSaturday(date);
+    let dayOfREC = this.currentConfig.shift.split(", ")[0];
+    date = getDay(date, Days[dayOfREC]);
     this.currentDate = date;
     this.schoolYear = getSchoolYearFromDate(date);
     this.getPeopleQuery(this.schoolYear);
@@ -57,15 +67,21 @@ export class AttendanceComponent implements OnInit {
     this.queryDailyAttendance();
   }
 
+  public getCurrentConfig() {
+    this.currentConfig = this.authService.getCurrentConfig();
+  }
+
   public getPeopleQuery(schoolYear) {
-    this.attendanceService.getPeopleFormatted(schoolYear).then(result => {
-      if (result) {
-        this.people.student = result.student;
-        this.people.management = result.management;
-        this.people.teacher = result.teacher;
-        this.people.support = result.support;
-      }
-    });
+    this.attendanceService
+      .getPeopleFormatted(schoolYear, this.currentConfig)
+      .then(result => {
+        if (result) {
+          this.people.student = result.student;
+          this.people.management = result.management;
+          this.people.teacher = result.teacher;
+          this.people.support = result.support;
+        }
+      });
   }
 
   public queryDailyAttendance() {
@@ -77,7 +93,10 @@ export class AttendanceComponent implements OnInit {
     }
     this.result = [];
     this.attendanceService
-      .queryAttendanceForSpecificDayFormatted(this.currentDate)
+      .queryAttendanceForSpecificDayFormatted(
+        this.currentDate,
+        this.currentConfig
+      )
       .then(totalResult => {
         if (totalResult) {
           Object.keys(totalResult).forEach(role => {
@@ -136,6 +155,8 @@ export class AttendanceComponent implements OnInit {
             }
           });
           this.loading = false;
+        } else {
+          this.loading = false;
         }
       });
   }
@@ -189,9 +210,9 @@ export class AttendanceComponent implements OnInit {
   }
 
   public saveEdits(student: Person) {
-    const res = this.attendanceService.sendToDatabase(
-      this.currentDate,
-      student
-    );
+    // const res = this.attendanceService.sendToDatabase(
+    //   this.currentDate,
+    //   student
+    // );
   }
 }

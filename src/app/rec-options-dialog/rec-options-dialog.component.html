@@ -1,0 +1,46 @@
+<div class="header" style="text-align: center;">
+  <span>Update Your REC Settings Here</span>
+  <div
+    class="border-bottom"
+    style="margin-top:5px;width:100%;height:1px;border-bottom:1px solid black;"
+  ></div>
+</div>
+<div fxLayout="row" fxLayoutGap="3%">
+  <mat-form-field fxFlex="30">
+    <mat-label>Center</mat-label>
+    <mat-select
+      (selectionChange)="onChange(0)"
+      [(ngModel)]="currentConfig.center"
+    >
+      <mat-option *ngFor="let center of centers" [value]="center">
+        {{ center }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field fxFlex="30">
+    <mat-label>Class</mat-label>
+    <mat-select
+      (selectionChange)="onChange(1)"
+      [(ngModel)]="currentConfig.class"
+      [disabled]="!currentConfig.center"
+    >
+      <mat-option *ngFor="let class of classes" [value]="class">
+        {{ class }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field fxFlex="31">
+    <mat-label>Shift</mat-label>
+    <mat-select
+      (selectionChange)="onChange(2)"
+      [(ngModel)]="currentConfig.shift"
+      [disabled]="!currentConfig.class"
+    >
+      <mat-option *ngFor="let shift of shifts" [value]="shift">
+        {{ shift }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
