@@ -1,9 +1,4 @@
-import { Component, OnInit, Input } from "@angular/core";
-import { AngularFireAuth } from "angularfire2/auth";
-import { Router } from "@angular/router";
-import { RecOptionsDialogComponent } from "../rec-options-dialog/rec-options-dialog.component";
-import { MatDialog } from "@angular/material";
-import { AuthService } from "../auth.service";
+import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 
 @Component({
   selector: "app-toolbar",
@@ -11,32 +6,22 @@ import { AuthService } from "../auth.service";
   styleUrls: ["./toolbar.component.scss"]
 })
 export class ToolbarComponent implements OnInit {
-  public data: any = {};
-  constructor(
-    private router: Router,
-    private dialog: MatDialog,
-    private authService: AuthService
-  ) {}
+
+  @Output() itemClicked = new EventEmitter();
+
+  constructor() {}
 
   ngOnInit() {}
 
   logout() {
-    this.authService.signOut().then(() => {
-      this.router.navigate(["/login"]);
-    });
+    this.itemClicked.emit("logout")
   }
 
   async changeOptions() {
-    await this.authService.getRECOptions().then(result => {
-      this.data.config = result.config;
-    });
-    const dialogRef = this.dialog.open(RecOptionsDialogComponent, {
-      width: "500px",
-      data: this.data
-    });
+    this.itemClicked.emit("options")
   }
 
   toQr() {
-    this.router.navigate(["/createqr"]);
+    this.itemClicked.emit("qr");
   }
 }

@@ -39,7 +39,6 @@ export class AttendanceService {
       shift +
       "/People/" +
       schoolYear;
-    console.log(queryString);
     return this.db
       .object(queryString)
       .valueChanges()
@@ -55,7 +54,6 @@ export class AttendanceService {
     return this.getPeople(schoolYear, config)
       .then(roles => {
         Object.entries(roles).forEach(([role, people]) => {
-          console.log(role);
           if (role === Roles.Student || role === Roles.Teacher) {
             Object.entries(people).forEach(([gradeStr, peopleInGrade]) => {
               let grade = getGradeFromString(gradeStr);

@@ -7,6 +7,8 @@ import { ChartsComponent } from "../charts/charts.component";
 import { TourService } from "ngx-tour-md-menu";
 import { CookieService } from "ngx-cookie-service";
 import { AuthService } from "../auth.service";
+import { MatDialog } from '@angular/material';
+import { RecOptionsDialogComponent } from '../rec-options-dialog/rec-options-dialog.component';
 @Component({
   selector: "app-home",
   templateUrl: "./home.component.html",
@@ -21,7 +23,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
     private authService: AuthService,
     public router: Router,
     private tourService: TourService,
-    private cookieService: CookieService
+    private cookieService: CookieService,
+    private dialog: MatDialog,
   ) {}
 
   itemChange(item, itemComponent) {
@@ -33,9 +36,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    if (!this.authService.getUser()) {
-      this.router.navigate(["/login"]);
-    }
     this.dashboard = [
       {
         x: 0,
@@ -139,14 +139,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
           enableBackdrop: true
         },
         {
-          anchorId: "manual_entry",
-          content:
-            "Here you can manually enter a person who may have been missed, or needs a time change." +
-            "Make sure to enter all relevant information before submitting.",
-          title: "Manual Entry",
-          enableBackdrop: true
-        },
-        {
           anchorId: "qr_code",
           content: "Up here you can go through all the qr codes.",
           title: "QR Codes",
@@ -198,6 +190,26 @@ export class HomeComponent implements OnInit, AfterViewInit {
       this.cookieService.set("tourComplete", "true");
     }
   }
+
+  handleToolbarClick(event) {
+    switch(event) {
+      case "logout":
+        this.authService.signOut().then(() => {
+          this.router.navigate(["/login"]);
+        })
+        break;
+      case "options": 
+        this.dialog.open(RecOptionsDialogComponent, {data: {config: this.authService.getFullConfig()}}).afterClosed().toPromise().then(res => {
+          this.authService.setOptions(res.currentConfig);
+          this.ngOnInit();
+        });
+        break;
+      case "qr":
+        this.router.navigate(["/createqr"]);
+        break;
+    }
+  }
+
 
   changedOptions() {
     this.options.api.optionsChanged();

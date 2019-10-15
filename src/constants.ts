@@ -212,8 +212,8 @@ export class Person {
 
   public equals(other: Person | PersonDTO) {
     return (
-      this.Name.replace(/ /g, "") == other.Name.replace(/ /g, "") &&
-      this.Grade.replace(/ /g, "") == other.Grade.replace(/ /g, "")
+      this.Name.replace(/ /g, "") === other.Name.replace(/ /g, "") &&
+      this.Grade.replace(/ /g, "") === other.Grade.replace(/ /g, "")
     );
   }
 }
@@ -527,4 +527,8 @@ export function makePeopleObject() {
     management: <PersonDTO[][]>[],
     support: <PersonDTO[][]>[]
   };
+}
+
+export function isObjEmpty(obj) {
+  return Object.keys(obj).length < 1;
 }
