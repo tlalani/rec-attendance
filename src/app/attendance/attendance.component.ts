@@ -154,10 +154,12 @@ export class AttendanceComponent implements OnInit {
               }
             }
           });
-          this.loading = false;
-        } else {
-          this.loading = false;
         }
+        this.loading = false;
+      })
+      .catch(error => {
+        this.loading = false;
+        console.log(error);
       });
   }
 

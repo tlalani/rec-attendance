@@ -523,6 +523,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 
+ngx-flip
+MIT
+
 ngx-tour-core
 MIT
 Copyright 2017 Isaac Mann <isaacplmann@gmail.com>
