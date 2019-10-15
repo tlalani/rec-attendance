@@ -28,6 +28,7 @@ export class LoginComponent implements OnInit {
     this.authService.signIn(this.email, this.password).then(user => {
       if (user) {
         this.getOptions().then(res => {
+          this.authService.setAllOptions(res.config);
           this.config = res.config;
           this.centers = Object.keys(this.config);
           this.flip();
