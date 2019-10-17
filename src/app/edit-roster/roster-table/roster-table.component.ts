@@ -39,7 +39,10 @@ export class RosterTableComponent implements OnInit {
       .afterClosed()
       .toPromise()
       .then(res => {
-        if (res) this.changes.emit({ delete: this.selection });
+        if (res) {
+          this.changes.emit({ delete: this.selection });
+          this.selection = [];
+        }
       });
   }
 

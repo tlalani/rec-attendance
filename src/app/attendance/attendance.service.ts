@@ -62,13 +62,21 @@ export class AttendanceService {
                   pushToInnerList(
                     teacher,
                     grade,
-                    new PersonDTO({ Name: person[1], Grade: gradeStr })
+                    new PersonDTO({
+                      Name: person[1],
+                      Grade: gradeStr,
+                      Role: role
+                    })
                   );
                 } else {
                   pushToInnerList(
                     student,
                     grade,
-                    new PersonDTO({ Name: person[1], Grade: gradeStr })
+                    new PersonDTO({
+                      Name: person[1],
+                      Grade: gradeStr,
+                      Role: role
+                    })
                   );
                 }
               });
@@ -79,13 +87,13 @@ export class AttendanceService {
                 pushToInnerList(
                   management,
                   0,
-                  new PersonDTO({ Name: person[1], Grade: null })
+                  new PersonDTO({ Name: person[1], Grade: null, Role: role })
                 );
               } else {
                 pushToInnerList(
                   support,
                   0,
-                  new PersonDTO({ Name: person[1], Grade: null })
+                  new PersonDTO({ Name: person[1], Grade: null, Role: role })
                 );
               }
             });

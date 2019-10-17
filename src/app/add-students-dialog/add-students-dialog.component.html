@@ -28,7 +28,9 @@
     <p fxFlex="95%">
       {{ print(person) }}
     </p>
-    <button mat-icon-button (click)="deletePerson(i)">x</button>
+    <button mat-icon-button (click)="deletePerson(i)">
+      <mat-icon color="warn">clear</mat-icon>
+    </button>
   </div>
 </div>
 <button mat-stroked-button color="primary" (click)="closeDialog()">Save</button>
