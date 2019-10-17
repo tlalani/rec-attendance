@@ -7,8 +7,9 @@ import { ChartsComponent } from "../charts/charts.component";
 import { TourService } from "ngx-tour-md-menu";
 import { CookieService } from "ngx-cookie-service";
 import { AuthService } from "../auth.service";
-import { MatDialog } from '@angular/material';
-import { RecOptionsDialogComponent } from '../rec-options-dialog/rec-options-dialog.component';
+import { MatDialog } from "@angular/material";
+import { RecOptionsDialogComponent } from "../rec-options-dialog/rec-options-dialog.component";
+import { EditRosterComponent } from "../edit-roster/edit-roster.component";
 @Component({
   selector: "app-home",
   templateUrl: "./home.component.html",
@@ -24,7 +25,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     public router: Router,
     private tourService: TourService,
     private cookieService: CookieService,
-    private dialog: MatDialog,
+    private dialog: MatDialog
   ) {}
 
   itemChange(item, itemComponent) {
@@ -40,15 +41,22 @@ export class HomeComponent implements OnInit, AfterViewInit {
       {
         x: 0,
         y: 0,
-        rows: 4,
-        cols: 3,
+        rows: 16,
+        cols: 10,
         component: AttendanceComponent
       },
       {
-        x: 3,
+        x: 10,
         y: 0,
-        rows: 2,
-        cols: 2,
+        rows: 8,
+        cols: 6,
+        component: EditRosterComponent
+      },
+      {
+        x: 10,
+        y: 8,
+        rows: 8,
+        cols: 6,
         component: ChartsComponent
       }
     ];
@@ -192,24 +200,29 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   handleToolbarClick(event) {
-    switch(event) {
+    switch (event) {
       case "logout":
         this.authService.signOut().then(() => {
           this.router.navigate(["/login"]);
-        })
-        break;
-      case "options": 
-        this.dialog.open(RecOptionsDialogComponent, {data: {config: this.authService.getFullConfig()}}).afterClosed().toPromise().then(res => {
-          this.authService.setOptions(res.currentConfig);
-          this.ngOnInit();
         });
+        break;
+      case "options":
+        this.dialog
+          .open(RecOptionsDialogComponent, {
+            data: { config: this.authService.getFullConfig() }
+          })
+          .afterClosed()
+          .toPromise()
+          .then(res => {
+            this.authService.setOptions(res.currentConfig);
+            this.ngOnInit();
+          });
         break;
       case "qr":
         this.router.navigate(["/createqr"]);
         break;
     }
   }
-
 
   changedOptions() {
     this.options.api.optionsChanged();

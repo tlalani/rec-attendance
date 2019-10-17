@@ -47,6 +47,9 @@ import { ToolbarComponent } from "./toolbar/toolbar.component";
 import { ChartsComponent } from "./charts/charts.component";
 import { RecOptionsDialogComponent } from "./rec-options-dialog/rec-options-dialog.component";
 import { AuthService } from "./auth.service";
+import { EditRosterComponent } from "./edit-roster/edit-roster.component";
+import { AddStudentsDialogComponent } from "./add-students-dialog/add-students-dialog.component";
+import { RosterTableComponent } from "./edit-roster/roster-table/roster-table.component";
 @NgModule({
   declarations: [
     AppComponent,
@@ -61,7 +64,10 @@ import { AuthService } from "./auth.service";
     ManualQrComponent,
     ToolbarComponent,
     ChartsComponent,
-    RecOptionsDialogComponent
+    RecOptionsDialogComponent,
+    EditRosterComponent,
+    AddStudentsDialogComponent,
+    RosterTableComponent
   ],
   imports: [
     BrowserModule,
@@ -104,6 +110,12 @@ import { AuthService } from "./auth.service";
     AuthService
   ],
   bootstrap: [AppComponent],
-  entryComponents: [ChartsComponent, RecOptionsDialogComponent]
+  entryComponents: [
+    ChartsComponent,
+    RecOptionsDialogComponent,
+    EditRosterComponent,
+    AddStudentsDialogComponent,
+    SubmitDialogComponent
+  ]
 })
 export class AppModule {}

@@ -1,0 +1,16 @@
+<div class="container">
+  <mat-tab-group *ngIf="!this.loading; else loader">
+    <ng-container *ngFor="let grade of result; let i = index">
+      <mat-tab *ngIf="grade.length > 0" [label]="getTabLabel(i)">
+        <app-roster-table
+          class="table"
+          [dataSource]="grade"
+          (changes)="handleChanges($event)"
+        ></app-roster-table>
+      </mat-tab>
+    </ng-container>
+  </mat-tab-group>
+  <ng-template #loader>
+    <mat-spinner style="position: relative; margin: 0 auto;"> </mat-spinner>
+  </ng-template>
+</div>

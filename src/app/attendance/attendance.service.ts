@@ -221,4 +221,33 @@ export class AttendanceService {
 
     this.db.object(queryString).set(obj);
   }
+
+  sendToRoster(person, schoolYear, config) {
+    let shift = config.shift.replace(", ", "/");
+    let queryString =
+      "REC/" +
+      config.center +
+      "/" +
+      config.class +
+      "/Shifts/" +
+      shift +
+      "/People/" +
+      schoolYear +
+      "/" +
+      person.Role +
+      "/";
+    if (person.Grade) {
+      queryString += person.Grade + "/";
+    }
+    return this.db
+      .object(queryString)
+      .valueChanges()
+      .pipe(first())
+      .toPromise()
+      .then((res: any[]) => {
+        res.push(person.Name);
+        console.log(res);
+        this.db.object(queryString).set(res);
+      });
+  }
 }

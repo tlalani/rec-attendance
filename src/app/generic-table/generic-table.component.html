@@ -1,11 +1,11 @@
-<mat-table [dataSource]="this.dataSource">
+<mat-table class="table" [dataSource]="this.dataSource">
   <ng-container
     *ngFor="let c of colNames; let i = index"
     [matColumnDef]="displayedColumns[i]"
   >
     <mat-header-cell *matHeaderCellDef> {{ c }} </mat-header-cell>
-    <mat-cell *matCellDef="let student">
-      {{ student[i] }}
+    <mat-cell *matCellDef="let item">
+      {{ item[c] }}
     </mat-cell>
   </ng-container>
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

@@ -1,0 +1,34 @@
+<div class="form-container">
+  <mat-form-field fxFlex="30">
+    <mat-label>Role</mat-label>
+    <mat-select [(ngModel)]="person.Role">
+      <mat-option *ngFor="let role of roles" [value]="role">
+        {{ role }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field fxFlex="30">
+    <mat-label>Name</mat-label>
+    <input matInput [(ngModel)]="person.Name" />
+  </mat-form-field>
+  <mat-form-field fxFlex="30">
+    <mat-label>Grade</mat-label>
+    <mat-select [(ngModel)]="person.Grade" [disabled]="!hasGrade(person)">
+      <mat-option *ngFor="let grade of grades" [value]="grade">
+        {{ grade }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <button mat-icon-button (click)="submit()">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>
+<div>
+  <div *ngFor="let person of result; let i = index">
+    <p fxFlex="95%">
+      {{ print(person) }}
+    </p>
+    <button mat-icon-button (click)="deletePerson(i)">x</button>
+  </div>
+</div>
+<button mat-stroked-button color="primary" (click)="closeDialog()">Save</button>

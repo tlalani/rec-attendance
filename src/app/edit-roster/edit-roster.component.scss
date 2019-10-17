@@ -1,0 +1,12 @@
+::ng-deep .mat-tab-label,
+.mat-tab-label-active {
+  min-width: 0px !important;
+  padding: 2px 10px !important;
+  margin: 0px !important;
+}
+
+app-roster-table {
+  ::ng-deep .mat-header-row {
+    min-height: 45px !important;
+  }
+}

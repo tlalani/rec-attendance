@@ -1,0 +1,39 @@
+<button
+  class="button"
+  matTooltip="Add People to Roster"
+  mat-icon-button
+  color="primary"
+  (click)="openDialog()"
+>
+  <mat-icon>add</mat-icon>
+</button>
+<button
+  class="button"
+  matTooltip="Delete Selected People"
+  mat-icon-button
+  color="primary"
+  (click)="confirm()"
+>
+  <mat-icon>delete</mat-icon>
+</button>
+<mat-table class="table" [dataSource]="this.dataSource">
+  <ng-container matColumnDef="select">
+    <mat-header-cell *matHeaderCellDef>
+      Select
+    </mat-header-cell>
+    <mat-cell mat-cell *matCellDef="let row">
+      <mat-checkbox color="primary" (change)="handleCheck($event, row)">
+      </mat-checkbox>
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+    <mat-cell *matCellDef="let person">
+      {{ person.Name }}
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+</mat-table>

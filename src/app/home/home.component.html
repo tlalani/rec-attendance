@@ -6,14 +6,10 @@
     class="mat-elevation-z3"
   >
     <div class="bodys">
-      <!-- <mat-tab-group *ngIf="item.headers">
-        <mat-tab *ngFor="let c of item.headers" [label]="c.label">
-          <ng-container *ngComponentOutlet="c.component"></ng-container>
-        </mat-tab>
-      </mat-tab-group> -->
-      <div>
-        <ng-container *ngComponentOutlet="item.component"></ng-container>
-      </div>
+      <ng-container
+        class="comp"
+        *ngComponentOutlet="item.component"
+      ></ng-container>
     </div>
   </gridster-item>
 </gridster>
