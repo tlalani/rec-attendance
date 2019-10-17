@@ -9,11 +9,13 @@ import { Person } from "src/constants";
 })
 export class SubmitDialogComponent {
   @Output() response;
-  @Input() message;
+  public message;
   constructor(
     public dialogRef: MatDialogRef<SubmitDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
-  ) {}
+  ) {
+    this.message = this.data.message;
+  }
 
   public closeDialog(i: number) {
     this.dialogRef.close(i);

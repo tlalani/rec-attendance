@@ -29,7 +29,13 @@ export class RosterTableComponent implements OnInit {
 
   confirm() {
     this.dialog
-      .open(SubmitDialogComponent, { width: "500px" })
+      .open(SubmitDialogComponent, {
+        width: "500px",
+        data: {
+          message:
+            "Are you sure you want to delete the selected people from your roster?"
+        }
+      })
       .afterClosed()
       .toPromise()
       .then(res => {
