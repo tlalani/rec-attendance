@@ -10,7 +10,7 @@
     <mat-label>Center</mat-label>
     <mat-select
       (selectionChange)="onChange(0)"
-      [(ngModel)]="currentConfig.center"
+      [(ngModel)]="currentConfig.re_center"
     >
       <mat-option *ngFor="let center of centers" [value]="center">
         {{ center }}
@@ -22,8 +22,8 @@
     <mat-label>Class</mat-label>
     <mat-select
       (selectionChange)="onChange(1)"
-      [(ngModel)]="currentConfig.class"
-      [disabled]="!currentConfig.center"
+      [(ngModel)]="currentConfig.re_class"
+      [disabled]="!currentConfig.re_center"
     >
       <mat-option *ngFor="let class of classes" [value]="class">
         {{ class }}
@@ -35,8 +35,8 @@
     <mat-label>Shift</mat-label>
     <mat-select
       (selectionChange)="onChange(2)"
-      [(ngModel)]="currentConfig.shift"
-      [disabled]="!currentConfig.class"
+      [(ngModel)]="currentConfig.re_shift"
+      [disabled]="!currentConfig.re_class"
     >
       <mat-option *ngFor="let shift of shifts" [value]="shift">
         {{ shift }}

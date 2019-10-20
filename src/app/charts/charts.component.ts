@@ -24,12 +24,7 @@ export class ChartsComponent implements OnInit, AfterViewInit {
   public selectedRole: string = "Student";
   public currentDate: Date;
   public schoolYear: string;
-  public people = {
-    student: <PersonDTO[][]>[],
-    teacher: <PersonDTO[][]>[],
-    management: <PersonDTO[][]>[],
-    support: <PersonDTO[][]>[]
-  };
+  public people: any = {};
   public currentData: any;
   public data = {
     datasets: [
@@ -104,18 +99,16 @@ export class ChartsComponent implements OnInit, AfterViewInit {
       });
   }
 
-  public queryAttendanceFormatted(currentData = null) {
+  async queryAttendanceFormatted(currentData?) {
     if (currentData) {
-      let currList = [];
-      let role = "";
-      if (this.selectedRole === Roles.Intern) role = "support";
-      else role = this.selectedRole.toLowerCase();
-      currList = this.addAbsentPeople(currentData[role], this.people[role]);
-      return new Promise((resolve, reject) => {
-        resolve(currList);
-      });
+      let currList = {};
+      currList = this.addAbsentPeople(
+        currentData[this.selectedRole],
+        this.people[this.selectedRole]
+      );
+      return currList;
     } else {
-      return this.attendanceService
+      return await this.attendanceService
         .queryAttendanceForSpecificDayFormatted(
           this.currentDate,
           this.authService.getCurrentConfig()
@@ -123,11 +116,8 @@ export class ChartsComponent implements OnInit, AfterViewInit {
         .then(res => {
           if (res) {
             this.currentData = res;
-            let currList = [];
-            let role = "";
-            if (this.selectedRole === Roles.Intern) role = "support";
-            else role = this.selectedRole.toLowerCase();
-            console.log(this.people);
+            let currList = {};
+            let role = this.selectedRole;
             currList = this.addAbsentPeople(res[role], this.people[role]);
             return currList;
           }
@@ -135,25 +125,24 @@ export class ChartsComponent implements OnInit, AfterViewInit {
     }
   }
   makeFullQuery() {
-    this.getPeopleFormatted().then(result => {
-      if (result) {
-        this.people.student = result.student;
-        this.people.teacher = result.teacher;
-        this.people.management = result.management;
-        this.people.support = result.support;
-        this.queryAttendanceFormatted().then((result: Person[]) => {
+    this.getPeopleFormatted().then(res => {
+      if (res) {
+        this.people = res;
+        this.queryAttendanceFormatted().then((result: any) => {
           if (result) {
             let newData = [0, 0, 0, 0];
-            result.forEach(person => {
-              if (person.Status === Statuses.Absent) {
-                newData[0] += 1;
-              } else if (person.Status === Statuses.Tardy) {
-                newData[1] += 1;
-              } else if (person.Status === Statuses.Present) {
-                newData[2] += 1;
-              } else if (person.Status === Statuses.Excused) {
-                newData[3] += 1;
-              }
+            Object.keys(result).forEach(key => {
+              result[key].forEach(person => {
+                if (person.Status === Statuses.Absent) {
+                  newData[0] += 1;
+                } else if (person.Status === Statuses.Tardy) {
+                  newData[1] += 1;
+                } else if (person.Status === Statuses.Present) {
+                  newData[2] += 1;
+                } else if (person.Status === Statuses.Excused) {
+                  newData[3] += 1;
+                }
+              });
             });
             this.data.datasets[0].data = newData;
             this.myChart.update();
@@ -177,49 +166,50 @@ export class ChartsComponent implements OnInit, AfterViewInit {
   }
 
   onChange() {
-    this.queryAttendanceFormatted(this.currentData).then((result: Person[]) => {
+    this.queryAttendanceFormatted().then((result: any) => {
       if (result) {
         let newData = [0, 0, 0, 0];
-        result.forEach(person => {
-          if (!person.Status) {
-            person.setStatus();
-          }
-          if (person.Status === Statuses.Absent) {
-            newData[0] += 1;
-          } else if (person.Status === Statuses.Tardy) {
-            newData[1] += 1;
-          } else if (person.Status === Statuses.Present) {
-            newData[2] += 1;
-          } else if (person.Status === Statuses.Excused) {
-            newData[3] += 1;
-          }
+        Object.keys(result).forEach(key => {
+          result[key].forEach(person => {
+            if (person.Status === Statuses.Absent) {
+              newData[0] += 1;
+            } else if (person.Status === Statuses.Tardy) {
+              newData[1] += 1;
+            } else if (person.Status === Statuses.Present) {
+              newData[2] += 1;
+            } else if (person.Status === Statuses.Excused) {
+              newData[3] += 1;
+            }
+          });
         });
         this.data.datasets[0].data = newData;
         this.myChart.update();
       } else {
         this.data.datasets[0].data = [];
+        console.error("No People Found On Selected Date");
       }
     });
   }
 
-  addAbsentPeople(currList, peopleList) {
-    let currListCopy = [];
-    for (let i = 0; i < currList.length; i++) {
-      if (currList[i].length > 0) {
-        for (let personInGrade of peopleList[i]) {
-          let contains = false;
-          currList[i].forEach(personPresent => {
+  addAbsentPeople(currObj, peopleObj) {
+    let currObjCopy = {};
+    Object.keys(peopleObj).forEach(key => {
+      if (currObj[key].length > 0) {
+        currObjCopy[key] = [];
+        let contains = false;
+        for (let personInGrade of peopleObj[key]) {
+          currObj[key].forEach(personPresent => {
             if (personInGrade.equals(personPresent)) {
-              currListCopy.push(personPresent);
+              currObjCopy[key].push(personPresent);
               contains = true;
             }
           });
           if (!contains) {
-            currListCopy.push(new Person(personInGrade));
+            currObjCopy[key].push(new Person(personInGrade));
           }
         }
       }
-    }
-    return currListCopy;
+    });
+    return currObjCopy;
   }
 }

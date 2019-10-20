@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { MatDatepickerInputEvent, MatDialog } from "@angular/material";
 import { AttendanceService } from "./attendance.service";
 import { Angular5Csv } from "angular5-csv/dist/Angular5-csv";
@@ -10,15 +10,12 @@ import {
   Mgmt,
   pushToInnerList,
   Roles,
-  getAppRole,
-  makePeopleObject,
   getDay,
-  Days
+  Days,
+  isObjEmpty
 } from "src/constants";
 import { formatDate } from "@angular/common";
 import { AuthService } from "../auth.service";
-import { RecOptionsDialogComponent } from "../rec-options-dialog/rec-options-dialog.component";
-import { first } from "rxjs/operators";
 import { Router } from "@angular/router";
 @Component({
   selector: "app-attendance",
@@ -29,9 +26,9 @@ export class AttendanceComponent implements OnInit {
   public result: any[] = [];
   public reasons = ReasonsArray;
   public currentDate: Date;
-  public people = makePeopleObject();
+  public people: any;
   public loading: boolean = false;
-  public grades = Grades;
+  public grades;
   public schoolYear: string;
   public mgmtroles = Object.keys(Mgmt);
   public centers: string[];
@@ -40,20 +37,15 @@ export class AttendanceComponent implements OnInit {
   currentConfig: any = {};
   constructor(
     private attendanceService: AttendanceService,
-    private dialog: MatDialog,
-    private router: Router,
     private authService: AuthService
   ) {}
 
   ngOnInit() {
-    // setTimeout(() => {
-    //   this.loading = false;
-    //   this.result = makeSampleData();
-    // }, 2000);
     this.getCurrentConfig();
+    this.grades = Grades[this.currentConfig.re_class];
     this.loading = true;
     let date = new Date();
-    let dayOfREC = this.currentConfig.shift.split(", ")[0];
+    let dayOfREC = this.currentConfig.re_shift.split(", ")[0];
     date = getDay(date, Days[dayOfREC]);
     this.currentDate = date;
     this.schoolYear = getSchoolYearFromDate(date);
@@ -76,10 +68,7 @@ export class AttendanceComponent implements OnInit {
       .getPeopleFormatted(schoolYear, this.currentConfig)
       .then(result => {
         if (result) {
-          this.people.student = result.student;
-          this.people.management = result.management;
-          this.people.teacher = result.teacher;
-          this.people.support = result.support;
+          this.people = result;
         }
       });
   }
@@ -99,40 +88,42 @@ export class AttendanceComponent implements OnInit {
       )
       .then(totalResult => {
         if (totalResult) {
-          Object.keys(totalResult).forEach(role => {
-            let result = totalResult[role];
-            let roleFound = getAppRole(role);
-            if (result.length > 0) {
-              for (let i = 0; i < this.people[role].length; i++) {
-                for (let personInGrade of this.people[role][i]) {
-                  personInGrade.Role = roleFound;
-                  if (result[i]) {
+          Object.keys(this.people).forEach(role => {
+            if (!isObjEmpty(totalResult[role])) {
+              Object.keys(this.people[role]).forEach(key => {
+                for (let personInGrade of this.people[role][key]) {
+                  personInGrade.Role = role;
+                  if (totalResult[role][key]) {
                     let contains = false;
-                    result[i].forEach(personPresent => {
+                    totalResult[role][key].forEach(personPresent => {
                       if (personInGrade.equals(personPresent)) contains = true;
                     });
                     if (!contains) {
-                      pushToInnerList(result, i, new Person(personInGrade));
+                      totalResult[role][key].push(new Person(personInGrade));
                     }
                   } else {
-                    pushToInnerList(result, i, new Person(personInGrade));
+                    totalResult[role][key] = [];
+                    this.people[role][key].forEach(person => {
+                      let p = new Person(person);
+                      p.editable = true;
+                      p.editing = false;
+                      totalResult[role][key].push(p);
+                    });
                   }
                 }
-              }
-            } else {
-              for (let i = 0; i < this.people[role].length; i++) {
-                this.people[role][i].forEach(person => {
-                  person.Role = roleFound;
-                  pushToInnerList(result, i, new Person(person));
-                });
-              }
-            }
-            for (let i = 0; i < result.length; i++) {
-              let res = result[i];
-              res.map((item: Person) => {
-                item.editable = true;
-                item.editing = false;
               });
+            } else {
+              Object.keys(this.people[role]).forEach(key => {
+                this.people[role][key].forEach(person => {
+                  let p = new Person(person);
+                  p.editable = true;
+                  p.editing = false;
+                  totalResult[role][key].push(new Person(person));
+                });
+              });
+            }
+            Object.keys(totalResult[role]).forEach(key => {
+              let res = totalResult[role][key];
               res.sort((a, b) => {
                 if (a.Name > b.Name) {
                   return 1;
@@ -140,19 +131,18 @@ export class AttendanceComponent implements OnInit {
                   return -1;
                 }
               });
-              if (res.length > 0) {
-                if (
-                  roleFound === Roles.Teacher ||
-                  roleFound === Roles.Student
-                ) {
-                  res.forEach(item => {
-                    pushToInnerList(this.result, i, item);
-                  });
+              res.forEach(item => {
+                if (this.grades.indexOf(key) !== -1) {
+                  pushToInnerList(this.result, this.grades.indexOf(key), item);
                 } else {
-                  this.result.push(res);
+                  pushToInnerList(
+                    this.result,
+                    this.grades.length + this.mgmtroles.indexOf(role),
+                    item
+                  );
                 }
-              }
-            }
+              });
+            });
           });
         }
         this.loading = false;
@@ -212,9 +202,10 @@ export class AttendanceComponent implements OnInit {
   }
 
   public saveEdits(student: Person) {
-    // const res = this.attendanceService.sendToDatabase(
-    //   this.currentDate,
-    //   student
-    // );
+    const res = this.attendanceService.sendToDatabase(
+      this.currentDate,
+      student,
+      this.currentConfig
+    );
   }
 }

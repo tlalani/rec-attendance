@@ -8,7 +8,8 @@ import {
   PersonDTO,
   pushToInnerList,
   getArray,
-  Statuses
+  Statuses,
+  Grades
 } from "src/constants";
 import { getSchoolYearFromDate } from "src/constants";
 import { formatDate } from "@angular/common";
@@ -29,12 +30,12 @@ export class AttendanceService {
 
   public getPeople(schoolYear, config) {
     let cc = config;
-    let shift = cc.shift.replace(", ", "/");
+    let shift = cc.re_shift.replace(", ", "/");
     const queryString =
       "REC/" +
-      cc.center +
+      cc.re_center +
       "/" +
-      cc.class +
+      cc.re_class +
       "/Shifts/" +
       shift +
       "/People/" +
@@ -47,66 +48,51 @@ export class AttendanceService {
   }
 
   public getPeopleFormatted(schoolYear, config) {
-    let student: PersonDTO[][] = [];
-    let teacher: PersonDTO[][] = [];
-    let management: PersonDTO[][] = [];
-    let support: PersonDTO[][] = [];
+    let result: any = {};
     return this.getPeople(schoolYear, config)
       .then(roles => {
         Object.entries(roles).forEach(([role, people]) => {
-          if (role === Roles.Student || role === Roles.Teacher) {
+          let list: any = {};
+          if (Grades[config.re_class].indexOf(Object.keys(people)[0]) !== -1) {
             Object.entries(people).forEach(([gradeStr, peopleInGrade]) => {
-              let grade = getGradeFromString(gradeStr);
+              list[gradeStr] = [];
               Object.entries(peopleInGrade).forEach(person => {
-                if (role === Roles.Teacher) {
-                  pushToInnerList(
-                    teacher,
-                    grade,
-                    new PersonDTO({ Name: person[1], Grade: gradeStr })
-                  );
-                } else {
-                  pushToInnerList(
-                    student,
-                    grade,
-                    new PersonDTO({ Name: person[1], Grade: gradeStr })
-                  );
-                }
+                list[gradeStr].push(
+                  new PersonDTO({
+                    Name: person[1],
+                    Grade: gradeStr,
+                    Role: role
+                  })
+                );
               });
             });
           } else {
+            list.people = [];
             Object.entries(people).forEach(person => {
-              if (role === Roles.Management) {
-                pushToInnerList(
-                  management,
-                  0,
-                  new PersonDTO({ Name: person[1], Grade: null })
-                );
-              } else {
-                pushToInnerList(
-                  support,
-                  0,
-                  new PersonDTO({ Name: person[1], Grade: null })
-                );
-              }
+              list.people.push(
+                new PersonDTO({ Name: person[1], Grade: null, Role: role })
+              );
             });
           }
+          result[role] = list;
         });
-        return { student, teacher, management, support };
+        return result;
       })
       .catch(error => {
         console.log(error);
         console.error("People doesn't exist.");
+        return null;
       });
   }
 
   public queryAttendanceForSpecificDay(date, config) {
     const schoolYear = getSchoolYearFromDate(date);
-    let shift = config.shift.replace(", ", "/");
+    let shift = config.re_shift.replace(", ", "/");
     const queryString =
       "REC/" +
-      config.center +
+      config.re_center +
       "/" +
-      config.class +
+      config.re_class +
       "/Shifts/" +
       shift +
       "/Dates/" +
@@ -121,35 +107,15 @@ export class AttendanceService {
   }
 
   public queryAttendanceForSpecificDayFormatted(date: Date, config) {
-    let management: Person[][] = [];
-    let support: Person[][] = [];
-    let student: Person[][] = [];
-    let teacher: Person[][] = [];
+    let result: any = {};
     return this.queryAttendanceForSpecificDay(date, config)
       .then(items => {
         if (items) {
           Object.entries(items).forEach(([role, snapShot]) => {
-            let r = getArray(snapShot, role);
-            //console.log(role, r);
-            switch (role) {
-              case Roles.Student:
-                r.forEach(classroom => {
-                  student.push(Array.from(classroom));
-                });
-                break;
-              case Roles.Teacher:
-                r.forEach(classroom => {
-                  teacher.push(Array.from(classroom));
-                });
-                break;
-              case Roles.Management:
-                management[0] = Array.from(r[0]);
-                break;
-              case Roles.Intern:
-                support[0] = Array.from(r[0]);
-            }
+            let peoplePresent = getArray(snapShot, role, config.re_class);
+            result[role] = peoplePresent;
           });
-          return { student, teacher, management, support };
+          return result;
         }
       })
       .catch(error => {
@@ -165,15 +131,15 @@ export class AttendanceService {
 
   public sendToDatabase(date: Date, person: Person, config: any) {
     const schoolYear = getSchoolYearFromDate(date);
-    let shift = config.shift.replace(", ", "/");
+    let shift = config.re_shift.replace(", ", "/");
     let queryString =
       "REC/" +
-      config.center +
+      config.re_center +
       "/" +
-      config.class +
+      config.re_class +
       "/Shifts/" +
       shift +
-      "/Dates" +
+      "/Dates/" +
       schoolYear +
       "/" +
       formatDate(date, "MMM d, y", "en-US");
@@ -220,5 +186,67 @@ export class AttendanceService {
     }
 
     this.db.object(queryString).set(obj);
+  }
+
+  sendToRoster(person, schoolYear, config) {
+    let shift = config.re_shift.replace(", ", "/");
+    let queryString =
+      "REC/" +
+      config.re_center +
+      "/" +
+      config.re_class +
+      "/Shifts/" +
+      shift +
+      "/People/" +
+      schoolYear +
+      "/" +
+      person.Role +
+      "/";
+    if (person.Grade) {
+      queryString += person.Grade + "/";
+    }
+    return this.db
+      .object(queryString)
+      .valueChanges()
+      .pipe(first())
+      .toPromise()
+      .then((res: any[]) => {
+        if (res) {
+          res.push(person.Name);
+          this.db.object(queryString).set(res);
+        } else {
+          this.db.object(queryString).set([person.Name]);
+        }
+      });
+  }
+
+  deleteFromRoster(person, schoolYear, config) {
+    let shift = config.re_shift.replace(", ", "/");
+    let queryString =
+      "REC/" +
+      config.re_center +
+      "/" +
+      config.re_class +
+      "/Shifts/" +
+      shift +
+      "/People/" +
+      schoolYear +
+      "/" +
+      person.Role +
+      "/";
+    if (person.Grade) {
+      queryString += person.Grade + "/";
+    }
+    console.log("Person: ", person, "queryString: ", queryString);
+    return this.db
+      .object(queryString)
+      .valueChanges()
+      .pipe(first())
+      .toPromise()
+      .then((res: any[]) => {
+        let index = res.indexOf(person.Name);
+        res.splice(index, 1);
+        this.db.object(queryString).set(res);
+      });
   }
 }

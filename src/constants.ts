@@ -19,14 +19,25 @@ export const Days = {
   Saturday: 6
 };
 
-export const Grades = [
-  "1st Grade",
-  "2nd Grade",
-  "3rd Grade",
-  "4th Grade",
-  "5th Grade",
-  "6th Grade"
-];
+export const Grades = {
+  PrePrimary: ["PK", "KG"],
+  Primary: [
+    "1st Grade",
+    "2nd Grade",
+    "3rd Grade",
+    "4th Grade",
+    "5th Grade",
+    "6th Grade"
+  ],
+  Secondary: [
+    "7th Grade",
+    "8th Grade",
+    "9th Grade",
+    "10th Grade",
+    "11th Grade",
+    "12th Grade"
+  ]
+};
 
 export const Type = {
   Text: "text",
@@ -36,6 +47,7 @@ export const Type = {
 export const Roles = {
   Student: "Student",
   Teacher: "Teacher",
+  TA: "TA",
   Management: "Management",
   Intern: "Intern"
 };
@@ -87,9 +99,9 @@ export const contactStatuses = {
   Innacurate: "I"
 };
 
-export function getGradeFromString(item: string) {
+export function getGradeFromString(item: string, re_class) {
   if (!Number.isNaN(parseInt(item))) return parseInt(item.charAt(0)) - 1;
-  else return Object.keys(Roles).indexOf(item) + Grades.length - 1;
+  else return Object.keys(Roles).indexOf(item) + Grades[re_class].length - 1;
 }
 
 export class Person {
@@ -218,36 +230,26 @@ export class Person {
   }
 }
 
-export function getArray(snapshot, role) {
-  let result: Set<Person>[] = [];
-  if (role === "Student" || role === "Teacher") {
+export function getArray(snapshot, role, re_class) {
+  let result: any = {};
+  if (Grades[re_class].indexOf(Object.keys(snapshot)[0]) !== -1) {
     Object.entries(snapshot).forEach(([gradeStr, peopleInGrade]) => {
-      let grade = getGradeFromString(gradeStr);
       if (peopleInGrade) {
         //for each person in the grade add them to their grade's list.
-        Object.entries(peopleInGrade).forEach(person => {
-          let name = person[0];
-          let p = new Person(person[1]);
-          p.Name = name;
-          p.Grade = gradeStr;
-          p.Role = role;
-          p.setStatus();
-          while (!result[grade]) {
-            result.push(new Set());
-          }
-          result[grade].add(p);
+        result[gradeStr] = [];
+        Object.entries(peopleInGrade).forEach(([personName, person]) => {
+          let a = new Person(person);
+          a.Name = personName;
+          result[gradeStr].push(a);
         });
       }
     });
   } else {
-    result.push(new Set());
-    Object.entries(snapshot).forEach(person => {
-      let name = person[0];
-      let p = new Person(person[1]);
-      p.Name = name;
-      p.setStatus();
-      p.Role = role;
-      result[0].add(p);
+    result.people = [];
+    Object.entries(snapshot).forEach(([personName, person]) => {
+      let p = new Person(person);
+      p.Name = personName;
+      result.people.push(p);
     });
   }
   return result;
@@ -335,78 +337,6 @@ export function getSchoolYearFromDate(date: Date) {
   }
 }
 
-export const ELEMENT_DATA = [
-  Person.makeP({
-    Name: "Hydrogen",
-    Grade: "1st Grade",
-    Status: "P",
-    Reason: "No Reason"
-  }),
-  Person.makeP({
-    Name: "Helium",
-    Grade: "1st Grade",
-    Status: "P",
-    Reason: "Reasons Unknown"
-  }),
-  Person.makeP({
-    Name: "Lithium",
-    Grade: "2nd Grade",
-    Status: "A",
-    Reason: "Has a Reason"
-  }),
-  Person.makeP({
-    Name: "Beryllium",
-    Grade: "2nd Grade",
-    Status: "T",
-    Reason: "Might Be A Reason"
-  }),
-  Person.makeP({
-    Name: "Boron",
-    Grade: "3rd Grade",
-    Status: "A",
-    Reason: "What's a Reason?"
-  }),
-  Person.makeP({
-    Name: "Carbon",
-    Grade: "3rd Grade",
-    Status: "P",
-    Reason: "Transportation"
-  }),
-  Person.makeP({
-    Name: "Nitrogen",
-    Grade: "5th Grade",
-    Status: "T",
-    Reason: "Traveling"
-  }),
-  Person.makeP({
-    Name: "Oxygen",
-    Grade: "5th Grade",
-    Status: "T",
-    Reason: "Trying to find a Reason"
-  }),
-  Person.makeP({
-    Name: "Fluorine",
-    Grade: "6th Grade",
-    Status: "A",
-    Reason: "Flying away from me?"
-  }),
-  Person.makeP({
-    Name: "Neon",
-    Grade: "6th Grade",
-    Status: "P",
-    Reason: "Never had a Reason!"
-  })
-];
-
-export function makeSampleData() {
-  let result: Person[][] = [[], [], [], [], [], []];
-  ELEMENT_DATA.forEach((person: Person) => {
-    let index = getGradeFromString(person.Grade);
-    result[index].push(person);
-  });
-  return result;
-}
-
 export const NUMBERS: Phone[] = [
   Phone.makeP({
     label: "Mother Cell",
@@ -485,14 +415,13 @@ export function compareNames(personA, personB) {
 }
 
 export function pushToInnerList(list: any[][], index: number, item: any) {
-  if (list[index]) {
-    list[index].push(item);
-  } else {
+  if (!list[index]) {
     while (!list[index]) {
       list.push([]);
     }
-    list[index].push(item);
   }
+  if (Array.isArray(item)) item.forEach(listItem => list[index].push(listItem));
+  else list[index].push(item);
 }
 
 export function getAppRole(role: string) {

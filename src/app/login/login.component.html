@@ -60,7 +60,7 @@
       >
         <mat-form-field fxFlex="30%" color="accent" appearance="fill">
           <mat-select
-            [(ngModel)]="this.currentConfig.center"
+            [(ngModel)]="this.currentConfig.re_center"
             placeholder="Center"
             (selectionChange)="makeChange(0)"
           >
@@ -71,7 +71,7 @@
         </mat-form-field>
         <mat-form-field fxFlex="30%" color="accent" appearance="fill">
           <mat-select
-            [(ngModel)]="this.currentConfig.class"
+            [(ngModel)]="this.currentConfig.re_class"
             placeholder="Class"
             (selectionChange)="makeChange(1)"
           >
@@ -82,7 +82,7 @@
         </mat-form-field>
         <mat-form-field fxFlex="30%" color="accent" appearance="fill">
           <mat-select
-            [(ngModel)]="this.currentConfig.shift"
+            [(ngModel)]="this.currentConfig.re_shift"
             placeholder="Shifts"
             (selectionChange)="makeChange(2)"
           >
