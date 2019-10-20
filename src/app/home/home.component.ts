@@ -20,13 +20,16 @@ export class HomeComponent implements OnInit, AfterViewInit {
   public dashboard;
   public tabActive;
   public cookieValue: string;
+  public admin;
   constructor(
     private authService: AuthService,
     public router: Router,
     private tourService: TourService,
     private cookieService: CookieService,
     private dialog: MatDialog
-  ) {}
+  ) {
+    this.admin = this.authService.isAdmin;
+  }
 
   itemChange(item, itemComponent) {
     //console.info("itemChanged", item, itemComponent);

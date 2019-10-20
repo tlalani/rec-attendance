@@ -1,5 +1,5 @@
 <div class="form-container">
-  <mat-form-field fxFlex="30">
+  <mat-form-field>
     <mat-label>Role</mat-label>
     <mat-select [(ngModel)]="person.Role">
       <mat-option *ngFor="let role of roles" [value]="role">
@@ -7,11 +7,11 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
-  <mat-form-field fxFlex="30">
+  <mat-form-field>
     <mat-label>Name</mat-label>
     <input matInput [(ngModel)]="person.Name" />
   </mat-form-field>
-  <mat-form-field fxFlex="30">
+  <mat-form-field>
     <mat-label>Grade</mat-label>
     <mat-select [(ngModel)]="person.Grade" [disabled]="!hasGrade(person)">
       <mat-option *ngFor="let grade of grades" [value]="grade">
@@ -19,8 +19,13 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
-  <button mat-icon-button (click)="submit()">
-    <mat-icon>add</mat-icon>
+  <button
+    color="primary"
+    mat-stroked-button
+    [disabled]="!isComplete()"
+    (click)="submit()"
+  >
+    Add
   </button>
 </div>
 <div>
@@ -33,4 +38,19 @@
     </button>
   </div>
 </div>
-<button mat-stroked-button color="primary" (click)="closeDialog()">Save</button>
+<button
+  mat-raised-button
+  color="primary"
+  [disabled]="this.result.length < 1"
+  (click)="closeDialog(true)"
+>
+  Save
+</button>
+<button
+  style="float:right"
+  mat-raised-button
+  color="warn"
+  (click)="closeDialog(false)"
+>
+  Cancel
+</button>

@@ -1,16 +1,42 @@
 <div class="container">
-  <mat-tab-group *ngIf="!this.loading; else loader">
-    <ng-container *ngFor="let grade of result; let i = index">
-      <mat-tab *ngIf="grade.length > 0" [label]="getTabLabel(i)">
-        <app-roster-table
-          class="table"
-          [dataSource]="grade"
-          (changes)="handleChanges($event)"
-        ></app-roster-table>
-      </mat-tab>
-    </ng-container>
-  </mat-tab-group>
+  <button
+    class="button"
+    matTooltip="Add People to Roster"
+    mat-icon-button
+    color="primary"
+    (click)="openDialog('add')"
+  >
+    <mat-icon>add</mat-icon>
+  </button>
+  <button
+    class="button"
+    matTooltip="Delete Selected People"
+    mat-icon-button
+    color="primary"
+    (click)="openDialog('delete')"
+  >
+    <mat-icon>delete</mat-icon>
+  </button>
+  <ng-container *ngIf="!this.loading; else loader">
+    <mat-tab-group *ngIf="this.result.length > 0; else notFound">
+      <ng-container *ngFor="let grade of this.result; let i = index">
+        <mat-tab *ngIf="grade.length > 0" [label]="getTabLabel(i)">
+          <app-roster-table
+            class="table"
+            [dataSource]="grade"
+            (changes)="handleChanges($event)"
+          ></app-roster-table>
+        </mat-tab>
+      </ng-container>
+    </mat-tab-group>
+  </ng-container>
   <ng-template #loader>
     <mat-spinner style="position: relative; margin: 0 auto;"> </mat-spinner>
+  </ng-template>
+  <ng-template #notFound>
+    <div>
+      We could not find a roster for your REC. You can add people to your roster
+      by clicking the "+" above.
+    </div>
   </ng-template>
 </div>

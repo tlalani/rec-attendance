@@ -3,6 +3,12 @@
 </header>
 <mat-dialog-content>
   {{ message }}
+  <mat-divider></mat-divider>
+  <app-generic-table
+    [dataSource]="toDelete"
+    [colNames]="colNames"
+    [displayedColumns]="displayedColumns"
+  ></app-generic-table>
 </mat-dialog-content>
 <mat-dialog-actions class="buttons right">
   <button mat-button color="warn" (click)="closeDialog(0)">

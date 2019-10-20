@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
-import { ELEMENT_DATA, Roles, Grades, PersonDTO } from "src/constants";
+import { Roles, PersonDTO } from "src/constants";
 
-import { QrCodeService } from "../qr-code/qr-code.service";
+import { QrCodeService } from "./qr-code/qr-code.service";
 import { Router } from "@angular/router";
 
 @Component({
@@ -62,7 +62,6 @@ export class QrCreatorComponent implements OnInit {
           }
         }
       });
-      console.log(this.result);
       this.fileUploaded = true;
       event.target.value = null;
     };

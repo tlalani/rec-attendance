@@ -4,7 +4,7 @@ import { LoginComponent } from "./login/login.component";
 import { HomeComponent } from "./home/home.component";
 import { AttendanceComponent } from "./attendance/attendance.component";
 import { QrCreatorComponent } from "./qr-creator/qr-creator.component";
-import { ManualQrComponent } from "./manual-qr/manual-qr.component";
+import { ManualQrComponent } from "./qr-creator/manual-qr/manual-qr.component";
 import { ChartsComponent } from "./charts/charts.component";
 import { EditRosterComponent } from "./edit-roster/edit-roster.component";
 const routes: Routes = [

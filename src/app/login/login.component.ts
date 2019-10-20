@@ -62,15 +62,14 @@ export class LoginComponent implements OnInit {
   public makeChange(type) {
     switch (type) {
       case 0:
-        this.classes = Object.keys(this.config[this.currentConfig.center]);
+        this.classes = Object.keys(this.config[this.currentConfig.re_center]);
         break;
       case 1:
-        this.shifts = this.config[this.currentConfig.center][
-          this.currentConfig.class
+        this.shifts = this.config[this.currentConfig.re_center][
+          this.currentConfig.re_class
         ];
         break;
       case 2:
-        console.log(this.currentConfig);
         this.authService.setOptions(this.currentConfig);
         break;
     }

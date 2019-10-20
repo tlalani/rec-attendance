@@ -37,13 +37,13 @@ import {
 } from "@angular/material";
 import { QrCreatorComponent } from "./qr-creator/qr-creator.component";
 import { SubmitDialogComponent } from "./submit-dialog/submit-dialog.component";
-import { AttendanceTableComponent } from "./attendance-table/attendance-table.component";
+import { AttendanceTableComponent } from "./attendance/attendance-table/attendance-table.component";
 import { GenericTableComponent } from "./generic-table/generic-table.component";
-import { QrCodeComponent } from "./qr-code/qr-code.component";
+import { QrCodeComponent } from "./qr-creator/qr-code/qr-code.component";
 import { ContactDialogComponent } from "./contact-dialog/contact-dialog.component";
 import { ContactInfoComponent } from "./contact-info/contact-info.component";
-import { ManualQrComponent } from "./manual-qr/manual-qr.component";
-import { ToolbarComponent } from "./toolbar/toolbar.component";
+import { ManualQrComponent } from "./qr-creator/manual-qr/manual-qr.component";
+import { ToolbarComponent } from "./home/toolbar/toolbar.component";
 import { ChartsComponent } from "./charts/charts.component";
 import { RecOptionsDialogComponent } from "./rec-options-dialog/rec-options-dialog.component";
 import { AuthService } from "./auth.service";

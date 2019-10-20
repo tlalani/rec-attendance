@@ -1,6 +1,6 @@
 import { Component, Inject, Output, Input } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
-import { Person } from "src/constants";
+import { Person, PersonDTO } from "src/constants";
 
 @Component({
   selector: "app-submit-dialog",
@@ -8,13 +8,16 @@ import { Person } from "src/constants";
   styleUrls: ["./submit-dialog.component.scss"]
 })
 export class SubmitDialogComponent {
-  @Output() response;
   public message;
+  public toDelete: PersonDTO[];
+  public displayedColumns = ["role", "name", "grade"];
+  public colNames = ["Role", "Name", "Grade"];
   constructor(
     public dialogRef: MatDialogRef<SubmitDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.message = this.data.message;
+    this.toDelete = this.data.deleting;
   }
 
   public closeDialog(i: number) {

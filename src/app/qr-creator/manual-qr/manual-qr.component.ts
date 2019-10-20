@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { PersonDTO, Roles, Grades } from "src/constants";
+import { AuthService } from "src/app/auth.service";
 
 @Component({
   selector: "app-manual-qr",
@@ -9,11 +10,14 @@ import { PersonDTO, Roles, Grades } from "src/constants";
 export class ManualQrComponent implements OnInit {
   public result: PersonDTO[] = [];
   public roles = Object.keys(Roles);
-  public grades = Grades;
+  public grades;
   public person: PersonDTO = new PersonDTO({ Name: null });
-  constructor() {}
+  constructor(private authService: AuthService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    let currentConfig = this.authService.getCurrentConfigFromStorage();
+    this.grades = Grades[currentConfig.re_class];
+  }
 
   isComplete() {
     return this.person.hasGrade()

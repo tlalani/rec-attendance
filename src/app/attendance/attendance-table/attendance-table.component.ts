@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
-import { ELEMENT_DATA, ReasonsArray, Person, Statuses } from "src/constants";
+import { ReasonsArray, Person, Statuses } from "src/constants";
 import { MatDialog } from "@angular/material";
-import { ContactDialogComponent } from "../contact-dialog/contact-dialog.component";
+import { ContactDialogComponent } from "../../contact-dialog/contact-dialog.component";
 
 @Component({
   selector: "app-attendance-table",

@@ -28,11 +28,11 @@ export class RecOptionsDialogComponent {
   public onChange(type: number) {
     switch (type) {
       case 0:
-        this.classes = Object.keys(this.config[this.currentConfig.center]);
+        this.classes = Object.keys(this.config[this.currentConfig.re_center]);
         break;
       case 1:
-        this.shifts = this.config[this.currentConfig.center][
-          this.currentConfig.class
+        this.shifts = this.config[this.currentConfig.re_center][
+          this.currentConfig.re_class
         ];
         break;
       case 2:

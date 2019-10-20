@@ -1,6 +1,6 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Inject } from "@angular/core";
 import { Roles, Grades, Person, PersonDTO } from "src/constants";
-import { MatDialogRef } from "@angular/material";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
 
 @Component({
   selector: "app-add-students-dialog",
@@ -9,12 +9,20 @@ import { MatDialogRef } from "@angular/material";
 })
 export class AddStudentsDialogComponent implements OnInit {
   public roles = Object.keys(Roles);
-  public grades = Grades;
+  public grades;
   public person: PersonDTO = new PersonDTO({});
   result: PersonDTO[] = [];
-  constructor(public dialogRef: MatDialogRef<AddStudentsDialogComponent>) {}
+  private re_class;
+  constructor(
+    public dialogRef: MatDialogRef<AddStudentsDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    this.re_class = data.re_class;
+  }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.grades = Grades[this.re_class];
+  }
 
   hasGrade() {
     return (
@@ -52,7 +60,11 @@ export class AddStudentsDialogComponent implements OnInit {
     this.result.splice(i, 1);
   }
 
-  closeDialog() {
-    this.dialogRef.close({ result: this.result });
+  closeDialog(hasResult) {
+    if (hasResult) {
+      this.dialogRef.close({ result: this.result });
+    } else {
+      this.dialogRef.close();
+    }
   }
 }

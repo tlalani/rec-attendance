@@ -1,4 +1,7 @@
-<app-toolbar (itemClicked)="handleToolbarClick($event)"></app-toolbar>
+<app-toolbar
+  [authState]="admin"
+  (itemClicked)="handleToolbarClick($event)"
+></app-toolbar>
 <gridster [options]="options" tourAnchor="start_off">
   <gridster-item
     [item]="item"
