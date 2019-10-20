@@ -26,7 +26,7 @@ export class AddStudentsDialogComponent implements OnInit {
   }
 
   hasGrade() {
-    return this.mgmt.indexOf(this.person.Role) === -1;
+    return this.person.Role && this.mgmt.indexOf(this.person.Role) === -1;
   }
 
   canBeAdded() {

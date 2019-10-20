@@ -99,7 +99,8 @@ export class AttendanceComponent implements OnInit {
                       if (personInGrade.equals(personPresent)) contains = true;
                     });
                     if (!contains) {
-                      totalResult[role][key].push(new Person(personInGrade));
+                      let p = new Person(personInGrade);
+                      totalResult[role][key].push(p);
                     }
                   } else {
                     totalResult[role][key] = [];
@@ -132,6 +133,7 @@ export class AttendanceComponent implements OnInit {
                 }
               });
               res.forEach(item => {
+                item.Role = role;
                 if (this.grades.indexOf(key) !== -1) {
                   pushToInnerList(this.result, this.grades.indexOf(key), item);
                 } else {
@@ -145,6 +147,7 @@ export class AttendanceComponent implements OnInit {
             });
           });
         }
+        console.log(this.result);
         this.loading = false;
       })
       .catch(error => {
