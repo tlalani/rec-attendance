@@ -10,9 +10,7 @@ export class ToolbarComponent implements OnInit {
   @Input() authState;
   constructor() {}
 
-  ngOnInit() {
-    console.log(this.authState);
-  }
+  ngOnInit() {}
 
   logout() {
     this.itemClicked.emit("logout");

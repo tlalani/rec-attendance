@@ -12,7 +12,8 @@ import {
   Roles,
   getDay,
   Days,
-  isObjEmpty
+  isObjEmpty,
+  PersonDTO
 } from "src/constants";
 import { formatDate } from "@angular/common";
 import { AuthService } from "../auth.service";
@@ -30,7 +31,7 @@ export class AttendanceComponent implements OnInit {
   public loading: boolean = false;
   public grades;
   public schoolYear: string;
-  public mgmtroles = Object.keys(Mgmt);
+  public roles = Object.keys(Roles);
   public centers: string[];
   public classes: string[];
   public shifts: string[];
@@ -137,9 +138,13 @@ export class AttendanceComponent implements OnInit {
                 if (this.grades.indexOf(key) !== -1) {
                   pushToInnerList(this.result, this.grades.indexOf(key), item);
                 } else {
+                  let i = this.roles.indexOf(role);
+                  //-3 because Student, Teacher, and TA all should have grades
+                  //+1 because Students are not one of the
+                  //roles we want to display
                   pushToInnerList(
                     this.result,
-                    this.grades.length + this.mgmtroles.indexOf(role),
+                    this.grades.length + i - 1,
                     item
                   );
                 }
@@ -147,7 +152,6 @@ export class AttendanceComponent implements OnInit {
             });
           });
         }
-        console.log(this.result);
         this.loading = false;
       })
       .catch(error => {
@@ -160,7 +164,8 @@ export class AttendanceComponent implements OnInit {
     if (index < this.grades.length) {
       return this.grades[index];
     } else {
-      return this.mgmtroles[index % this.mgmtroles.length];
+      let i = index - this.grades.length + 1;
+      return this.roles[i];
     }
   }
 

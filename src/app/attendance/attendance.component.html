@@ -27,11 +27,11 @@
     </button>
   </div>
   <mat-tab-group tourAnchor="attendance_tab">
-    <ng-container *ngFor="let grade of result; let i = index">
-      <mat-tab *ngIf="grade.length > 0" [label]="getTabLabel(i)">
+    <ng-container *ngFor="let people of result; let i = index">
+      <mat-tab *ngIf="people.length > 0" [label]="getTabLabel(i)">
         <div class="table">
           <app-attendance-table
-            [dataSource]="grade"
+            [dataSource]="people"
             [anchorTable]="i === 0"
             (changes)="saveEdits($event)"
           ></app-attendance-table>

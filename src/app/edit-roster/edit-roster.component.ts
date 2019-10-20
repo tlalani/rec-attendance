@@ -6,7 +6,8 @@ import {
   Grades,
   PersonDTO,
   Mgmt,
-  pushToInnerList
+  pushToInnerList,
+  Roles
 } from "src/constants";
 import { MatDialog } from "@angular/material";
 import { AddStudentsDialogComponent } from "../add-students-dialog/add-students-dialog.component";
@@ -23,6 +24,8 @@ export class EditRosterComponent implements OnInit {
   public loading: boolean = false;
   public selection: any[] = [];
   public currentConfig: any = {};
+  public roles = Object.keys(Roles);
+  public grades;
   constructor(
     private attendanceService: AttendanceService,
     private authService: AuthService,
@@ -35,7 +38,7 @@ export class EditRosterComponent implements OnInit {
     this.schoolYear = getSchoolYearFromDate(new Date());
     this.currentConfig = this.authService.getCurrentConfig();
     this.loading = true;
-    let grades = Grades[this.currentConfig.re_class];
+    this.grades = Grades[this.currentConfig.re_class];
     let mgmt = Object.keys(Mgmt);
     this.attendanceService
       .getPeopleFormatted(this.schoolYear, this.currentConfig)
@@ -44,15 +47,14 @@ export class EditRosterComponent implements OnInit {
           Object.keys(res).forEach(role => {
             Object.keys(res[role]).forEach(key => {
               let index;
-              if ((index = grades.indexOf(key)) !== -1) {
+              if ((index = this.grades.indexOf(key)) !== -1) {
                 pushToInnerList(this.result, index, res[role][key]);
               } else {
-                let index =
-                  mgmt.indexOf(role) !== -1
-                    ? mgmt.indexOf(role) + grades.length
-                    : -1;
-                if (index !== -1)
+                let index = this.roles.indexOf(role);
+                if (index !== -1) {
+                  index = this.grades.length + index - 1;
                   pushToInnerList(this.result, index, res[role][key]);
+                }
               }
             });
           });
@@ -67,7 +69,7 @@ export class EditRosterComponent implements OnInit {
     if (index < Grades[this.currentConfig.re_class].length) {
       return Grades[this.currentConfig.re_class][index];
     } else {
-      return Object.keys(Mgmt)[index % Object.keys(Mgmt).length];
+      return this.roles[index - this.grades.length + 1];
     }
   }
 
