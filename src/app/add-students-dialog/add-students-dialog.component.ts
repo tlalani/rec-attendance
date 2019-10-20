@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from "@angular/core";
-import { Roles, Grades, Person, PersonDTO } from "src/constants";
+import { Roles, Grades, Person, PersonDTO, Mgmt } from "src/constants";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
 
 @Component({
@@ -13,6 +13,7 @@ export class AddStudentsDialogComponent implements OnInit {
   public person: PersonDTO = new PersonDTO({});
   result: PersonDTO[] = [];
   private re_class;
+  public mgmt = Object.keys(Mgmt);
   constructor(
     public dialogRef: MatDialogRef<AddStudentsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
@@ -25,12 +26,10 @@ export class AddStudentsDialogComponent implements OnInit {
   }
 
   hasGrade() {
-    return (
-      this.person.Role === Roles.Student || this.person.Role === Roles.Teacher
-    );
+    return this.mgmt.indexOf(this.person.Role) === -1;
   }
 
-  isComplete() {
+  canBeAdded() {
     return (
       this.person.Role &&
       ((this.hasGrade() && this.person.Grade) || !this.hasGrade()) &&
@@ -40,10 +39,8 @@ export class AddStudentsDialogComponent implements OnInit {
   }
 
   submit() {
-    if (this.isComplete()) {
-      this.result.push(this.person);
-      this.person = new PersonDTO({});
-    }
+    this.result.push(this.person);
+    this.person = new PersonDTO({});
   }
 
   print(obj) {
@@ -56,7 +53,7 @@ export class AddStudentsDialogComponent implements OnInit {
     return s;
   }
 
-  deletePerson(i) {
+  undoAdd(i) {
     this.result.splice(i, 1);
   }
 
