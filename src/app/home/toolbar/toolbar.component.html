@@ -15,5 +15,8 @@
     <button (click)="changeOptions()" mat-menu-item>
       REC Options
     </button>
+    <button *ngIf="authState" (click)="addUsers()" mat-menu-item>
+      Add A User
+    </button>
   </mat-menu>
 </mat-toolbar>
