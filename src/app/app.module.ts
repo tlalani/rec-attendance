@@ -15,6 +15,7 @@ import { environment } from "./../environments/environment";
 import { TourMatMenuModule } from "ngx-tour-md-menu";
 import { CookieService } from "ngx-cookie-service";
 import { FlipModule } from "ngx-flip";
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from "ng-pick-datetime";
 import {
   MatCheckboxModule,
   MatDatepickerModule,
@@ -50,6 +51,8 @@ import { AuthService } from "./auth.service";
 import { EditRosterComponent } from "./edit-roster/edit-roster.component";
 import { AddStudentsDialogComponent } from "./add-students-dialog/add-students-dialog.component";
 import { RosterTableComponent } from "./edit-roster/roster-table/roster-table.component";
+import { AdminDialogComponent } from "./admin-dialog/admin-dialog.component";
+import { ResetPasswordComponent } from "./reset-password/reset-password.component";
 @NgModule({
   declarations: [
     AppComponent,
@@ -67,7 +70,9 @@ import { RosterTableComponent } from "./edit-roster/roster-table/roster-table.co
     RecOptionsDialogComponent,
     EditRosterComponent,
     AddStudentsDialogComponent,
-    RosterTableComponent
+    RosterTableComponent,
+    AdminDialogComponent,
+    ResetPasswordComponent
   ],
   imports: [
     BrowserModule,
@@ -101,7 +106,9 @@ import { RosterTableComponent } from "./edit-roster/roster-table/roster-table.co
     MatTooltipModule,
     MatMenuModule,
     FlipModule,
-    TourMatMenuModule.forRoot()
+    TourMatMenuModule.forRoot(),
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule
   ],
   providers: [
     MatDatepickerModule,
@@ -115,7 +122,8 @@ import { RosterTableComponent } from "./edit-roster/roster-table/roster-table.co
     RecOptionsDialogComponent,
     EditRosterComponent,
     AddStudentsDialogComponent,
-    SubmitDialogComponent
+    SubmitDialogComponent,
+    AdminDialogComponent
   ]
 })
 export class AppModule {}

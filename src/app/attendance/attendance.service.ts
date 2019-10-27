@@ -28,6 +28,10 @@ export class AttendanceService {
       .toPromise();
   }
 
+  public set(queryString, object) {
+    return this.db.object(queryString).set(object);
+  }
+
   public getPeople(schoolYear, config) {
     let cc = config;
     let shift = cc.re_shift.replace(", ", "/");
