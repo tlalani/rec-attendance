@@ -4,6 +4,7 @@ import { AttendanceService } from "./attendance/attendance.service";
 import { first, isEmpty } from "rxjs/operators";
 import { isObjEmpty } from "src/constants";
 import * as firebase from "firebase";
+import { async } from "@angular/core/testing";
 
 @Injectable({
   providedIn: "root"
@@ -18,8 +19,10 @@ export class AuthService {
   constructor(
     private afAuth: AngularFireAuth,
     private attendanceService: AttendanceService
-  ) {
-    this._isAdmin();
+  ) {}
+
+  get auth(): firebase.auth.Auth {
+    return this.afAuth.auth;
   }
   get currentUser(): any {
     return this.user;
@@ -39,6 +42,7 @@ export class AuthService {
       .get("/users/" + this.currentUserId + "/permissions/admin")
       .then(res => {
         this._isUserAdmin = res || false;
+        return this.user;
       });
   }
 
@@ -99,9 +103,8 @@ export class AuthService {
       .then(() => {
         return this.afAuth.auth
           .signInWithEmailAndPassword(email, password)
-          .then(user => {
-            this.user = user.user;
-            return user;
+          .then(() => {
+            return this._isAdmin();
           })
           .catch(error => {
             console.log(error);
@@ -124,6 +127,8 @@ export class AuthService {
   }
 
   signOut() {
+    this.user = null;
+    this._isUserAdmin = null;
     return this.afAuth.auth.signOut();
   }
 
@@ -138,6 +143,8 @@ export class AuthService {
     return this.attendanceService.get(queryString).then(result => {
       if (result) {
         Object.keys(result).forEach(center => {
+          if (center === "admin" && result[center] === "true")
+            this.config.admin = true;
           this.config[center] = {};
           Object.keys(result[center]).forEach(re_class => {
             this.config[center][re_class] = [];

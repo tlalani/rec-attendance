@@ -28,6 +28,10 @@ export class LoginComponent implements OnInit {
     this.authService.signIn(this.email, this.password).then(user => {
       if (user) {
         this.getOptions().then(res => {
+          if (res.config.admin && res.config.admin === "true") {
+            this.flip();
+            return;
+          }
           this.authService.setAllOptions(res.config);
           this.config = res.config;
           this.centers = Object.keys(this.config);
@@ -45,6 +49,7 @@ export class LoginComponent implements OnInit {
 
   public flip() {
     this.flipDiv = !this.flipDiv;
+    console.log(this.authService.isAdmin);
   }
 
   public changeType() {

@@ -1,0 +1,34 @@
+<div>
+  <mat-form-field>
+    <mat-label>Email</mat-label>
+    <input [(ngModel)]="this.currentEmail" matInput />
+  </mat-form-field>
+  <!-- <mat-form-field>
+    <mat-label>Center</mat-label>
+    <input [(ngModel)]="this.currentCenter" matInput />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Class</mat-label>
+    <input [(ngModel)]="this.currentClass" matInput />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Shift Day</mat-label>
+    <mat-select>
+      <mat-option *ngFor="let day of this.days" [value]="day">{{
+        day
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Start Time</mat-label>
+    <input matInput appTimepicker type="text" [(ngModel)]="startTime" />
+  </mat-form-field> -->
+  <button
+    mat-stroked-button
+    color="primary"
+    [disabled]="!this.currentEmail || !isEmail()"
+    (click)="submit()"
+  >
+    Add
+  </button>
+</div>

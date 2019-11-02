@@ -10,6 +10,7 @@ import { AuthService } from "../auth.service";
 import { MatDialog } from "@angular/material";
 import { RecOptionsDialogComponent } from "../rec-options-dialog/rec-options-dialog.component";
 import { EditRosterComponent } from "../edit-roster/edit-roster.component";
+import { AdminDialogComponent } from "../admin-dialog/admin-dialog.component";
 @Component({
   selector: "app-home",
   templateUrl: "./home.component.html",
@@ -40,30 +41,33 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.dashboard = [
-      {
-        x: 0,
-        y: 0,
-        rows: 16,
-        cols: 10,
-        component: AttendanceComponent
-      },
-      {
-        x: 10,
-        y: 0,
-        rows: 8,
-        cols: 6,
-        component: EditRosterComponent
-      },
-      {
-        x: 10,
-        y: 8,
-        rows: 8,
-        cols: 6,
-        component: ChartsComponent
-      }
-    ];
-
+    if (this.admin) {
+      this.dashboard = [];
+    } else {
+      this.dashboard = [
+        {
+          x: 0,
+          y: 0,
+          rows: 16,
+          cols: 10,
+          component: AttendanceComponent
+        },
+        {
+          x: 10,
+          y: 0,
+          rows: 8,
+          cols: 6,
+          component: EditRosterComponent
+        },
+        {
+          x: 10,
+          y: 8,
+          rows: 8,
+          cols: 6,
+          component: ChartsComponent
+        }
+      ];
+    }
     this.options = {
       itemChangeCallback: this.itemChange,
       itemResizeCallback: this.itemResize,
@@ -224,6 +228,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
       case "qr":
         this.router.navigate(["/createqr"]);
         break;
+      case "add-user":
+        this.dialog.open(AdminDialogComponent);
     }
   }
 
