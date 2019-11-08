@@ -13,7 +13,7 @@
   </mat-form-field>
   <mat-form-field>
     <mat-label>Grade</mat-label>
-    <mat-select [(ngModel)]="person.Grade" [disabled]="!hasGrade(person)">
+    <mat-select [(ngModel)]="person.Grade" [disabled]="!hasGrade()">
       <mat-option *ngFor="let grade of grades" [value]="grade">
         {{ grade }}
       </mat-option>

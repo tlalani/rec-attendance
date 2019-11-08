@@ -53,6 +53,10 @@ export class ResetPasswordComponent implements OnInit {
     });
   }
 
+  getEmail() {
+    return this.email;
+  }
+
   // changeTime(type, event) {
   //   switch (type) {
   //     case "start":
