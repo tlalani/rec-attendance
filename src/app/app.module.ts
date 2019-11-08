@@ -15,7 +15,6 @@ import { environment } from "./../environments/environment";
 import { TourMatMenuModule } from "ngx-tour-md-menu";
 import { CookieService } from "ngx-cookie-service";
 import { FlipModule } from "ngx-flip";
-import { OwlDateTimeModule, OwlNativeDateTimeModule } from "ng-pick-datetime";
 import {
   MatCheckboxModule,
   MatDatepickerModule,
@@ -106,9 +105,7 @@ import { ResetPasswordComponent } from "./reset-password/reset-password.componen
     MatTooltipModule,
     MatMenuModule,
     FlipModule,
-    TourMatMenuModule.forRoot(),
-    OwlDateTimeModule,
-    OwlNativeDateTimeModule
+    TourMatMenuModule.forRoot()
   ],
   providers: [
     MatDatepickerModule,

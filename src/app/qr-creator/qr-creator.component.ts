@@ -1,8 +1,10 @@
 import { Component, OnInit } from "@angular/core";
-import { Roles, PersonDTO } from "src/constants";
+import { Roles, PersonDTO, getSchoolYearFromDate } from "src/constants";
 
 import { QrCodeService } from "./qr-code/qr-code.service";
 import { Router } from "@angular/router";
+import { AttendanceService } from "../attendance/attendance.service";
+import { AuthService } from "../auth.service";
 
 @Component({
   selector: "app-qr-creator",
@@ -13,13 +15,38 @@ export class QrCreatorComponent implements OnInit {
   public fileToUpload: File;
   public result: PersonDTO[];
   public fileUploaded: boolean = false;
-  constructor(private qrCodeService: QrCodeService, private router: Router) {}
+  public currentConfig: any;
+  constructor(
+    private qrCodeService: QrCodeService,
+    private router: Router,
+    private attendanceService: AttendanceService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {}
 
   isANumber(item) {
     return !Number.isNaN(parseInt(item));
   }
+
+  async codesFromDB() {
+    this.result = [];
+    this.currentConfig = this.authService.getCurrentConfig();
+    let schoolYear = getSchoolYearFromDate(new Date());
+    let people: any = await this.attendanceService.getPeopleFormatted(
+      schoolYear,
+      this.currentConfig
+    );
+    Object.keys(people).forEach(role => {
+      Object.keys(people[role]).forEach(key => {
+        people[role][key].forEach(person => {
+          this.result.push(new PersonDTO({ Name: person.Name, Role: role }));
+        });
+      });
+      this.fileUploaded = true;
+    });
+  }
+
   handleFileInput(event) {
     this.qrCodeService.reset();
     this.fileUploaded = false;
@@ -72,6 +99,7 @@ export class QrCreatorComponent implements OnInit {
     this.fileUploaded = false;
     this.fileToUpload = null;
     this.result = [];
+    this.qrCodeService.reset();
   }
 
   back() {
