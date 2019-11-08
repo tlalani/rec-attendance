@@ -1,10 +1,21 @@
 <mat-table class="table" [dataSource]="this.dataSource">
   <ng-container matColumnDef="select">
     <mat-header-cell *matHeaderCellDef>
-      Select
+      <mat-checkbox
+        color="primary"
+        (change)="$event ? masterToggle() : null"
+        [checked]="selection.hasValue() && isAllSelected()"
+        [indeterminate]="selection.hasValue() && !isAllSelected()"
+      >
+      </mat-checkbox>
     </mat-header-cell>
     <mat-cell mat-cell *matCellDef="let row">
-      <mat-checkbox color="primary" (change)="handleCheck($event, row)">
+      <mat-checkbox
+        color="primary"
+        (click)="$event.stopPropagation()"
+        (change)="$event ? makeSelection($event, row) : null"
+        [checked]="selection.isSelected(row)"
+      >
       </mat-checkbox>
     </mat-cell>
   </ng-container>
@@ -18,7 +29,7 @@
 
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
   <mat-row
-    [ngClass]="{ teacher: row.Role === 'Teacher' }"
+    [ngClass]="{ teacher: row.Role === 'Teacher', ta: row.Role === 'TA' }"
     *matRowDef="let row; columns: displayedColumns"
   ></mat-row>
 </mat-table>

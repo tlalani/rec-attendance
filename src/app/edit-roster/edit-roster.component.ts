@@ -86,6 +86,10 @@ export class EditRosterComponent implements OnInit {
         );
       });
       this.selection.splice(index, 1);
+    } else if (event.allUnselected) {
+      this.selection = [];
+    } else if (event.allSelected) {
+      this.selection = event.allSelected;
     }
   }
 
