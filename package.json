@@ -11,7 +11,7 @@
     "build:stats": "ng build --stats-json",
     "analyze": "webpack-bundle-analyzer dist/rec-attendance/stats.json",
     "build-prod": "ng build --prod --build-optimizer --base-href 'https://tlalani.github.io/rec-attendance/'",
-    "ngh": "sudo ngh --dir dist/rec-attendance"
+    "deploy": "sudo ngh --dir dist/rec-attendance"
   },
   "private": true,
   "dependencies": {
