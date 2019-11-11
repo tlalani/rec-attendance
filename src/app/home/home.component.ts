@@ -112,7 +112,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
           content: `There is also a clickable EDIT button which allows you to make edits to
           That specific student. When making edits, make sure to click FINISH after you are
           Finished to send your changes, and save them.`
-        }
+        },
         {
           anchorId: "attendance_date",
           content: "You can click here to change the attendance date.",
@@ -146,22 +146,22 @@ export class HomeComponent implements OnInit, AfterViewInit {
           enableBackdrop: true
         },
         {
-          anchorId: "edit_roster",
+          anchorId: "edit-roster",
           content: `Here we have the roster table. This table will hold the whole roster of your current RE shift`,
-          title: "Roster", 
+          title: "Roster",
           enableBackdrop: true
         },
         {
-          anchorId: "edit_roster_add",
+          anchorId: "edit-roster_add",
           content: `Click here to add students to your roster`,
-          title: "Roster", 
+          title: "Roster",
           enableBackdrop: true
         },
         {
-          anchorId: "edit_roster_delete",
+          anchorId: "edit-roster_delete",
           content: `Click here to remove students to your roster. Make sure you are
           first selecting people to remove before clicking this button.`,
-          title: "Roster", 
+          title: "Roster",
           enableBackdrop: true
         },
         {
@@ -189,7 +189,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
           content: `Another (simpler) option is for you to update your roster fully on
           the home page, and then click here to generate QR Codes for your full Roster`,
           title: "QR Codes",
-          enableBackdrop: true;
+          enableBackdrop: true
         },
         {
           anchorId: "qr_code_reset",
