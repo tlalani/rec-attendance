@@ -2,9 +2,10 @@ import { Injectable } from "@angular/core";
 import { AngularFireAuth } from "angularfire2/auth";
 import { AttendanceService } from "./attendance/attendance.service";
 import { first, isEmpty } from "rxjs/operators";
-import { isObjEmpty } from "src/constants";
+import { isObjEmpty, AngularFireReturnTypes } from "src/constants";
 import * as firebase from "firebase";
 import { async } from "@angular/core/testing";
+import { FirebaseApp } from "angularfire2";
 
 @Injectable({
   providedIn: "root"
@@ -16,6 +17,7 @@ export class AuthService {
   private CURRENT_CONFIG_KEY: string = "currentConfig";
   private CONFIG_KEY: string = "config";
   private _isUserAdmin;
+  public dataSource;
   constructor(
     private afAuth: AngularFireAuth,
     private attendanceService: AttendanceService
@@ -24,7 +26,7 @@ export class AuthService {
   get auth(): firebase.auth.Auth {
     return this.afAuth.auth;
   }
-  get currentUser(): any {
+  get currentUser(): firebase.User {
     return this.user;
   }
 
@@ -36,7 +38,7 @@ export class AuthService {
     return this._isUserAdmin;
   }
 
-  async _isAdmin() {
+  private async _isAdmin() {
     this.user = await this.getLoggedInUser();
     return await this.attendanceService
       .get("/users/" + this.currentUserId + "/permissions/admin")
@@ -168,5 +170,18 @@ export class AuthService {
       this.CURRENT_CONFIG_KEY,
       JSON.stringify(this.currentConfig)
     );
+  }
+
+  async getAllUsers() {
+    if (this.isAdmin) {
+      const queryString = "users";
+      await this.attendanceService
+        .get(queryString, AngularFireReturnTypes.Object)
+        .then(userPermission => {
+          Object.entries(userPermission).forEach(([authId, permissions]) => {
+            this.dataSource = 
+          });
+        });
+    }
   }
 }

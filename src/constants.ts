@@ -9,6 +9,11 @@ export interface Config {
   classes: string[];
 }
 
+export const AngularFireReturnTypes = {
+  Array: "0",
+  Object: "1"
+};
+
 export const Days = {
   Sunday: 0,
   Monday: 1,
