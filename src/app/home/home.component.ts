@@ -10,6 +10,7 @@ import { AuthService } from "../auth.service";
 import { MatDialog } from "@angular/material";
 import { RecOptionsDialogComponent } from "../rec-options-dialog/rec-options-dialog.component";
 import { EditRosterComponent } from "../edit-roster/edit-roster.component";
+import { AdminDialogComponent } from "../admin-dialog/admin-dialog.component";
 @Component({
   selector: "app-home",
   templateUrl: "./home.component.html",
@@ -40,30 +41,33 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.dashboard = [
-      {
-        x: 0,
-        y: 0,
-        rows: 16,
-        cols: 10,
-        component: AttendanceComponent
-      },
-      {
-        x: 10,
-        y: 0,
-        rows: 8,
-        cols: 6,
-        component: EditRosterComponent
-      },
-      {
-        x: 10,
-        y: 8,
-        rows: 8,
-        cols: 6,
-        component: ChartsComponent
-      }
-    ];
-
+    if (this.admin) {
+      this.dashboard = [];
+    } else {
+      this.dashboard = [
+        {
+          x: 0,
+          y: 0,
+          rows: 16,
+          cols: 10,
+          component: AttendanceComponent
+        },
+        {
+          x: 10,
+          y: 0,
+          rows: 8,
+          cols: 6,
+          component: EditRosterComponent
+        },
+        {
+          x: 10,
+          y: 8,
+          rows: 8,
+          cols: 6,
+          component: ChartsComponent
+        }
+      ];
+    }
     this.options = {
       itemChangeCallback: this.itemChange,
       itemResizeCallback: this.itemResize,
@@ -78,6 +82,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     if (this.cookieService.check("tourComplete") !== true) {
+      this.cookieService.set("tourComplete", "true");
       this.tourService.initialize([
         {
           anchorId: "start_off",
@@ -89,33 +94,24 @@ export class HomeComponent implements OnInit, AfterViewInit {
         },
         {
           anchorId: "attendance_attendance",
-          content:
-            "This is the attendance table. " +
-            "You will find teachers below the students for every grade",
+          content: `This is the attendance table.
+            You will find teachers below the students for every grade
+            You can switch between grades and roles with these tabs`,
           title: "Attendance",
           enableBackdrop: true
         },
         {
           anchorId: "attendance_tab",
-          content: "You can switch between grades and roles with these tabs",
+          content: `Student's names are color coded. BLACK means everything is okay,
+          RED means you need to edit something, and TEAL means that it was edited and is now okay.`,
           title: "Attendance",
           enableBackdrop: true
         },
         {
-          anchorId: "attendance_name",
-          content:
-            "Student's names are color coded. BLACK means everything is okay, " +
-            "RED means you need to edit something, and TEAL means that it was edited and is now okay.",
-          title: "Attendance",
-          enableBackdrop: true
-        },
-        {
-          anchorId: "attendance_edit",
-          content:
-            "Clicking here will allow you to edit things about a student's attendance. " +
-            "Make sure to click finish in this exact spot when complete to submit the changes.",
-          title: "Attendance",
-          enableBackdrop: true
+          anchorId: "attendance_tab",
+          content: `There is also a clickable EDIT button which allows you to make edits to
+          That specific student. When making edits, make sure to click FINISH after you are
+          Finished to send your changes, and save them.`
         },
         {
           anchorId: "attendance_date",
@@ -150,6 +146,25 @@ export class HomeComponent implements OnInit, AfterViewInit {
           enableBackdrop: true
         },
         {
+          anchorId: "edit-roster",
+          content: `Here we have the roster table. This table will hold the whole roster of your current RE shift`,
+          title: "Roster",
+          enableBackdrop: true
+        },
+        {
+          anchorId: "edit-roster_add",
+          content: `Click here to add students to your roster`,
+          title: "Roster",
+          enableBackdrop: true
+        },
+        {
+          anchorId: "edit-roster_delete",
+          content: `Click here to remove students to your roster. Make sure you are
+          first selecting people to remove before clicking this button.`,
+          title: "Roster",
+          enableBackdrop: true
+        },
+        {
           anchorId: "qr_code",
           content: "Up here you can go through all the qr codes.",
           title: "QR Codes",
@@ -166,6 +181,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
           anchorId: "qr_code_pic",
           content:
             "Use this picture to help you figure out how to create the file.",
+          title: "QR Codes",
+          enableBackdrop: true
+        },
+        {
+          anchorId: "qr_code_roster",
+          content: `Another (simpler) option is for you to update your roster fully on
+          the home page, and then click here to generate QR Codes for your full Roster`,
           title: "QR Codes",
           enableBackdrop: true
         },
@@ -198,7 +220,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
         }
       ]);
       this.startTour();
-      this.cookieService.set("tourComplete", "true");
     }
   }
 
@@ -224,6 +245,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
       case "qr":
         this.router.navigate(["/createqr"]);
         break;
+      case "add-user":
+        this.dialog.open(AdminDialogComponent);
     }
   }
 

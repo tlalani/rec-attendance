@@ -50,6 +50,8 @@ import { AuthService } from "./auth.service";
 import { EditRosterComponent } from "./edit-roster/edit-roster.component";
 import { AddStudentsDialogComponent } from "./add-students-dialog/add-students-dialog.component";
 import { RosterTableComponent } from "./edit-roster/roster-table/roster-table.component";
+import { AdminDialogComponent } from "./admin-dialog/admin-dialog.component";
+import { ResetPasswordComponent } from "./reset-password/reset-password.component";
 @NgModule({
   declarations: [
     AppComponent,
@@ -67,7 +69,9 @@ import { RosterTableComponent } from "./edit-roster/roster-table/roster-table.co
     RecOptionsDialogComponent,
     EditRosterComponent,
     AddStudentsDialogComponent,
-    RosterTableComponent
+    RosterTableComponent,
+    AdminDialogComponent,
+    ResetPasswordComponent
   ],
   imports: [
     BrowserModule,
@@ -115,7 +119,8 @@ import { RosterTableComponent } from "./edit-roster/roster-table/roster-table.co
     RecOptionsDialogComponent,
     EditRosterComponent,
     AddStudentsDialogComponent,
-    SubmitDialogComponent
+    SubmitDialogComponent,
+    AdminDialogComponent
   ]
 })
 export class AppModule {}
