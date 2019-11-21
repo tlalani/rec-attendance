@@ -11,6 +11,7 @@ import { MatDialog } from "@angular/material";
 import { RecOptionsDialogComponent } from "../rec-options-dialog/rec-options-dialog.component";
 import { EditRosterComponent } from "../edit-roster/edit-roster.component";
 import { AdminDialogComponent } from "../admin-dialog/admin-dialog.component";
+import { AdminUserListComponent } from "../admin-user-list/admin-user-list.component";
 @Component({
   selector: "app-home",
   templateUrl: "./home.component.html",
@@ -42,7 +43,15 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     if (this.admin) {
-      this.dashboard = [];
+      this.dashboard = [
+        {
+          x: 0,
+          y: 0,
+          rows: 10,
+          cols: 10,
+          component: AdminUserListComponent
+        }
+      ];
     } else {
       this.dashboard = [
         {

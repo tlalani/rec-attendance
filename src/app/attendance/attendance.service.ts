@@ -9,7 +9,8 @@ import {
   pushToInnerList,
   getArray,
   Statuses,
-  Grades
+  Grades,
+  AngularFireReturnTypes
 } from "src/constants";
 import { getSchoolYearFromDate } from "src/constants";
 import { formatDate } from "@angular/common";
@@ -20,12 +21,23 @@ import { formatDate } from "@angular/common";
 export class AttendanceService {
   constructor(private db: AngularFireDatabase) {}
 
-  public get(queryString) {
-    return this.db
-      .object(queryString)
-      .valueChanges()
-      .pipe(first())
-      .toPromise();
+  public get(queryString, type?) {
+    switch (type) {
+      case AngularFireReturnTypes.Array:
+        return this.db
+          .list(queryString)
+          .valueChanges()
+          .pipe(first())
+          .toPromise();
+      //array
+      case AngularFireReturnTypes.Object:
+      default:
+        return this.db
+          .object(queryString)
+          .valueChanges()
+          .pipe(first())
+          .toPromise();
+    }
   }
 
   public set(queryString, object) {

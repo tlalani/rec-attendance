@@ -9,6 +9,11 @@ export interface Config {
   classes: string[];
 }
 
+export const AngularFireReturnTypes = {
+  Array: "0",
+  Object: "1"
+};
+
 export const Days = {
   Sunday: 0,
   Monday: 1,
@@ -458,6 +463,6 @@ export function makePeopleObject() {
   };
 }
 
-export function isObjEmpty(obj) {
-  return Object.keys(obj).length < 1;
+export function isObjEmptyOrUndefined(obj) {
+  return !obj || Object.keys(obj).length < 1;
 }
