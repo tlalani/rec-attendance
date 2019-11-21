@@ -7,9 +7,12 @@ import { AuthService } from "../auth.service";
   styleUrls: ["./admin-user-list.component.scss"]
 })
 export class AdminUserListComponent implements OnInit {
+  public displayedColumns = ["id", "permissions"];
+  public colNames = ["User", "Permissions"];
   constructor(private authService: AuthService) {}
 
-  ngOnInit() {
-    this.authService.getAllUsers();
+  async ngOnInit() {
+    let dataSource = await this.authService.getAllUsers();
+    console.log(dataSource);
   }
 }

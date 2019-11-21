@@ -463,6 +463,6 @@ export function makePeopleObject() {
   };
 }
 
-export function isObjEmpty(obj) {
-  return Object.keys(obj).length < 1;
+export function isObjEmptyOrUndefined(obj) {
+  return !obj || Object.keys(obj).length < 1;
 }

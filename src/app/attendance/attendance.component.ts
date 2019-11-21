@@ -12,7 +12,7 @@ import {
   Roles,
   getDay,
   Days,
-  isObjEmpty,
+  isObjEmptyOrUndefined,
   PersonDTO
 } from "src/constants";
 import { formatDate } from "@angular/common";
@@ -90,7 +90,7 @@ export class AttendanceComponent implements OnInit {
       .then(totalResult => {
         if (totalResult) {
           Object.keys(this.people).forEach(role => {
-            if (!isObjEmpty(totalResult[role])) {
+            if (!isObjEmptyOrUndefined(totalResult[role])) {
               Object.keys(this.people[role]).forEach(key => {
                 for (let personInGrade of this.people[role][key]) {
                   personInGrade.Role = role;
@@ -115,7 +115,9 @@ export class AttendanceComponent implements OnInit {
                 }
               });
             } else {
+              totalResult[role] = {};
               Object.keys(this.people[role]).forEach(key => {
+                totalResult[role][key] = [];
                 this.people[role][key].forEach(person => {
                   let p = new Person(person);
                   p.editable = true;

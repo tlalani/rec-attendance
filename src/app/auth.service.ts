@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { AngularFireAuth } from "angularfire2/auth";
 import { AttendanceService } from "./attendance/attendance.service";
 import { first, isEmpty } from "rxjs/operators";
-import { isObjEmpty, AngularFireReturnTypes } from "src/constants";
+import { isObjEmptyOrUndefined, AngularFireReturnTypes } from "src/constants";
 import * as firebase from "firebase";
 import { async } from "@angular/core/testing";
 import { FirebaseApp } from "angularfire2";
@@ -49,7 +49,7 @@ export class AuthService {
   }
 
   public getCurrentConfig() {
-    if (this.currentConfig && !isObjEmpty(this.currentConfig)) {
+    if (this.currentConfig && !isObjEmptyOrUndefined(this.currentConfig)) {
       return this.currentConfig;
     } else if (this.getCurrentConfigFromStorage()) {
       this.currentConfig = this.getCurrentConfigFromStorage();
@@ -63,7 +63,7 @@ export class AuthService {
   }
 
   public getFullConfig() {
-    if (!this.config || isObjEmpty(this.config)) {
+    if (!this.config || isObjEmptyOrUndefined(this.config)) {
       this.config = JSON.parse(sessionStorage.getItem(this.CONFIG_KEY));
     }
     return this.config;
@@ -173,15 +173,14 @@ export class AuthService {
   }
 
   async getAllUsers() {
+    let result = [];
     if (this.isAdmin) {
       const queryString = "users";
-      await this.attendanceService
-        .get(queryString, AngularFireReturnTypes.Object)
-        .then(userPermission => {
-          Object.entries(userPermission).forEach(([authId, permissions]) => {
-            this.dataSource = 
-          });
-        });
+      let a = await this.attendanceService.get(
+        queryString,
+        AngularFireReturnTypes.Object
+      );
+      return a;
     }
   }
 }

@@ -29,13 +29,13 @@ export class LoginComponent implements OnInit {
       if (user) {
         this.getOptions().then(res => {
           if (res.config.admin && res.config.admin === "true") {
+            this.goToApp();
+          } else {
+            this.authService.setAllOptions(res.config);
+            this.config = res.config;
+            this.centers = Object.keys(this.config);
             this.flip();
-            return;
           }
-          this.authService.setAllOptions(res.config);
-          this.config = res.config;
-          this.centers = Object.keys(this.config);
-          this.flip();
         });
       } else {
         alert("Could not sign you in");
@@ -49,7 +49,6 @@ export class LoginComponent implements OnInit {
 
   public flip() {
     this.flipDiv = !this.flipDiv;
-    console.log(this.authService.isAdmin);
   }
 
   public changeType() {
