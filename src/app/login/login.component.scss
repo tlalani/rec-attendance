@@ -4,9 +4,13 @@ body {
   height: 100%;
   overflow: hidden;
 }
+::ng-deep .mat-form-field-appearance-fill .mat-form-field-flex {
+  background-color: transparent;
+}
 
 ngx-flip {
   background: url("../../assets/pictures/login-screen.jpg");
+  z-index: 10;
   height: 100%;
   div {
     height: inherit;
@@ -18,32 +22,42 @@ ngx-flip {
   overflow: hidden;
 }
 mat-card {
-  border-radius: 15px;
+  border-radius: 5px;
   //transform: translate(-50%, -50%);
-  opacity: 0.97;
+  //opacity: 0.97;
   width: 400px;
   margin: 10px auto;
   // border: black 1px solid;
 }
 
+.eye {
+  position: relative;
+  top: 5px;
+}
+
 .showing:before {
   content: "";
   position: absolute;
-  top: 16px;
-  right: 5px;
+  top: 11px;
+  right: 2px;
   justify-content: center;
   display: block;
   background-color: black;
   opacity: 0.8;
   height: 2px;
-  width: 72%;
+  width: 90%;
   transform: rotate(-45deg);
 }
 
-mat-card-title {
-  .fa-fingerprint {
-    color: black;
+.contain {
+  margin: 10px 40px;
+
+  .button {
+    margin: 0px 10px;
   }
+}
+
+mat-card-title {
   text-align: center;
   p {
     font-weight: normal;
@@ -53,10 +67,6 @@ mat-card-title {
 
 mat-card-content {
   text-align: center;
-  mat-form-field {
-    width: 80%;
-    display: inline-block;
-  }
 }
 
 .link {

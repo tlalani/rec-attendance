@@ -16,7 +16,8 @@ const routes: Routes = [
   { path: "attendance", component: AttendanceComponent },
   { path: "manual-qr", component: ManualQrComponent },
   { path: "edit-roster", component: EditRosterComponent },
-  { path: "reset", component: ResetPasswordComponent }
+  { path: "reset", component: ResetPasswordComponent },
+  { path: "register", component: ResetPasswordComponent }
 ];
 
 @NgModule({
