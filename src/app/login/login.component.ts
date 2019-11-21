@@ -27,20 +27,24 @@ export class LoginComponent implements OnInit {
   public onLoginClick() {
     this.authService.signIn(this.email, this.password).then(user => {
       if (user) {
-        this.getOptions().then(res => {
-          if (res.config.admin && res.config.admin === "true") {
-            this.goToApp();
-          } else {
+        if (this.authService.isAdmin) {
+          this.goToApp();
+        } else {
+          this.getOptions().then(res => {
             this.authService.setAllOptions(res.config);
             this.config = res.config;
             this.centers = Object.keys(this.config);
             this.flip();
-          }
-        });
+          });
+        }
       } else {
         alert("Could not sign you in");
       }
     });
+  }
+
+  public goToRegister() {
+    this.router.navigate(["/register"]);
   }
 
   public getType() {

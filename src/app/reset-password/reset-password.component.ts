@@ -16,6 +16,7 @@ export class ResetPasswordComponent implements OnInit {
   private oobCode;
   private email;
   private password;
+  private logoLink = "assets/pictures/logo.png";
   private days = Object.keys(Days);
   private classes = Object.keys(Grades);
   private selectedCenter;
@@ -48,52 +49,83 @@ export class ResetPasswordComponent implements OnInit {
               });
         }
       } else {
-        this.router.navigate(["/login"]);
+        this.mode = "register";
+        //this.router.navigate(["/login"]);
       }
     });
   }
 
-  getEmail() {
-    return this.email;
+  public isValid() {
+    if (this.mode !== "register") {
+      if (
+        this.email &&
+        this.password &&
+        this.startTime &&
+        this.endTime &&
+        this.selectedCenter &&
+        this.selectedClass &&
+        this.startTime < this.endTime
+      ) {
+        return true;
+      }
+    } else {
+      if (
+        this.email &&
+        this.startTime &&
+        this.endTime &&
+        this.selectedCenter &&
+        this.selectedClass &&
+        this.startTime < this.endTime
+      ) {
+        return true;
+      }
+    }
+    return false;
   }
-
-  // changeTime(type, event) {
-  //   switch (type) {
-  //     case "start":
-  //       this.startTime = event;
-  //       break;
-  //     case "end":
-  //       this.endTime = event;
-  //       break;
-  //   }
-  // }
 
   submit() {
     this.loading = true;
     let a: any = {};
-    a[this.selectedCenter] = {};
-    a[this.selectedCenter][this.selectedClass] = [
-      this.selectedDay +
+    if (this.mode !== "register") {
+      a[this.selectedCenter] = {};
+      a[this.selectedCenter][this.selectedClass] = [
+        this.selectedDay +
+          ", " +
+          this.startTime.replace(" ", "_") +
+          "-" +
+          this.endTime.replace(" ", "_")
+      ];
+      console.log(a);
+      this.authService.auth
+        .confirmPasswordReset(this.oobCode, this.password)
+        .then(() => {
+          this.authService.signIn(this.email, this.password).then(user => {
+            console.log(this.startTime, this.endTime);
+
+            this.attendanceService
+              .set("/users/" + user.uid + "/permissions", a)
+              .then(() => {
+                this.loading = false;
+                alert("Your password has been successfully reset");
+                this.router.navigate(["/login"]);
+              });
+          });
+        });
+    } else {
+      a.re_center = this.selectedCenter;
+      a.re_class = this.selectedClass;
+      a.re_shift =
+        this.selectedDay +
         ", " +
         this.startTime.replace(" ", "_") +
         "-" +
-        this.endTime.replace(" ", "_")
-    ];
-    console.log(a);
-    this.authService.auth
-      .confirmPasswordReset(this.oobCode, this.password)
-      .then(() => {
-        this.authService.signIn(this.email, this.password).then(user => {
-          console.log(this.startTime, this.endTime);
-
-          this.attendanceService
-            .set("/users/" + user.uid + "/permissions", a)
-            .then(() => {
-              this.loading = false;
-              alert("Your password has been successfully reset");
-              this.router.navigate(["/login"]);
-            });
-        });
-      });
+        this.endTime.replace(" ", "_");
+      a.email = this.email;
+      this.authService.requestRegister(a);
+      alert(
+        "Your request to register has been sent. You will be registered within the next 24 hours"
+      );
+      this.router.navigate(["/login"]);
+    }
   }
 }

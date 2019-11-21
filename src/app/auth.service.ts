@@ -1,11 +1,10 @@
 import { Injectable } from "@angular/core";
 import { AngularFireAuth } from "angularfire2/auth";
 import { AttendanceService } from "./attendance/attendance.service";
-import { first, isEmpty } from "rxjs/operators";
+import { first } from "rxjs/operators";
 import { isObjEmptyOrUndefined, AngularFireReturnTypes } from "src/constants";
 import * as firebase from "firebase";
-import { async } from "@angular/core/testing";
-import { FirebaseApp } from "angularfire2";
+import { v4 as uuid } from "uuid";
 
 @Injectable({
   providedIn: "root"
@@ -38,7 +37,7 @@ export class AuthService {
     return this._isUserAdmin;
   }
 
-  private async _isAdmin() {
+  private async setUser() {
     this.user = await this.getLoggedInUser();
     return await this.attendanceService
       .get("/users/" + this.currentUserId + "/permissions/admin")
@@ -46,6 +45,19 @@ export class AuthService {
         this._isUserAdmin = res || false;
         return this.user;
       });
+  }
+
+  public requestRegister(config) {
+    let queryString =
+      "/register/" +
+      config.re_center +
+      "/" +
+      config.re_class +
+      "/" +
+      config.re_shift;
+    let a = {};
+    a[uuid()] = config.email;
+    this.attendanceService.set(queryString, a);
   }
 
   public getCurrentConfig() {
@@ -106,7 +118,7 @@ export class AuthService {
         return this.afAuth.auth
           .signInWithEmailAndPassword(email, password)
           .then(() => {
-            return this._isAdmin();
+            return this.setUser();
           })
           .catch(error => {
             console.log(error);
