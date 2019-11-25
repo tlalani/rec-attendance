@@ -236,6 +236,10 @@ export class AttendanceService {
       });
   }
 
+  remove(queryString) {
+    this.db.object(queryString).remove();
+  }
+
   deleteFromRoster(person, schoolYear, config) {
     let shift = config.re_shift.replace(", ", "/");
     let queryString =

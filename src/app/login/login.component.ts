@@ -15,7 +15,6 @@ export class LoginComponent implements OnInit {
   public logoLink = "assets/pictures/logo.png";
   public type: string = Type.Password;
   public flipDiv: boolean = false;
-  public config: any = {};
   public currentConfig: any = {};
   public centers = [];
   public classes = [];
@@ -24,27 +23,18 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {}
 
-  public onLoginClick() {
-    this.authService.signIn(this.email, this.password).then(user => {
-      if (user) {
-        if (this.authService.isAdmin) {
-          this.goToApp();
-        } else {
-          this.getOptions().then(res => {
-            this.authService.setAllOptions(res.config);
-            this.config = res.config;
-            this.centers = Object.keys(this.config);
-            this.flip();
-          });
-        }
-      } else {
-        alert("Could not sign you in");
-      }
-    });
+  public async onLoginClick() {
+    await this.authService.signIn(this.email, this.password);
+    this.centers = await this.authService.getCenters();
+    this.flip();
   }
 
   public goToRegister() {
-    this.router.navigate(["/register"]);
+    this.router.navigate(["/reset"], { queryParams: { mode: "register" } });
+  }
+
+  public goToReset() {
+    this.router.navigate(["/reset"], { queryParams: { mode: "reset" } });
   }
 
   public getType() {
@@ -63,19 +53,18 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  public getOptions() {
-    return this.authService.getRECOptions();
-  }
-
-  public makeChange(type) {
+  public async makeChange(type) {
     switch (type) {
       case 0:
-        this.classes = Object.keys(this.config[this.currentConfig.re_center]);
+        this.classes = await this.authService.getClasses(
+          this.currentConfig.re_center
+        );
         break;
       case 1:
-        this.shifts = this.config[this.currentConfig.re_center][
+        this.shifts = await this.authService.getShifts(
+          this.currentConfig.re_center,
           this.currentConfig.re_class
-        ];
+        );
         break;
       case 2:
         this.authService.setOptions(this.currentConfig);

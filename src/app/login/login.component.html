@@ -31,9 +31,6 @@
             </button>
           </mat-form-field>
           <br />
-          <a class="link" (click)="goToRegister()">Create an Account</a>
-          <br />
-          <br />
           <button
             mat-flat-button
             class="light-primary-color button"
@@ -41,8 +38,10 @@
           >
             SUBMIT
           </button>
+          <div class="separator"></div>
+          <a class="link" (click)="goToReset()">Forgot your Password?</a>
           <br />
-          <br />
+          <a class="link" (click)="goToRegister()">Create an Account</a>
           <br />
         </div>
       </mat-card-content>

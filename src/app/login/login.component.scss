@@ -8,6 +8,15 @@ body {
   background-color: transparent;
 }
 
+.separator {
+  margin: 40px 0px;
+  display: inline-block;
+  align-self: center;
+  width: 95%;
+  height: 1px;
+  border-bottom: 1px solid lightgray;
+}
+
 ngx-flip {
   background: url("../../assets/pictures/login-screen.jpg");
   z-index: 10;

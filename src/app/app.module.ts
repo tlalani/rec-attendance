@@ -53,6 +53,7 @@ import { RosterTableComponent } from "./edit-roster/roster-table/roster-table.co
 import { AdminDialogComponent } from "./admin-dialog/admin-dialog.component";
 import { ResetPasswordComponent } from "./reset-password/reset-password.component";
 import { AdminUserListComponent } from "./admin-user-list/admin-user-list.component";
+import { AdminUserListTableComponent } from "./admin-user-list/admin-user-list-table/admin-user-list-table.component";
 @NgModule({
   declarations: [
     AppComponent,
@@ -73,7 +74,8 @@ import { AdminUserListComponent } from "./admin-user-list/admin-user-list.compon
     RosterTableComponent,
     AdminDialogComponent,
     ResetPasswordComponent,
-    AdminUserListComponent
+    AdminUserListComponent,
+    AdminUserListTableComponent
   ],
   imports: [
     BrowserModule,
