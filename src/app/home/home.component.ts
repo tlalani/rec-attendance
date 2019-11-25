@@ -242,7 +242,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
       case "options":
         this.dialog
           .open(RecOptionsDialogComponent, {
-            data: { config: this.authService.getFullConfig() }
+            data: { config: this.authService.getCenters() }
           })
           .afterClosed()
           .toPromise()

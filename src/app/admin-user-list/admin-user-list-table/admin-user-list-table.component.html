@@ -1,0 +1,50 @@
+<div class="table">
+  <mat-table #table [dataSource]="dataSource">
+    <ng-container matColumnDef="center">
+      <mat-header-cell *matHeaderCellDef>
+        RE Center
+      </mat-header-cell>
+      <mat-cell *matCellDef="let person; let i = index">
+        <span>{{ person.re_center }} </span>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="role">
+      <mat-header-cell *matHeaderCellDef>
+        Role
+      </mat-header-cell>
+      <mat-cell *matCellDef="let person; let i = index">
+        <span>{{ person.re_role }} </span>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="email">
+      <mat-header-cell *matHeaderCellDef> Email </mat-header-cell>
+      <mat-cell *matCellDef="let person">
+        <span>{{ person.email }}</span>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="accept/deny">
+      <mat-header-cell *matHeaderCellDef>Accept/Deny</mat-header-cell>
+      <mat-cell
+        *matCellDef="let person; let i = index"
+        fxLayout="row"
+        fxLayoutAlign="start center"
+        fxLayoutGap="5%"
+      >
+        <button mat-raised-button color="primary" (click)="acceptPerson(i)">
+          Accept
+        </button>
+
+        <button mat-raised-button color="warn" (click)="denyPerson(i)">
+          Deny
+        </button>
+      </mat-cell>
+    </ng-container>
+    <mat-header-row
+      *matHeaderRowDef="displayedColumns; sticky: true"
+    ></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+  </mat-table>
+</div>

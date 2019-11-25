@@ -44,6 +44,18 @@ export const Grades = {
   ]
 };
 
+export const USER_ROLES = [
+  "Principal",
+  "HOI",
+  "HOO",
+  "HOSS",
+  "HOPI",
+  "HDMAR",
+  "REC Management Team"
+];
+
+export const PASSWORD_STRING = "password";
+
 export const Type = {
   Text: "text",
   Password: "password"
