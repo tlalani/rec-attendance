@@ -18,11 +18,54 @@ import { AdminUserListComponent } from "../admin-user-list/admin-user-list.compo
   styleUrls: ["./home.component.scss"]
 })
 export class HomeComponent implements OnInit, AfterViewInit {
-  public options: GridsterConfig;
+  public options: GridsterConfig = {
+    itemChangeCallback: this.itemChange,
+    itemResizeCallback: this.itemResize,
+    resizable: {
+      enabled: false
+    },
+    draggable: {
+      enabled: false
+    }
+  };
   public dashboard;
   public tabActive;
   public cookieValue: string;
   public admin;
+  public activeDash;
+
+  public adminDash = [
+    {
+      x: 0,
+      y: 0,
+      rows: 10,
+      cols: 10,
+      component: AdminUserListComponent
+    }
+  ];
+  public standardDash = [
+    {
+      x: 0,
+      y: 0,
+      rows: 16,
+      cols: 10,
+      component: AttendanceComponent
+    },
+    {
+      x: 10,
+      y: 0,
+      rows: 8,
+      cols: 6,
+      component: EditRosterComponent
+    },
+    {
+      x: 10,
+      y: 8,
+      rows: 8,
+      cols: 6,
+      component: ChartsComponent
+    }
+  ];
   constructor(
     private authService: AuthService,
     public router: Router,
@@ -43,50 +86,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     if (this.admin) {
-      this.dashboard = [
-        {
-          x: 0,
-          y: 0,
-          rows: 10,
-          cols: 10,
-          component: AdminUserListComponent
-        }
-      ];
+      this.dashboard = this.adminDash;
+      this.activeDash = "admin";
     } else {
-      this.dashboard = [
-        {
-          x: 0,
-          y: 0,
-          rows: 16,
-          cols: 10,
-          component: AttendanceComponent
-        },
-        {
-          x: 10,
-          y: 0,
-          rows: 8,
-          cols: 6,
-          component: EditRosterComponent
-        },
-        {
-          x: 10,
-          y: 8,
-          rows: 8,
-          cols: 6,
-          component: ChartsComponent
-        }
-      ];
+      this.dashboard = this.standardDash;
+      this.activeDash = "standard";
     }
-    this.options = {
-      itemChangeCallback: this.itemChange,
-      itemResizeCallback: this.itemResize,
-      resizable: {
-        enabled: false
-      },
-      draggable: {
-        enabled: false
-      }
-    };
   }
 
   ngAfterViewInit() {
@@ -248,7 +253,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
           .toPromise()
           .then(res => {
             this.authService.setOptions(res.currentConfig);
-            this.ngOnInit();
+            this.dashboard = this.standardDash;
           });
         break;
       case "qr":
@@ -256,6 +261,23 @@ export class HomeComponent implements OnInit, AfterViewInit {
         break;
       case "add-user":
         this.dialog.open(AdminDialogComponent);
+      case "switch":
+        if (this.activeDash === "admin") {
+          if (this.authService.hasCurrentConfig()) {
+            this.dashboard = this.standardDash;
+          } else {
+            this.dialog
+              .open(RecOptionsDialogComponent, {
+                data: { config: this.authService.getCenters() }
+              })
+              .afterClosed()
+              .toPromise()
+              .then(res => {
+                this.authService.setOptions(res.currentConfig);
+                this.dashboard = this.standardDash;
+              });
+          }
+        } else this.dashboard = this.adminDash;
     }
   }
 

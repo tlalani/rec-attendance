@@ -4,6 +4,14 @@
   <button mat-button class="sidelink" tourAnchor="qr_code" (click)="toQr()">
     QR Codes
   </button>
+  <button
+    *ngIf="authState"
+    mat-icon-button
+    matTooltip="Switch to other view"
+    (click)="switchView()"
+  >
+    <mat-icon>refresh</mat-icon>
+  </button>
   <button mat-icon-button [matMenuTriggerFor]="menu" class="btn-log-out">
     <mat-icon class="icon" tourAnchor="home_avatar">account_circle</mat-icon>
     <i class="fas fa-caret-down"></i>
