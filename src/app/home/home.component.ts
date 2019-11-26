@@ -85,6 +85,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    console.log(this.admin);
     if (this.admin) {
       this.dashboard = this.adminDash;
       this.activeDash = "admin";

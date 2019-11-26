@@ -20,20 +20,20 @@ export class AdminUserListComponent implements OnInit {
     private attendanceService: AttendanceService
   ) {}
 
-  @ViewChild("table") table: MatTable<any>;
-
   async ngOnInit() {
     let r = [];
     let result: any = await this.authService.getAllUsers(
       AngularFireReturnTypes.Object
     );
-    Object.keys(result).forEach(key1 => {
-      let uuid = key1;
-      let obj = result[uuid];
-      obj.uuid = uuid;
-      r.push(obj);
-    });
-    this._dataSource.next(r);
+    if (result) {
+      Object.keys(result).forEach(key1 => {
+        let uuid = key1;
+        let obj = result[uuid];
+        obj.uuid = uuid;
+        r.push(obj);
+      });
+      this._dataSource.next(r);
+    }
   }
 
   getChanges(event) {

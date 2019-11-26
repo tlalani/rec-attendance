@@ -1,10 +1,8 @@
-import { Component, OnInit, AfterViewInit, OnDestroy } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { Router, ActivatedRoute } from "@angular/router";
 import { AuthService } from "../auth.service";
-import { takeUntil } from "rxjs/operators";
-import { Days, Grades, PASSWORD_STRING, USER_ROLES } from "src/constants";
+import { Days, Grades, PASSWORD_STRING, MANAGEMENT_ROLES } from "src/constants";
 import { AttendanceService } from "../attendance/attendance.service";
-import { FormGroup, FormControl } from "@angular/forms";
 
 @Component({
   selector: "app-reset-password",
@@ -29,7 +27,7 @@ export class ResetPasswordComponent implements OnInit {
   private days = Object.keys(Days);
   private classes = Object.keys(Grades);
   private loading: boolean = false;
-  private user_roles = USER_ROLES;
+  private user_roles = MANAGEMENT_ROLES;
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,

@@ -44,7 +44,12 @@ export const Grades = {
   ]
 };
 
-export const USER_ROLES = [
+export const USER_ROLES = {
+  Admin: "admin",
+  User: "user"
+};
+
+export const MANAGEMENT_ROLES = [
   "Principal",
   "HOI",
   "HOO",
