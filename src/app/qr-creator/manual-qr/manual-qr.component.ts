@@ -15,7 +15,7 @@ export class ManualQrComponent implements OnInit {
   constructor(private authService: AuthService) {}
 
   ngOnInit() {
-    let currentConfig = this.authService.getCurrentConfigFromStorage();
+    let currentConfig = this.authService.getCurrentConfig();
     this.grades = Grades[currentConfig.re_class];
   }
 

@@ -16,7 +16,7 @@ export class ToolbarComponent implements OnInit {
     this.itemClicked.emit("logout");
   }
 
-  async changeOptions() {
+  changeOptions() {
     this.itemClicked.emit("options");
   }
 
@@ -26,5 +26,9 @@ export class ToolbarComponent implements OnInit {
 
   addUsers() {
     this.itemClicked.emit("add-user");
+  }
+
+  switchView() {
+    this.itemClicked.emit("switch");
   }
 }

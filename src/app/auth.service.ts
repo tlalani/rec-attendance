@@ -66,14 +66,15 @@ export class AuthService {
 
   hasCurrentConfig() {
     return (
-      this.currentConfig &&
-      this.currentConfig.re_center &&
-      this.currentConfig.re_class &&
-      this.currentConfig.re_shift
+      (this.currentConfig &&
+        this.currentConfig.re_center &&
+        this.currentConfig.re_class &&
+        this.currentConfig.re_shift) ||
+      sessionStorage.getItem(this.CURRENT_CONFIG_KEY) !== null
     );
   }
 
-  getCurrentConfigFromStorage() {
+  private getCurrentConfigFromStorage() {
     let a = JSON.parse(sessionStorage.getItem(this.CURRENT_CONFIG_KEY));
     return a;
   }
@@ -165,15 +166,19 @@ export class AuthService {
     let shifts = [];
     let queryString = "";
     if (this.isAdmin) {
-      queryString = "REC/" + center + "/" + re_class;
+      queryString = "REC2/" + center + "/" + re_class + "/Shifts";
     } else {
       queryString =
         "users/" + this.userId + "/permissions/" + center + "/" + re_class;
     }
     let res = await this.attendanceService.get(queryString);
     if (res) {
-      Object.keys(res).forEach(shift => {
-        shifts.push(res[shift]);
+      console.log(res);
+      Object.keys(res).forEach(shiftDay => {
+        Object.keys(res[shiftDay]).forEach(shiftTime => {
+          let shift = shiftDay + ", " + res[shiftDay][shiftTime];
+          shifts.push(shift);
+        });
       });
     }
     return shifts;

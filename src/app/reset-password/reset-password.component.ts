@@ -12,7 +12,7 @@ import { FormGroup, FormControl } from "@angular/forms";
   styleUrls: ["./reset-password.component.scss"]
 })
 export class ResetPasswordComponent implements OnInit {
-  private mode;
+  public mode;
   private oobCode;
   private invalid: boolean = false;
   private email;
@@ -25,7 +25,7 @@ export class ResetPasswordComponent implements OnInit {
   private create_confirm_password;
   private register_selectedRole;
   private register_selectedCenter;
-  private logoLink = "assets/pictures/logo.png";
+  public logoLink = "assets/pictures/logo.png";
   private days = Object.keys(Days);
   private classes = Object.keys(Grades);
   private loading: boolean = false;
@@ -96,20 +96,25 @@ export class ResetPasswordComponent implements OnInit {
     let a: any = {};
     switch (this.mode) {
       case "verifyEmail":
-        this.email = await this.authService.auth.checkActionCode(this.oobCode);
-        await this.authService.auth.applyActionCode(this.oobCode);
-        a = this.createRECOptionsObject();
-        let result = await this.authService.auth.signInWithEmailAndPassword(
-          this.email,
-          PASSWORD_STRING
+        let response = await this.authService.auth.checkActionCode(
+          this.oobCode
         );
-        await result.user.updatePassword(this.create_password);
-        await this.attendanceService.set(
-          "/users/" + result.user.uid + "/permissions",
-          a
-        );
-        this.loading = false;
-        alert("Your password has been successfully set");
+        this.email = response.data.email;
+        if (this.email) {
+          await this.authService.auth.applyActionCode(this.oobCode);
+          a = this.createRECOptionsObject();
+          let result = await this.authService.auth.signInWithEmailAndPassword(
+            this.email,
+            PASSWORD_STRING
+          );
+          await result.user.updatePassword(this.create_password);
+          await this.attendanceService.set(
+            "/users/" + result.user.uid + "/permissions",
+            a
+          );
+          this.loading = false;
+          alert("Your password has been successfully set");
+        }
         break;
 
       case "resetPassword":
