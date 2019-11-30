@@ -1,5 +1,14 @@
-<div style="overflow: auto; height: 250px;">
-  <div fxLayout="column">
+<button mat-raised-button color="warn">
+  <a class="link" routerLink="/createqr">Back</a>
+</button>
+<br />
+<div style="overflow: auto;">
+  <div
+    class="noPrint"
+    fxLayoutGap="2%"
+    fxLayout="row"
+    fxLayoutAlign="start center"
+  >
     <mat-form-field appearance="outline">
       <mat-label>Role</mat-label>
       <mat-select [(ngModel)]="this.person.Role">
@@ -25,16 +34,16 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
+    <button
+      color="primary"
+      mat-raised-button
+      (click)="submit()"
+      [disabled]="!isComplete()"
+    >
+      Submit
+    </button>
+    <button color="primary" mat-stroked-button (click)="print()">Print</button>
   </div>
-  <button
-    color="primary"
-    mat-raised-button
-    (click)="submit()"
-    [disabled]="!isComplete()"
-  >
-    Submit
-  </button>
-  <button color="primary" mat-stroked-button (click)="print()">Print</button>
 
   <div fxLayout="row wrap" class="print">
     <ng-container *ngFor="let person of result; let i = index">

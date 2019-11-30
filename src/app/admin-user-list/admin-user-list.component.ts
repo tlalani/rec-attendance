@@ -5,6 +5,7 @@ import { AngularFireReturnTypes, PASSWORD_STRING } from "src/constants";
 import { AttendanceService } from "../attendance/attendance.service";
 import { Observable, BehaviorSubject } from "rxjs";
 import { MatTable } from "@angular/material";
+import { DatabaseService } from "../database.service";
 
 @Component({
   selector: "app-admin-user-list",
@@ -17,23 +18,24 @@ export class AdminUserListComponent implements OnInit {
   public data$ = this._dataSource.value;
   constructor(
     private authService: AuthService,
-    private attendanceService: AttendanceService
+    private attendanceService: AttendanceService,
+    private databaseService: DatabaseService
   ) {}
-
-  @ViewChild("table") table: MatTable<any>;
 
   async ngOnInit() {
     let r = [];
     let result: any = await this.authService.getAllUsers(
       AngularFireReturnTypes.Object
     );
-    Object.keys(result).forEach(key1 => {
-      let uuid = key1;
-      let obj = result[uuid];
-      obj.uuid = uuid;
-      r.push(obj);
-    });
-    this._dataSource.next(r);
+    if (result) {
+      Object.keys(result).forEach(key1 => {
+        let uuid = key1;
+        let obj = result[uuid];
+        obj.uuid = uuid;
+        r.push(obj);
+      });
+      this._dataSource.next(r);
+    }
   }
 
   getChanges(event) {
@@ -48,7 +50,7 @@ export class AdminUserListComponent implements OnInit {
               let arr = this.data$;
               arr.splice(event.accept.user, 1);
               this._dataSource.next(arr);
-              this.attendanceService.set("/register/" + user.uuid, null);
+              this.databaseService.set("/register/" + user.uuid, null);
             })
             .catch(err => {
               alert("There was an error, Please try again");
@@ -63,7 +65,7 @@ export class AdminUserListComponent implements OnInit {
       //   return item.email === user.email;
       // });
       // this.dataSource.splice(index, 1);
-      this.attendanceService.remove(
+      this.databaseService.remove(
         "register/" +
           user.re_center +
           "/" +
