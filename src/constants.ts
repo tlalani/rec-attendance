@@ -480,6 +480,13 @@ export function makePeopleObject() {
   };
 }
 
+export function shiftStartTime(shift, withDay?: boolean) {
+  if (withDay) {
+    let shiftStart = shift.split("/")[1].split("-")[0];
+    return shiftStart;
+  }
+}
+
 export function isObjEmptyOrUndefined(obj) {
   return !obj || Object.keys(obj).length < 1;
 }

@@ -85,7 +85,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    console.log(this.admin);
     if (this.admin) {
       this.dashboard = this.adminDash;
       this.activeDash = "admin";
@@ -96,7 +95,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    if (this.cookieService.check("tourComplete") !== true) {
+    if (
+      this.cookieService.check("tourComplete") !== true &&
+      !this.authService.isAdmin
+    ) {
       this.cookieService.set("tourComplete", "true");
       this.tourService.initialize([
         {
