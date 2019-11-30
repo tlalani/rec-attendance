@@ -5,6 +5,7 @@ import { QrCodeService } from "./qr-code/qr-code.service";
 import { Router } from "@angular/router";
 import { AttendanceService } from "../attendance/attendance.service";
 import { AuthService } from "../auth.service";
+import { DatabaseService } from "../database.service";
 
 @Component({
   selector: "app-qr-creator",
@@ -19,7 +20,7 @@ export class QrCreatorComponent implements OnInit {
   constructor(
     private qrCodeService: QrCodeService,
     private router: Router,
-    private attendanceService: AttendanceService,
+    private databaseService: DatabaseService,
     private authService: AuthService
   ) {}
 
@@ -33,7 +34,7 @@ export class QrCreatorComponent implements OnInit {
     this.result = [];
     this.currentConfig = this.authService.getCurrentConfig();
     let schoolYear = getSchoolYearFromDate(new Date());
-    let people: any = await this.attendanceService.getPeopleFormatted(
+    let people: any = await this.databaseService.getRoster(
       schoolYear,
       this.currentConfig
     );

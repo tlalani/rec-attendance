@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { MatDatepickerInputEvent, MatDialog } from "@angular/material";
+import { MatDatepickerInputEvent } from "@angular/material";
 import { AttendanceService } from "./attendance.service";
 import { Angular5Csv } from "angular5-csv/dist/Angular5-csv";
 import {
@@ -17,7 +17,6 @@ import {
 } from "src/constants";
 import { formatDate } from "@angular/common";
 import { AuthService } from "../auth.service";
-import { Router } from "@angular/router";
 @Component({
   selector: "app-attendance",
   templateUrl: "./attendance.component.html",
@@ -66,7 +65,7 @@ export class AttendanceComponent implements OnInit {
 
   public getPeopleQuery(schoolYear) {
     this.attendanceService
-      .getPeopleFormatted(schoolYear, this.currentConfig)
+      .getFormattedRoster(schoolYear, this.currentConfig)
       .then(result => {
         if (result) {
           this.people = result;

@@ -12,63 +12,18 @@ import {
 } from "src/constants";
 import { getSchoolYearFromDate } from "src/constants";
 import { formatDate } from "@angular/common";
+import { DatabaseService } from "../database.service";
 
 @Injectable({
   providedIn: "root"
 })
 export class AttendanceService {
-  constructor(private db: AngularFireDatabase) {}
+  constructor(private database: DatabaseService) {}
 
-  public get(queryString, type?: string): Promise<any> {
-    switch (type) {
-      //object
-      case AngularFireReturnTypes.Array:
-        return this.db
-          .list(queryString)
-          .valueChanges()
-          .pipe(first())
-          .toPromise();
-      //array
-      case AngularFireReturnTypes.Object:
-      default:
-        return this.db
-          .object(queryString)
-          .valueChanges()
-          .pipe(first())
-          .toPromise();
-    }
-  }
-
-  public set(queryString, object) {
-    this.db
-      .object(queryString)
-      .set(object)
-      .catch(err => console.log("ERROR ON [set]", err));
-  }
-
-  public remove(queryString) {
-    this.db.object(queryString).remove();
-  }
-
-  public getPeople(schoolYear, config): Promise<any> {
-    let cc = config;
-    let shift = cc.re_shift.replace(", ", "/");
-    const queryString =
-      "REC/" +
-      cc.re_center +
-      "/" +
-      cc.re_class +
-      "/Shifts/" +
-      shift +
-      "/People/" +
-      schoolYear;
-    return this.get(queryString);
-  }
-
-  public async getPeopleFormatted(schoolYear, config) {
+  public async getFormattedRoster(schoolYear, config) {
     let result: any = {};
     try {
-      let roles = await this.getPeople(schoolYear, config);
+      let roles = await this.database.getRoster(schoolYear, config);
       Object.entries(roles).forEach(([role, people]) => {
         let list: any = {};
         if (Grades[config.re_class].indexOf(Object.keys(people)[0]) !== -1) {
@@ -97,27 +52,13 @@ export class AttendanceService {
     }
   }
 
-  public queryAttendanceForSpecificDay(date, config) {
-    const schoolYear = getSchoolYearFromDate(date);
-    let shift = config.re_shift.replace(", ", "/");
-    const queryString =
-      "REC/" +
-      config.re_center +
-      "/" +
-      config.re_class +
-      "/Shifts/" +
-      shift +
-      "/Dates/" +
-      schoolYear +
-      "/" +
-      formatDate(date, "MMM d, y", "en-US");
-    return this.get(queryString);
-  }
-
   public async queryAttendanceForSpecificDayFormatted(date: Date, config) {
     let result: any = {};
     try {
-      let items = await this.queryAttendanceForSpecificDay(date, config);
+      let items = await this.database.queryAttendanceForSpecificDay(
+        date,
+        config
+      );
       if (items) {
         Object.entries(items).forEach(([role, snapShot]) => {
           let peoplePresent = getArray(snapShot, role, config.re_class);
@@ -126,8 +67,15 @@ export class AttendanceService {
         return result;
       }
     } catch (err) {
-      console.log("ERROR ON queryAttendanceForSpecificDayFormatted,", err);
+      console.log("ERROR ON [queryAttendanceForSpecificDayFormatted],", err);
       return result;
+    }
+  }
+
+  public shiftStartTime(shift, withDay?: boolean) {
+    if (withDay) {
+      let shiftStart = shift.split("/")[1].split("-")[0];
+      return shiftStart;
     }
   }
 
@@ -162,62 +110,6 @@ export class AttendanceService {
         obj["Comments"] = person.Comments;
       }
     }
-    this.set(queryString, obj);
-  }
-
-  public shiftStartTime(shift, withDay?: boolean) {
-    if (withDay) {
-      let shiftStart = shift.split("/")[1].split("-")[0];
-      return shiftStart;
-    }
-  }
-
-  public async sendToRoster(person, schoolYear, config) {
-    let shift = config.re_shift.replace(", ", "/");
-    let queryString =
-      "REC/" +
-      config.re_center +
-      "/" +
-      config.re_class +
-      "/Shifts/" +
-      shift +
-      "/People/" +
-      schoolYear +
-      "/" +
-      person.Role +
-      "/";
-    if (person.Grade) {
-      queryString += person.Grade + "/";
-    }
-    let res = await this.get(queryString);
-    if (res) {
-      res.push(person.Name);
-      this.set(queryString, res);
-    } else {
-      this.set(queryString, [person.Name]);
-    }
-  }
-
-  public async deleteFromRoster(person, schoolYear, config) {
-    let shift = config.re_shift.replace(", ", "/");
-    let queryString =
-      "REC/" +
-      config.re_center +
-      "/" +
-      config.re_class +
-      "/Shifts/" +
-      shift +
-      "/People/" +
-      schoolYear +
-      "/" +
-      person.Role +
-      "/";
-    if (person.Grade) {
-      queryString += person.Grade + "/";
-    }
-    let res = await this.get(queryString);
-    let index = res.indexOf(person.Name);
-    res.splice(index, 1);
-    this.db.object(queryString).set(res);
+    this.database.set(queryString, obj);
   }
 }

@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import { AngularFireAuth } from "angularfire2/auth";
-import { AttendanceService } from "./attendance/attendance.service";
 import { first } from "rxjs/operators";
 import { isObjEmptyOrUndefined, USER_ROLES } from "src/constants";
 import { v4 as uuid } from "uuid";
+import { DatabaseService } from "./database.service";
 
 @Injectable({
   providedIn: "root"
@@ -16,7 +16,7 @@ export class AuthService {
   public dataSource;
   constructor(
     private afAuth: AngularFireAuth,
-    private attendanceService: AttendanceService
+    private databaseService: DatabaseService
   ) {}
 
   get auth(): firebase.auth.Auth {
@@ -40,7 +40,7 @@ export class AuthService {
 
   private async setUser() {
     this.user = await this._getLoggedInUser();
-    let res = await this.attendanceService.get(
+    let res = await this.databaseService.get(
       "/users/" + this.currentUserId + "/permissions/admin"
     );
     this._userRole = res ? USER_ROLES.Admin : USER_ROLES.User;
@@ -48,7 +48,7 @@ export class AuthService {
 
   public requestRegister(config) {
     let queryString = "/register/" + uuid();
-    this.attendanceService.set(queryString, config);
+    this.databaseService.set(queryString, config);
   }
 
   public getCurrentConfig() {
@@ -129,7 +129,7 @@ export class AuthService {
     if (this.isAdmin) queryString = "REC/";
     else queryString = "users/" + this.userId + "/permissions";
     try {
-      let res = await this.attendanceService.get(queryString);
+      let res = await this.databaseService.get(queryString);
       if (res) {
         Object.keys(res).forEach(center => centers.push(center));
       }
@@ -149,7 +149,7 @@ export class AuthService {
       queryString = "users/" + this.userId + "/permissions/" + center;
     }
     try {
-      let res = await this.attendanceService.get(queryString);
+      let res = await this.databaseService.get(queryString);
       if (res) {
         Object.keys(res).forEach(re_class => classes.push(re_class));
       }
@@ -169,7 +169,7 @@ export class AuthService {
       queryString =
         "users/" + this.userId + "/permissions/" + center + "/" + re_class;
     }
-    let res = await this.attendanceService.get(queryString);
+    let res = await this.databaseService.get(queryString);
     try {
       if (res) {
         Object.keys(res).forEach(shiftDay => {
@@ -197,7 +197,7 @@ export class AuthService {
   async getAllUsers(type) {
     if (this.isAdmin) {
       const queryString = "/register/";
-      let a = await this.attendanceService.get(queryString, type);
+      let a = await this.databaseService.get(queryString, type);
       return a;
     }
   }

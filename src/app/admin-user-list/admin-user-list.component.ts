@@ -5,6 +5,7 @@ import { AngularFireReturnTypes, PASSWORD_STRING } from "src/constants";
 import { AttendanceService } from "../attendance/attendance.service";
 import { Observable, BehaviorSubject } from "rxjs";
 import { MatTable } from "@angular/material";
+import { DatabaseService } from "../database.service";
 
 @Component({
   selector: "app-admin-user-list",
@@ -17,7 +18,8 @@ export class AdminUserListComponent implements OnInit {
   public data$ = this._dataSource.value;
   constructor(
     private authService: AuthService,
-    private attendanceService: AttendanceService
+    private attendanceService: AttendanceService,
+    private databaseService: DatabaseService
   ) {}
 
   async ngOnInit() {
@@ -48,7 +50,7 @@ export class AdminUserListComponent implements OnInit {
               let arr = this.data$;
               arr.splice(event.accept.user, 1);
               this._dataSource.next(arr);
-              this.attendanceService.set("/register/" + user.uuid, null);
+              this.databaseService.set("/register/" + user.uuid, null);
             })
             .catch(err => {
               alert("There was an error, Please try again");
@@ -63,7 +65,7 @@ export class AdminUserListComponent implements OnInit {
       //   return item.email === user.email;
       // });
       // this.dataSource.splice(index, 1);
-      this.attendanceService.remove(
+      this.databaseService.remove(
         "register/" +
           user.re_center +
           "/" +

@@ -12,6 +12,7 @@ import {
 import { AttendanceService } from "../attendance/attendance.service";
 import { MatDatepickerInputEvent } from "@angular/material";
 import { AuthService } from "../auth.service";
+import { DatabaseService } from "../database.service";
 
 @Component({
   selector: "app-charts",
@@ -50,7 +51,7 @@ export class ChartsComponent implements OnInit, AfterViewInit {
     labels: ["Absent", "Tardy", "Present", "Excused"]
   };
   constructor(
-    private attendanceService: AttendanceService,
+    private databaseService: DatabaseService,
     private authService: AuthService
   ) {}
 
@@ -92,8 +93,8 @@ export class ChartsComponent implements OnInit, AfterViewInit {
   }
 
   public getPeopleFormatted() {
-    return this.attendanceService
-      .getPeopleFormatted(this.schoolYear, this.authService.getCurrentConfig())
+    return this.databaseService
+      .getRoster(this.schoolYear, this.authService.getCurrentConfig())
       .then(result => {
         return result;
       });
@@ -108,8 +109,8 @@ export class ChartsComponent implements OnInit, AfterViewInit {
       );
       return currList;
     } else {
-      return await this.attendanceService
-        .queryAttendanceForSpecificDayFormatted(
+      return await this.databaseService
+        .queryAttendanceForSpecificDay(
           this.currentDate,
           this.authService.getCurrentConfig()
         )

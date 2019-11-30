@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { AuthService } from "../auth.service";
 import { Days, Grades, PASSWORD_STRING, MANAGEMENT_ROLES } from "src/constants";
 import { AttendanceService } from "../attendance/attendance.service";
+import { DatabaseService } from "../database.service";
 
 @Component({
   selector: "app-reset-password",
@@ -32,7 +33,7 @@ export class ResetPasswordComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private authService: AuthService,
-    private attendanceService: AttendanceService
+    private databaseService: DatabaseService
   ) {}
 
   ngOnInit() {
@@ -106,7 +107,7 @@ export class ResetPasswordComponent implements OnInit {
             PASSWORD_STRING
           );
           await result.user.updatePassword(this.create_password);
-          await this.attendanceService.set(
+          await this.databaseService.set(
             "/users/" + result.user.uid + "/permissions",
             a
           );

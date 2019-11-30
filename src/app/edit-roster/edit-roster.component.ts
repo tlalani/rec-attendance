@@ -12,6 +12,7 @@ import {
 import { MatDialog } from "@angular/material";
 import { AddStudentsDialogComponent } from "../add-students-dialog/add-students-dialog.component";
 import { SubmitDialogComponent } from "../submit-dialog/submit-dialog.component";
+import { DatabaseService } from "../database.service";
 
 @Component({
   selector: "app-edit-roster",
@@ -27,7 +28,7 @@ export class EditRosterComponent implements OnInit {
   public roles = Object.keys(Roles);
   public grades;
   constructor(
-    private attendanceService: AttendanceService,
+    private databaseService: DatabaseService,
     private authService: AuthService,
     private dialog: MatDialog
   ) {}
@@ -40,29 +41,27 @@ export class EditRosterComponent implements OnInit {
     this.loading = true;
     this.grades = Grades[this.currentConfig.re_class];
     let mgmt = Object.keys(Mgmt);
-    this.attendanceService
-      .getPeopleFormatted(this.schoolYear, this.currentConfig)
-      .then(res => {
-        if (res) {
-          Object.keys(res).forEach(role => {
-            Object.keys(res[role]).forEach(key => {
-              let index;
-              if ((index = this.grades.indexOf(key)) !== -1) {
+    this.databaseService.get(this.schoolYear, this.currentConfig).then(res => {
+      if (res) {
+        Object.keys(res).forEach(role => {
+          Object.keys(res[role]).forEach(key => {
+            let index;
+            if ((index = this.grades.indexOf(key)) !== -1) {
+              pushToInnerList(this.result, index, res[role][key]);
+            } else {
+              let index = this.roles.indexOf(role);
+              if (index !== -1) {
+                index = this.grades.length + index - 1;
                 pushToInnerList(this.result, index, res[role][key]);
-              } else {
-                let index = this.roles.indexOf(role);
-                if (index !== -1) {
-                  index = this.grades.length + index - 1;
-                  pushToInnerList(this.result, index, res[role][key]);
-                }
               }
-            });
+            }
           });
-          this.loading = false;
-        } else {
-          this.loading = false;
-        }
-      });
+        });
+        this.loading = false;
+      } else {
+        this.loading = false;
+      }
+    });
   }
 
   getTabLabel(index: number) {
@@ -105,7 +104,7 @@ export class EditRosterComponent implements OnInit {
           .then(res => {
             if (res && res.result) {
               res.result.forEach(person => {
-                this.attendanceService.sendToRoster(
+                this.databaseService.sendToRoster(
                   person,
                   this.schoolYear,
                   this.authService.getCurrentConfig()
@@ -130,7 +129,7 @@ export class EditRosterComponent implements OnInit {
             .then(res => {
               if (res && res === 1) {
                 this.selection.forEach(person => {
-                  this.attendanceService.deleteFromRoster(
+                  this.databaseService.deleteFromRoster(
                     person,
                     this.schoolYear,
                     this.authService.getCurrentConfig()
