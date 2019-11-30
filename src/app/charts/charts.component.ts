@@ -4,12 +4,10 @@ import {
   Roles,
   getSchoolYearFromDate,
   Person,
-  PersonDTO,
   Statuses,
   Days,
   getDay
 } from "src/constants";
-import { AttendanceService } from "../attendance/attendance.service";
 import { MatDatepickerInputEvent } from "@angular/material";
 import { AuthService } from "../auth.service";
 import { DatabaseService } from "../database.service";

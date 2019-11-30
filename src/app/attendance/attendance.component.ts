@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 import { MatDatepickerInputEvent } from "@angular/material";
-import { AttendanceService } from "./attendance.service";
 import { Angular5Csv } from "angular5-csv/dist/Angular5-csv";
 import {
   Person,
@@ -12,11 +11,11 @@ import {
   Roles,
   getDay,
   Days,
-  isObjEmptyOrUndefined,
-  PersonDTO
+  isObjEmptyOrUndefined
 } from "src/constants";
 import { formatDate } from "@angular/common";
 import { AuthService } from "../auth.service";
+import { DatabaseService } from "../database.service";
 @Component({
   selector: "app-attendance",
   templateUrl: "./attendance.component.html",
@@ -36,8 +35,8 @@ export class AttendanceComponent implements OnInit {
   public shifts: string[];
   currentConfig: any = {};
   constructor(
-    private attendanceService: AttendanceService,
-    private authService: AuthService
+    private authService: AuthService,
+    private databaseService: DatabaseService
   ) {}
 
   ngOnInit() {
@@ -64,7 +63,7 @@ export class AttendanceComponent implements OnInit {
   }
 
   public getPeopleQuery(schoolYear) {
-    this.attendanceService
+    this.databaseService
       .getFormattedRoster(schoolYear, this.currentConfig)
       .then(result => {
         if (result) {
@@ -81,7 +80,7 @@ export class AttendanceComponent implements OnInit {
       this.getPeopleQuery(this.schoolYear);
     }
     this.result = [];
-    this.attendanceService
+    this.databaseService
       .queryAttendanceForSpecificDayFormatted(
         this.currentDate,
         this.currentConfig
@@ -211,7 +210,7 @@ export class AttendanceComponent implements OnInit {
   }
 
   public saveEdits(student: Person) {
-    const res = this.attendanceService.sendToDatabase(
+    const res = this.databaseService.sendToDatabase(
       this.currentDate,
       student,
       this.currentConfig

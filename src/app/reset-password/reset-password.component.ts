@@ -2,7 +2,6 @@ import { Component, OnInit } from "@angular/core";
 import { Router, ActivatedRoute } from "@angular/router";
 import { AuthService } from "../auth.service";
 import { Days, Grades, PASSWORD_STRING, MANAGEMENT_ROLES } from "src/constants";
-import { AttendanceService } from "../attendance/attendance.service";
 import { DatabaseService } from "../database.service";
 
 @Component({

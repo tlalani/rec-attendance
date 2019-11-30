@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild } from "@angular/core";
 import { AuthService } from "../auth.service";
 import { AngularFireReturnTypes, PASSWORD_STRING } from "src/constants";
 
-import { AttendanceService } from "../attendance/attendance.service";
 import { Observable, BehaviorSubject } from "rxjs";
 import { MatTable } from "@angular/material";
 import { DatabaseService } from "../database.service";
@@ -18,7 +17,6 @@ export class AdminUserListComponent implements OnInit {
   public data$ = this._dataSource.value;
   constructor(
     private authService: AuthService,
-    private attendanceService: AttendanceService,
     private databaseService: DatabaseService
   ) {}
 

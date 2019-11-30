@@ -1,5 +1,4 @@
 import { Component, OnInit } from "@angular/core";
-import { AttendanceService } from "../attendance/attendance.service";
 import { AuthService } from "../auth.service";
 import {
   getSchoolYearFromDate,
@@ -41,27 +40,29 @@ export class EditRosterComponent implements OnInit {
     this.loading = true;
     this.grades = Grades[this.currentConfig.re_class];
     let mgmt = Object.keys(Mgmt);
-    this.databaseService.get(this.schoolYear, this.currentConfig).then(res => {
-      if (res) {
-        Object.keys(res).forEach(role => {
-          Object.keys(res[role]).forEach(key => {
-            let index;
-            if ((index = this.grades.indexOf(key)) !== -1) {
-              pushToInnerList(this.result, index, res[role][key]);
-            } else {
-              let index = this.roles.indexOf(role);
-              if (index !== -1) {
-                index = this.grades.length + index - 1;
+    this.databaseService
+      .getFormattedRoster(this.schoolYear, this.currentConfig)
+      .then(res => {
+        if (res) {
+          Object.keys(res).forEach(role => {
+            Object.keys(res[role]).forEach(key => {
+              let index;
+              if ((index = this.grades.indexOf(key)) !== -1) {
                 pushToInnerList(this.result, index, res[role][key]);
+              } else {
+                let index = this.roles.indexOf(role);
+                if (index !== -1) {
+                  index = this.grades.length + index - 1;
+                  pushToInnerList(this.result, index, res[role][key]);
+                }
               }
-            }
+            });
           });
-        });
-        this.loading = false;
-      } else {
-        this.loading = false;
-      }
-    });
+          this.loading = false;
+        } else {
+          this.loading = false;
+        }
+      });
   }
 
   getTabLabel(index: number) {

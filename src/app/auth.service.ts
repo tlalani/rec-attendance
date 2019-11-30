@@ -120,6 +120,7 @@ export class AuthService {
     this.user = null;
     this._userRole = null;
     this.removeCurrentStoredConfig();
+    this.currentConfig = {};
     return this.afAuth.auth.signOut();
   }
 
@@ -164,18 +165,21 @@ export class AuthService {
     let shifts = [];
     let queryString = "";
     if (this.isAdmin) {
-      queryString = "REC2/" + center + "/" + re_class + "/Shifts";
+      queryString = "REC/" + center + "/" + re_class + "/Shifts";
     } else {
       queryString =
         "users/" + this.userId + "/permissions/" + center + "/" + re_class;
     }
-    let res = await this.databaseService.get(queryString);
     try {
+      let res = await this.databaseService.get(queryString);
       if (res) {
         Object.keys(res).forEach(shiftDay => {
           Object.keys(res[shiftDay]).forEach(shiftTime => {
-            let shift = shiftDay + ", " + res[shiftDay][shiftTime];
-            shifts.push(shift);
+            if (typeof res[shiftDay][shiftTime] === typeof {}) {
+              shifts.push(shiftDay + ", " + shiftTime);
+            } else {
+              shifts.push(shiftDay + ", " + res[shiftDay][shiftTime]);
+            }
           });
         });
       }
