@@ -106,4 +106,8 @@ export class QrCreatorComponent implements OnInit {
   back() {
     this.router.navigate(["/home"]);
   }
+
+  goToManualQr() {
+    this.router.navigate(["/manual-qr"]);
+  }
 }
