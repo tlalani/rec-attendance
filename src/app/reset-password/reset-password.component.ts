@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { AuthService } from "../auth.service";
 import { Days, Grades, PASSWORD_STRING, MANAGEMENT_ROLES } from "src/constants";
 import { DatabaseService } from "../database.service";
+import { Observable, BehaviorSubject } from "rxjs";
 
 @Component({
   selector: "app-reset-password",
@@ -12,22 +13,7 @@ import { DatabaseService } from "../database.service";
 export class ResetPasswordComponent implements OnInit {
   public mode;
   private oobCode;
-  private invalid: boolean = false;
-  private email;
-  private create_password;
-  private create_selectedCenter;
-  private create_selectedClass;
-  private create_selectedDay;
-  private create_startTime;
-  private create_endTime;
-  private create_confirm_password;
-  private register_selectedRole;
-  private register_selectedCenter;
-  public logoLink = "assets/pictures/logo.png";
-  private days = Object.keys(Days);
-  private classes = Object.keys(Grades);
-  private loading: boolean = false;
-  private user_roles = MANAGEMENT_ROLES;
+  private email: BehaviorSubject<String> = new BehaviorSubject<String>("");
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -36,126 +22,21 @@ export class ResetPasswordComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.activatedRoute.queryParams.subscribe(params => {
+    this.activatedRoute.queryParams.subscribe(async params => {
       if (params["mode"] && params["oobCode"]) {
         this.mode = params["mode"];
         this.oobCode = params["oobCode"];
+        let a = await this.authService.auth.checkActionCode(this.oobCode);
+        this.email.next(a.data.email);
       } else {
         this.mode = params["mode"];
+        this.oobCode = null;
       }
     });
   }
 
-  public isValid() {
-    if (this.mode === "resetPassword") {
-      if (this.create_password) {
-        if (this.create_confirm_password && this.passwordMatches()) {
-          this.invalid = false;
-          return true;
-        } else {
-          this.invalid = true;
-          return false;
-        }
-      }
-    } else if (this.mode === "verifyEmail") {
-      if (
-        this.create_password &&
-        this.create_startTime &&
-        this.create_endTime &&
-        this.create_selectedCenter &&
-        this.create_selectedClass &&
-        this.create_startTime < this.create_endTime
-      ) {
-        if (this.create_confirm_password && this.passwordMatches()) {
-          this.invalid = false;
-          return true;
-        } else {
-          this.invalid = true;
-          return false;
-        }
-      }
-    } else if (this.mode === "register") {
-      if (this.register_selectedCenter && this.register_selectedRole)
-        return true;
-    } else if (this.mode === "reset") {
-      if (this.email) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  passwordMatches() {
-    return this.create_password === this.create_confirm_password;
-  }
-
-  async submit() {
-    this.loading = true;
-    let a: any = {};
-    switch (this.mode) {
-      case "verifyEmail":
-        let response = await this.authService.auth.checkActionCode(
-          this.oobCode
-        );
-        this.email = response.data.email;
-        if (this.email) {
-          await this.authService.auth.applyActionCode(this.oobCode);
-          a = this.createRECOptionsObject();
-          let result = await this.authService.auth.signInWithEmailAndPassword(
-            this.email,
-            PASSWORD_STRING
-          );
-          await result.user.updatePassword(this.create_password);
-          await this.databaseService.set(
-            "/users/" + result.user.uid + "/permissions",
-            a
-          );
-          this.loading = false;
-          alert("Your password has been successfully set");
-        }
-        break;
-
-      case "resetPassword":
-        this.email = await this.authService.auth.verifyPasswordResetCode(
-          this.oobCode
-        );
-        await this.authService.auth.confirmPasswordReset(
-          this.oobCode,
-          this.create_password
-        );
-        alert("Your Password has been successfully reset");
-        break;
-
-      case "register":
-        a.re_center = this.register_selectedCenter;
-        a.re_role = this.register_selectedRole;
-        a.email = this.email;
-        this.authService.requestRegister(a);
-        alert(
-          "Your request to register has been sent. You will be registered within the next 24 hours"
-        );
-        break;
-      case "reset":
-        this.authService.auth.sendPasswordResetEmail(this.email);
-        alert("Your Password Reset Email has been sent");
-        break;
-      default:
-        alert("There was an error, Please try again");
-        break;
-    }
+  async handleSubmit(event) {
+    await this.authService.handleUserFormSubmit(event, this.mode, this.oobCode);
     this.router.navigate(["/login"]);
-  }
-
-  createRECOptionsObject() {
-    let a: any = {};
-    a[this.create_selectedCenter] = {};
-    a[this.create_selectedCenter][this.create_selectedClass] = [
-      this.create_selectedDay +
-        ", " +
-        this.create_startTime.replace(" ", "_") +
-        "-" +
-        this.create_endTime.replace(" ", "_")
-    ];
-    return a;
   }
 }

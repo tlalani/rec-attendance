@@ -1,9 +1,14 @@
 import { Injectable } from "@angular/core";
 import { AngularFireAuth } from "angularfire2/auth";
 import { first } from "rxjs/operators";
-import { isObjEmptyOrUndefined, USER_ROLES } from "src/constants";
+import {
+  isObjEmptyOrUndefined,
+  USER_ROLES,
+  PASSWORD_STRING
+} from "src/constants";
 import { v4 as uuid } from "uuid";
 import { DatabaseService } from "./database.service";
+import { Md5 } from "ts-md5/dist/md5";
 
 @Injectable({
   providedIn: "root"
@@ -46,9 +51,10 @@ export class AuthService {
     this._userRole = res ? USER_ROLES.Admin : USER_ROLES.User;
   }
 
-  public requestRegister(config) {
-    let queryString = "/register/" + uuid();
-    this.databaseService.set(queryString, config);
+  public async requestRegister(config) {
+    let id = Md5.hashStr(config.email);
+    let queryString = "/register/" + id;
+    await this.databaseService.set(queryString, config);
   }
 
   public getCurrentConfig() {
@@ -203,6 +209,54 @@ export class AuthService {
       const queryString = "/register/";
       let a = await this.databaseService.get(queryString, type);
       return a;
+    }
+  }
+
+  async handleUserFormSubmit(formObject, mode, oobCode?) {
+    let a: any = {};
+    try {
+      switch (mode) {
+        case "verifyEmail":
+          console.log(formObject);
+          // await this.auth.applyActionCode(oobCode);
+          // a[formObject.selectedCenter] = {};
+          // a[formObject.selectedCenter][formObject.selectedClass] = [
+          //   formObject.selectedDay +
+          //     ", " +
+          //     formObject.startTime.replace(" ", "_") +
+          //     "-" +
+          //     formObject.endTime.replace(" ", "_")
+          // ];
+          // let result = await this.auth.signInWithEmailAndPassword(
+          //   formObject.email,
+          //   PASSWORD_STRING
+          // );
+          // await result.user.updatePassword(formObject.password);
+          // await this.databaseService.set(
+          //   "/users/" + result.user.uid + "/permissions",
+          //   a
+          // );
+          return true;
+        case "resetPassword":
+          formObject.email = await this.auth.verifyPasswordResetCode(oobCode);
+          await this.auth.confirmPasswordReset(oobCode, formObject.password);
+          return true;
+        case "register":
+          a.re_center = formObject.selectedCenter;
+          a.re_role = formObject.selectedRole;
+          a.email = formObject.email;
+          this.requestRegister(a);
+          return true;
+        case "reset":
+          this.auth.sendPasswordResetEmail(formObject.email);
+          return true;
+        default:
+          console.log(mode);
+          return false;
+      }
+    } catch (err) {
+      console.log(err);
+      return false;
     }
   }
 }

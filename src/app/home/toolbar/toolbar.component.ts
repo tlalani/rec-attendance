@@ -24,8 +24,8 @@ export class ToolbarComponent implements OnInit {
     this.itemClicked.emit("qr");
   }
 
-  addUsers() {
-    this.itemClicked.emit("add-user");
+  changePassword() {
+    this.itemClicked.emit("change-password");
   }
 
   switchView() {

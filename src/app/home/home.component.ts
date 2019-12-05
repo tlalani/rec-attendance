@@ -262,8 +262,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
       case "qr":
         this.router.navigate(["/createqr"]);
         break;
-      case "add-user":
-        this.dialog.open(AdminDialogComponent);
+      case "change-password":
+        this.router.navigate(["/reset"], {
+          queryParams: { mode: "passwordResetManual" }
+        });
       case "switch":
         if (this.activeDash === "admin") {
           if (this.authService.hasCurrentConfig()) {

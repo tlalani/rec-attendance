@@ -36,43 +36,28 @@ export class AdminUserListComponent implements OnInit {
     }
   }
 
-  getChanges(event) {
+  async getChanges(event) {
     if (event.accept) {
-      let user = this._dataSource.value[event.accept.user];
-      this.authService.auth
-        .createUserWithEmailAndPassword(user.email, PASSWORD_STRING)
-        .then(res => {
-          res.user
-            .sendEmailVerification()
-            .then(() => {
-              let arr = this.data$;
-              arr.splice(event.accept.user, 1);
-              this._dataSource.next(arr);
-              this.databaseService.set("/register/" + user.uuid, null);
-            })
-            .catch(err => {
-              alert("There was an error, Please try again");
-            });
-        })
-        .catch(err => {
-          alert("There was an error, Please try again.");
-        });
+      try {
+        let user = this._dataSource.value[event.accept.user];
+        let res = await this.authService.auth.createUserWithEmailAndPassword(
+          user.email,
+          PASSWORD_STRING
+        );
+        await res.user.sendEmailVerification();
+        let arr = this.data$;
+        arr.splice(event.accept.user, 1);
+        this._dataSource.next(arr);
+        this.databaseService.set("/register/" + user.uuid, null);
+      } catch (err) {
+        alert("There was an error please try again");
+      }
     } else {
       let user = event.deny;
-      // let index = this.dataSource.findIndex(item => {
-      //   return item.email === user.email;
-      // });
-      // this.dataSource.splice(index, 1);
-      this.databaseService.remove(
-        "register/" +
-          user.re_center +
-          "/" +
-          user.re_class +
-          "/" +
-          user.re_shift +
-          "/" +
-          user.uuid
-      );
+      let list = this.data$;
+      list.splice(event.deny.user, 1);
+      this._dataSource.next(list);
+      this.databaseService.remove("register/" + user.uuid);
     }
   }
 }

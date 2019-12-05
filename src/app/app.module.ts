@@ -54,6 +54,9 @@ import { AdminDialogComponent } from "./admin-dialog/admin-dialog.component";
 import { ResetPasswordComponent } from "./reset-password/reset-password.component";
 import { AdminUserListComponent } from "./admin-user-list/admin-user-list.component";
 import { AdminUserListTableComponent } from "./admin-user-list/admin-user-list-table/admin-user-list-table.component";
+import { RegisterComponent } from "./reset-password/register/register.component";
+import { CreateComponent } from "./reset-password/create/create.component";
+import { ResetForgotComponent } from "./reset-password/reset-forgot/reset-forgot.component";
 @NgModule({
   declarations: [
     AppComponent,
@@ -75,7 +78,10 @@ import { AdminUserListTableComponent } from "./admin-user-list/admin-user-list-t
     AdminDialogComponent,
     ResetPasswordComponent,
     AdminUserListComponent,
-    AdminUserListTableComponent
+    AdminUserListTableComponent,
+    RegisterComponent,
+    CreateComponent,
+    ResetForgotComponent
   ],
   imports: [
     BrowserModule,
