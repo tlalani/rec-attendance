@@ -6,11 +6,11 @@ import { DatabaseService } from "../database.service";
 import { Observable, BehaviorSubject } from "rxjs";
 
 @Component({
-  selector: "app-reset-password",
-  templateUrl: "./reset-password.component.html",
-  styleUrls: ["./reset-password.component.scss"]
+  selector: "app-password-actions",
+  templateUrl: "./password-actions.component.html",
+  styleUrls: ["./password-actions.component.scss"]
 })
-export class ResetPasswordComponent implements OnInit {
+export class PasswordActionsComponent implements OnInit {
   public mode;
   private oobCode;
   private email: BehaviorSubject<String> = new BehaviorSubject<String>("");

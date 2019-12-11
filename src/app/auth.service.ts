@@ -214,41 +214,56 @@ export class AuthService {
 
   async handleUserFormSubmit(formObject, mode, oobCode?) {
     let a: any = {};
+    const {
+      email,
+      password,
+      selectedRole,
+      selectedCenter,
+      selectedClass,
+      selectedDay,
+      startTime,
+      endTime
+    } = formObject;
     try {
       switch (mode) {
         case "verifyEmail":
-          console.log(formObject);
-          // await this.auth.applyActionCode(oobCode);
-          // a[formObject.selectedCenter] = {};
-          // a[formObject.selectedCenter][formObject.selectedClass] = [
-          //   formObject.selectedDay +
-          //     ", " +
-          //     formObject.startTime.replace(" ", "_") +
-          //     "-" +
-          //     formObject.endTime.replace(" ", "_")
-          // ];
-          // let result = await this.auth.signInWithEmailAndPassword(
-          //   formObject.email,
-          //   PASSWORD_STRING
-          // );
-          // await result.user.updatePassword(formObject.password);
-          // await this.databaseService.set(
-          //   "/users/" + result.user.uid + "/permissions",
-          //   a
-          // );
+          await this.auth.applyActionCode(oobCode);
+          let sc1 =
+            selectedCenter.substring(0, 1).toUpperCase() +
+            selectedCenter.substr(1);
+          a[sc1] = {};
+          a[sc1][selectedClass] = [
+            selectedDay +
+              ", " +
+              startTime.replace(" ", "_") +
+              "-" +
+              endTime.replace(" ", "_")
+          ];
+          let result = await this.auth.signInWithEmailAndPassword(
+            email,
+            PASSWORD_STRING
+          );
+          await result.user.updatePassword(password);
+          await this.databaseService.set(
+            "/users/" + result.user.uid + "/permissions",
+            a
+          );
           return true;
         case "resetPassword":
           formObject.email = await this.auth.verifyPasswordResetCode(oobCode);
-          await this.auth.confirmPasswordReset(oobCode, formObject.password);
+          await this.auth.confirmPasswordReset(oobCode, password);
           return true;
         case "register":
-          a.re_center = formObject.selectedCenter;
-          a.re_role = formObject.selectedRole;
-          a.email = formObject.email;
+          let sc =
+            selectedCenter.substring(0, 1).toUpperCase() +
+            selectedCenter.substr(1);
+          a.re_center = sc;
+          a.re_role = selectedRole;
+          a.email = email;
           this.requestRegister(a);
           return true;
-        case "reset":
-          this.auth.sendPasswordResetEmail(formObject.email);
+        case "forgotPassword":
+          this.auth.sendPasswordResetEmail(email);
           return true;
         default:
           console.log(mode);

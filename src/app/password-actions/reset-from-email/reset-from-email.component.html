@@ -1,0 +1,37 @@
+<form
+  class="form-container"
+  [formGroup]="form"
+  fxLayout="column"
+  fxLayoutAlign="center"
+  (ngSubmit)="submitForm()"
+>
+  <mat-form-field appearance="fill">
+    <mat-label>New Password</mat-label>
+    <input
+      class="primary-text-color"
+      matInput
+      type="password"
+      formControlName="password"
+    />
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Confirm Password</mat-label>
+    <input
+      class="primary-text-color"
+      matInput
+      type="password"
+      formControlName="passwordConfirm"
+    />
+    <mat-error *ngIf="form.hasError('notSame')"
+      >Passwords do not match</mat-error
+    >
+  </mat-form-field>
+  <button
+    type="submit"
+    mat-flat-button
+    class="light-primary-color password-submit-button"
+    [disabled]="this.form.invalid"
+  >
+    Submit
+  </button>
+</form>

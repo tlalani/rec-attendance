@@ -5,6 +5,7 @@ import { AngularFireReturnTypes, PASSWORD_STRING } from "src/constants";
 import { Observable, BehaviorSubject } from "rxjs";
 import { MatTable } from "@angular/material";
 import { DatabaseService } from "../database.service";
+import { Md5 } from "ts-md5";
 
 @Component({
   selector: "app-admin-user-list",
@@ -27,10 +28,12 @@ export class AdminUserListComponent implements OnInit {
     );
     if (result) {
       Object.keys(result).forEach(key1 => {
-        let uuid = key1;
-        let obj = result[uuid];
-        obj.uuid = uuid;
-        r.push(obj);
+        let emailHash = key1;
+        if (Md5.hashStr(result[emailHash].email) === emailHash) {
+          let obj = result[emailHash];
+          obj.emailHash = emailHash;
+          r.push(obj);
+        }
       });
       this._dataSource.next(r);
     }
@@ -46,10 +49,12 @@ export class AdminUserListComponent implements OnInit {
         );
         await res.user.sendEmailVerification();
         let arr = this.data$;
-        arr.splice(event.accept.user, 1);
+        let data = user;
         this._dataSource.next(arr);
-        this.databaseService.set("/register/" + user.uuid, null);
+        this.databaseService.set("register/" + user.emailHash, null);
+        this.databaseService.set("register/" + res.user.uid, data);
       } catch (err) {
+        console.log("ERROR on [getChanges]", err);
         alert("There was an error please try again");
       }
     } else {
