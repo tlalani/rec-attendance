@@ -1,7 +1,6 @@
 import { Component, OnInit, AfterViewInit } from "@angular/core";
 import { GridsterConfig } from "angular-gridster2";
 import { AttendanceComponent } from "../attendance/attendance.component";
-import { AngularFireAuth } from "angularfire2/auth";
 import { Router } from "@angular/router";
 import { ChartsComponent } from "../charts/charts.component";
 import { TourService } from "ngx-tour-md-menu";
@@ -10,8 +9,8 @@ import { AuthService } from "../auth.service";
 import { MatDialog } from "@angular/material";
 import { RecOptionsDialogComponent } from "../rec-options-dialog/rec-options-dialog.component";
 import { EditRosterComponent } from "../edit-roster/edit-roster.component";
-import { AdminDialogComponent } from "../admin-dialog/admin-dialog.component";
 import { AdminUserListComponent } from "../admin-user-list/admin-user-list.component";
+import { ResetManualComponent } from "../password-actions/reset-manual/reset-manual.component";
 @Component({
   selector: "app-home",
   templateUrl: "./home.component.html",
@@ -262,8 +261,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
       case "qr":
         this.router.navigate(["/createqr"]);
         break;
-      case "add-user":
-        this.dialog.open(AdminDialogComponent);
+      case "change-password":
+        this.dialog.open(ResetManualComponent);
+        break;
       case "switch":
         if (this.activeDash === "admin") {
           if (this.authService.hasCurrentConfig()) {

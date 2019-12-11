@@ -1,9 +1,14 @@
 import { Injectable } from "@angular/core";
 import { AngularFireAuth } from "angularfire2/auth";
 import { first } from "rxjs/operators";
-import { isObjEmptyOrUndefined, USER_ROLES } from "src/constants";
+import {
+  isObjEmptyOrUndefined,
+  USER_ROLES,
+  PASSWORD_STRING
+} from "src/constants";
 import { v4 as uuid } from "uuid";
 import { DatabaseService } from "./database.service";
+import { Md5 } from "ts-md5/dist/md5";
 
 @Injectable({
   providedIn: "root"
@@ -46,9 +51,10 @@ export class AuthService {
     this._userRole = res ? USER_ROLES.Admin : USER_ROLES.User;
   }
 
-  public requestRegister(config) {
-    let queryString = "/register/" + uuid();
-    this.databaseService.set(queryString, config);
+  public async requestRegister(config) {
+    let id = Md5.hashStr(config.email);
+    let queryString = "/register/" + id;
+    await this.databaseService.set(queryString, config);
   }
 
   public getCurrentConfig() {
@@ -203,6 +209,69 @@ export class AuthService {
       const queryString = "/register/";
       let a = await this.databaseService.get(queryString, type);
       return a;
+    }
+  }
+
+  async handleUserFormSubmit(formObject, mode, oobCode?) {
+    let a: any = {};
+    const {
+      email,
+      password,
+      selectedRole,
+      selectedCenter,
+      selectedClass,
+      selectedDay,
+      startTime,
+      endTime
+    } = formObject;
+    try {
+      switch (mode) {
+        case "verifyEmail":
+          await this.auth.applyActionCode(oobCode);
+          let sc1 =
+            selectedCenter.substring(0, 1).toUpperCase() +
+            selectedCenter.substr(1);
+          a[sc1] = {};
+          a[sc1][selectedClass] = [
+            selectedDay +
+              ", " +
+              startTime.replace(" ", "_") +
+              "-" +
+              endTime.replace(" ", "_")
+          ];
+          let result = await this.auth.signInWithEmailAndPassword(
+            email,
+            PASSWORD_STRING
+          );
+          await result.user.updatePassword(password);
+          await this.databaseService.set(
+            "/users/" + result.user.uid + "/permissions",
+            a
+          );
+          return true;
+        case "resetPassword":
+          formObject.email = await this.auth.verifyPasswordResetCode(oobCode);
+          await this.auth.confirmPasswordReset(oobCode, password);
+          return true;
+        case "register":
+          let sc =
+            selectedCenter.substring(0, 1).toUpperCase() +
+            selectedCenter.substr(1);
+          a.re_center = sc;
+          a.re_role = selectedRole;
+          a.email = email;
+          this.requestRegister(a);
+          return true;
+        case "forgotPassword":
+          this.auth.sendPasswordResetEmail(email);
+          return true;
+        default:
+          console.log(mode);
+          return false;
+      }
+    } catch (err) {
+      console.log(err);
+      return false;
     }
   }
 }

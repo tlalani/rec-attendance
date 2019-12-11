@@ -6,7 +6,7 @@ import {
   EventEmitter,
   ViewChild
 } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, BehaviorSubject } from "rxjs";
 import { MatTable } from "@angular/material";
 
 @Component({
@@ -17,12 +17,10 @@ import { MatTable } from "@angular/material";
 export class AdminUserListTableComponent implements OnInit {
   public displayedColumns = ["role", "center", "email", "accept/deny"];
   public colNames = ["Role", "Center", "Email", "Accept/Deny"];
-  @Input() source: Observable<any[]>;
+  @Input() source: BehaviorSubject<String>;
   @Output() changes = new EventEmitter();
   public dataSource;
   constructor() {}
-
-  @ViewChild(MatTable) table: MatTable<any>;
 
   ngOnInit() {
     this.source.subscribe(list => {

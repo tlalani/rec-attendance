@@ -12,7 +12,6 @@ import { Type } from "src/constants";
 export class LoginComponent implements OnInit {
   public email: string = "";
   public password: string = "";
-  public logoLink = "assets/pictures/logo.png";
   public type: string = Type.Password;
   public flipDiv: boolean = false;
   public currentConfig: any = {};
@@ -34,7 +33,9 @@ export class LoginComponent implements OnInit {
   }
 
   public goToReset() {
-    this.router.navigate(["/reset"], { queryParams: { mode: "reset" } });
+    this.router.navigate(["/reset"], {
+      queryParams: { mode: "forgotPassword" }
+    });
   }
 
   public getType() {

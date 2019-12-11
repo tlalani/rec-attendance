@@ -50,10 +50,14 @@ import { AuthService } from "./auth.service";
 import { EditRosterComponent } from "./edit-roster/edit-roster.component";
 import { AddStudentsDialogComponent } from "./add-students-dialog/add-students-dialog.component";
 import { RosterTableComponent } from "./edit-roster/roster-table/roster-table.component";
-import { AdminDialogComponent } from "./admin-dialog/admin-dialog.component";
-import { ResetPasswordComponent } from "./reset-password/reset-password.component";
+import { PasswordActionsComponent } from "./password-actions/password-actions.component";
+import { ForgotComponent } from "./password-actions/forgot/forgot.component";
 import { AdminUserListComponent } from "./admin-user-list/admin-user-list.component";
 import { AdminUserListTableComponent } from "./admin-user-list/admin-user-list-table/admin-user-list-table.component";
+import { RegisterComponent } from "./password-actions/register/register.component";
+import { CreateComponent } from "./password-actions/create/create.component";
+import { ResetFromEmailComponent } from "./password-actions/reset-from-email/reset-from-email.component";
+import { ResetManualComponent } from "./password-actions/reset-manual/reset-manual.component";
 @NgModule({
   declarations: [
     AppComponent,
@@ -72,10 +76,14 @@ import { AdminUserListTableComponent } from "./admin-user-list/admin-user-list-t
     EditRosterComponent,
     AddStudentsDialogComponent,
     RosterTableComponent,
-    AdminDialogComponent,
-    ResetPasswordComponent,
     AdminUserListComponent,
-    AdminUserListTableComponent
+    AdminUserListTableComponent,
+    RegisterComponent,
+    CreateComponent,
+    PasswordActionsComponent,
+    ForgotComponent,
+    ResetFromEmailComponent,
+    ResetManualComponent
   ],
   imports: [
     BrowserModule,
@@ -124,8 +132,8 @@ import { AdminUserListTableComponent } from "./admin-user-list/admin-user-list-t
     EditRosterComponent,
     AddStudentsDialogComponent,
     SubmitDialogComponent,
-    AdminDialogComponent,
-    AdminUserListComponent
+    AdminUserListComponent,
+    ResetManualComponent
   ]
 })
 export class AppModule {}
