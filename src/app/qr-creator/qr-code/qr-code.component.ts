@@ -18,7 +18,13 @@ export class QrCodeComponent implements OnInit {
   ngOnInit() {
     this.displayString = this.person.Role + ":" + this.person.Name;
     const { folder, index } = this.qrCodeService.getFolderAndIndex(this.person);
-    this.piclink = "assets/pictures/" + folder + "/" + index + ".jpg";
+
+    this.piclink =
+      "https://firebasestorage.googleapis.com/v0/b/attendance-rec.appspot.com/o/pictures%2F" +
+      folder +
+      "%2F" +
+      index +
+      ".jpg?alt=media";
 
     this.qrlink =
       "https://api.qrserver.com/v1/create-qr-code/?size=170x170&data=" +

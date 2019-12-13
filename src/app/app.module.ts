@@ -3,6 +3,7 @@ import { NgModule } from "@angular/core";
 import { AngularFireModule } from "angularfire2";
 import { AngularFireDatabaseModule } from "angularfire2/database";
 import { AngularFireAuthModule } from "angularfire2/auth";
+import { AngularFireStorageModule } from "angularfire2/storage";
 import { AppRoutingModule, routingModules } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -107,6 +108,7 @@ import { ResetManualComponent } from "./password-actions/reset-manual/reset-manu
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireDatabaseModule,
     AngularFireAuthModule,
+    AngularFireStorageModule,
     MatProgressSpinnerModule,
     MatToolbarModule,
     MatTabsModule,
