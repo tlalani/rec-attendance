@@ -232,12 +232,9 @@ export class AuthService {
             selectedCenter.substring(0, 1).toUpperCase() +
             selectedCenter.substr(1);
           a[sc1] = {};
-          a[sc1][selectedClass] = [
-            selectedDay +
-              ", " +
-              startTime.replace(" ", "_") +
-              "-" +
-              endTime.replace(" ", "_")
+          a[sc1][selectedClass] = {};
+          a[sc1][selectedClass][selectedDay] = [
+            startTime.replace(" ", "_") + "-" + endTime.replace(" ", "_")
           ];
           let result = await this.auth.signInWithEmailAndPassword(
             email,
