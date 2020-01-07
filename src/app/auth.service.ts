@@ -1,30 +1,33 @@
 import { Injectable } from "@angular/core";
 import { AngularFireAuth } from "angularfire2/auth";
-import { AttendanceService } from "./attendance/attendance.service";
-import { first, isEmpty } from "rxjs/operators";
-import { isObjEmpty } from "src/constants";
-import * as firebase from "firebase";
-import { async } from "@angular/core/testing";
+import { first } from "rxjs/operators";
+import {
+  isObjEmptyOrUndefined,
+  USER_ROLES,
+  PASSWORD_STRING
+} from "src/constants";
+import { v4 as uuid } from "uuid";
+import { DatabaseService } from "./database.service";
+import { Md5 } from "ts-md5/dist/md5";
 
 @Injectable({
   providedIn: "root"
 })
 export class AuthService {
   private user: firebase.User;
-  private config: any = {};
   private currentConfig: any = {};
   private CURRENT_CONFIG_KEY: string = "currentConfig";
-  private CONFIG_KEY: string = "config";
-  private _isUserAdmin;
+  private _userRole;
+  public dataSource;
   constructor(
     private afAuth: AngularFireAuth,
-    private attendanceService: AttendanceService
+    private databaseService: DatabaseService
   ) {}
 
   get auth(): firebase.auth.Auth {
     return this.afAuth.auth;
   }
-  get currentUser(): any {
+  get currentUser(): firebase.User {
     return this.user;
   }
 
@@ -33,90 +36,83 @@ export class AuthService {
   }
 
   get isAdmin(): any {
-    return this._isUserAdmin;
+    return this._userRole === USER_ROLES.Admin;
   }
 
-  async _isAdmin() {
-    this.user = await this.getLoggedInUser();
-    return await this.attendanceService
-      .get("/users/" + this.currentUserId + "/permissions/admin")
-      .then(res => {
-        this._isUserAdmin = res || false;
-        return this.user;
-      });
+  private get userId(): any {
+    return this.afAuth.auth.currentUser.uid;
+  }
+
+  private async setUser() {
+    this.user = await this._getLoggedInUser();
+    let res = await this.databaseService.get(
+      "/users/" + this.currentUserId + "/permissions/admin"
+    );
+    this._userRole = res ? USER_ROLES.Admin : USER_ROLES.User;
+  }
+
+  public async requestRegister(config) {
+    let id = Md5.hashStr(config.email);
+    let queryString = "/register/" + id;
+    await this.databaseService.set(queryString, config);
   }
 
   public getCurrentConfig() {
-    if (this.currentConfig && !isObjEmpty(this.currentConfig)) {
+    if (this.currentConfig && !isObjEmptyOrUndefined(this.currentConfig)) {
       return this.currentConfig;
     } else if (this.getCurrentConfigFromStorage()) {
       this.currentConfig = this.getCurrentConfigFromStorage();
       return this.currentConfig;
     }
-    // } else {
-    //   // await this.getRECOptions().then(config => {
-    //   //   return (this.currentConfig = config);
-    //   // });
-    // }
   }
 
-  public getFullConfig() {
-    if (!this.config || isObjEmpty(this.config)) {
-      this.config = JSON.parse(sessionStorage.getItem(this.CONFIG_KEY));
-    }
-    return this.config;
-  }
-
-  hasCurrentConfig() {
+  public hasCurrentConfig() {
     return (
-      this.currentConfig &&
-      this.currentConfig.re_center &&
-      this.currentConfig.re_class &&
-      this.currentConfig.re_shift
+      (this.currentConfig &&
+        this.currentConfig.re_center &&
+        this.currentConfig.re_class &&
+        this.currentConfig.re_shift) ||
+      sessionStorage.getItem(this.CURRENT_CONFIG_KEY) !== null
     );
   }
 
-  getCurrentConfigFromStorage() {
+  private getCurrentConfigFromStorage() {
     let a = JSON.parse(sessionStorage.getItem(this.CURRENT_CONFIG_KEY));
     return a;
   }
 
-  getCenters() {
-    return Object.keys(this.config);
+  async getCenters() {
+    return await this._getCenters();
   }
 
-  getClasses(center: string) {
-    return Object.keys(this.config[center]);
+  async getClasses(center: string) {
+    return await this._getClasses(center);
   }
 
-  getShifts(center: string, re_class: string) {
-    return this.config[center][re_class];
+  async getShifts(center: string, re_class: string) {
+    return await this._getShifts(center, re_class);
   }
 
-  removeCurrentStoredConfig() {
+  public removeCurrentStoredConfig() {
     sessionStorage.removeItem(this.CURRENT_CONFIG_KEY);
   }
 
-  signIn(email, password) {
-    return this.afAuth.auth
-      .setPersistence("session")
-      .then(() => {
-        return this.afAuth.auth
-          .signInWithEmailAndPassword(email, password)
-          .then(() => {
-            return this._isAdmin();
-          })
-          .catch(error => {
-            console.log(error);
-            return null;
-          });
-      })
-      .catch(error => {
-        console.log(error);
-      });
+  async signIn(email, password) {
+    try {
+      await this.afAuth.auth.setPersistence("session");
+      let user = await this.afAuth.auth.signInWithEmailAndPassword(
+        email,
+        password
+      );
+      await this.setUser();
+      return user;
+    } catch (err) {
+      console.log(err);
+      alert("There was an error signing in");
+    }
   }
 
-  async getLoggedInUser() {
+  private async _getLoggedInUser() {
     if (this.user) return this.user;
     return await this.afAuth.authState
       .pipe(first())
@@ -126,40 +122,78 @@ export class AuthService {
       });
   }
 
-  signOut() {
+  public signOut() {
     this.user = null;
-    this._isUserAdmin = null;
+    this._userRole = null;
+    this.removeCurrentStoredConfig();
+    this.currentConfig = {};
     return this.afAuth.auth.signOut();
   }
 
-  async getRECOptions() {
-    await this._getCenters();
-    return { config: this.config };
+  private async _getCenters() {
+    let centers = [];
+    let queryString = "";
+    if (this.isAdmin) queryString = "REC/";
+    else queryString = "users/" + this.userId + "/permissions";
+    try {
+      let res = await this.databaseService.get(queryString);
+      if (res) {
+        Object.keys(res).forEach(center => centers.push(center));
+      }
+      return centers;
+    } catch (err) {
+      console.log("ERROR ON [getCenters]", err);
+      return centers;
+    }
   }
 
-  private _getCenters() {
-    const queryString =
-      "users/" + this.afAuth.auth.currentUser.uid + "/permissions";
-    return this.attendanceService.get(queryString).then(result => {
-      if (result) {
-        Object.keys(result).forEach(center => {
-          if (center === "admin" && result[center] === "true")
-            this.config.admin = true;
-          this.config[center] = {};
-          Object.keys(result[center]).forEach(re_class => {
-            this.config[center][re_class] = [];
-            Object.values(result[center][re_class]).forEach(re_shift => {
-              this.config[center][re_class].push(re_shift);
-            });
+  private async _getClasses(center) {
+    let classes = [];
+    let queryString = "";
+    if (this.isAdmin) {
+      queryString = "REC/" + center;
+    } else {
+      queryString = "users/" + this.userId + "/permissions/" + center;
+    }
+    try {
+      let res = await this.databaseService.get(queryString);
+      if (res) {
+        Object.keys(res).forEach(re_class => classes.push(re_class));
+      }
+      return classes;
+    } catch (err) {
+      console.log("ERROR ON [getClasses]", err);
+      return [];
+    }
+  }
+
+  private async _getShifts(center, re_class) {
+    let shifts = [];
+    let queryString = "";
+    if (this.isAdmin) {
+      queryString = "REC/" + center + "/" + re_class + "/Shifts";
+    } else {
+      queryString =
+        "users/" + this.userId + "/permissions/" + center + "/" + re_class;
+    }
+    try {
+      let res = await this.databaseService.get(queryString);
+      if (res) {
+        Object.keys(res).forEach(shiftDay => {
+          Object.keys(res[shiftDay]).forEach(shiftTime => {
+            if (typeof res[shiftDay][shiftTime] === typeof {}) {
+              shifts.push(shiftDay + ", " + shiftTime);
+            } else {
+              shifts.push(shiftDay + ", " + res[shiftDay][shiftTime]);
+            }
           });
         });
       }
-    });
-  }
-
-  public setAllOptions(config) {
-    this.config = config;
-    sessionStorage.setItem(this.CONFIG_KEY, JSON.stringify(config));
+      return shifts;
+    } catch (err) {
+      console.log("ERROR ON [getShifts]", err);
+      return shifts;
+    }
   }
 
   public setOptions(currentConfig) {
@@ -168,5 +202,73 @@ export class AuthService {
       this.CURRENT_CONFIG_KEY,
       JSON.stringify(this.currentConfig)
     );
+  }
+
+  async getAllUsers(type) {
+    if (this.isAdmin) {
+      const queryString = "/register/";
+      let a = await this.databaseService.get(queryString, type);
+      return a;
+    }
+  }
+
+  async handleUserFormSubmit(formObject, mode, oobCode?) {
+    let a: any = {};
+    const {
+      email,
+      password,
+      selectedRole,
+      selectedCenter,
+      selectedClass,
+      selectedDay,
+      startTime,
+      endTime
+    } = formObject;
+    try {
+      switch (mode) {
+        case "verifyEmail":
+          await this.auth.applyActionCode(oobCode);
+          let sc1 =
+            selectedCenter.substring(0, 1).toUpperCase() +
+            selectedCenter.substr(1);
+          a[sc1] = {};
+          a[sc1][selectedClass] = {};
+          a[sc1][selectedClass][selectedDay] = [
+            startTime.replace(" ", "_") + "-" + endTime.replace(" ", "_")
+          ];
+          let result = await this.auth.signInWithEmailAndPassword(
+            email,
+            PASSWORD_STRING
+          );
+          await result.user.updatePassword(password);
+          await this.databaseService.set(
+            "/users/" + result.user.uid + "/permissions",
+            a
+          );
+          return true;
+        case "resetPassword":
+          formObject.email = await this.auth.verifyPasswordResetCode(oobCode);
+          await this.auth.confirmPasswordReset(oobCode, password);
+          return true;
+        case "register":
+          let sc =
+            selectedCenter.substring(0, 1).toUpperCase() +
+            selectedCenter.substr(1);
+          a.re_center = sc;
+          a.re_role = selectedRole;
+          a.email = email;
+          this.requestRegister(a);
+          return true;
+        case "forgotPassword":
+          this.auth.sendPasswordResetEmail(email);
+          return true;
+        default:
+          console.log(mode);
+          return false;
+      }
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
   }
 }

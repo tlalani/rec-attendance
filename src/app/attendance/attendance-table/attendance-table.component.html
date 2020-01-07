@@ -147,7 +147,7 @@
     ></mat-header-row>
     <mat-row
       *matRowDef="let row; columns: displayedColumns"
-      [ngClass]="{ teacher: row.Role === 'Teacher' }"
+      [ngClass]="{ teacher: row.Role === 'Teacher', ta: row.Role === 'TA' }"
     ></mat-row>
   </mat-table>
 </div>

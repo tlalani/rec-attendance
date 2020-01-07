@@ -3,6 +3,7 @@ import { NgModule } from "@angular/core";
 import { AngularFireModule } from "angularfire2";
 import { AngularFireDatabaseModule } from "angularfire2/database";
 import { AngularFireAuthModule } from "angularfire2/auth";
+import { AngularFireStorageModule } from "angularfire2/storage";
 import { AppRoutingModule, routingModules } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -50,8 +51,14 @@ import { AuthService } from "./auth.service";
 import { EditRosterComponent } from "./edit-roster/edit-roster.component";
 import { AddStudentsDialogComponent } from "./add-students-dialog/add-students-dialog.component";
 import { RosterTableComponent } from "./edit-roster/roster-table/roster-table.component";
-import { AdminDialogComponent } from "./admin-dialog/admin-dialog.component";
-import { ResetPasswordComponent } from "./reset-password/reset-password.component";
+import { PasswordActionsComponent } from "./password-actions/password-actions.component";
+import { ForgotComponent } from "./password-actions/forgot/forgot.component";
+import { AdminUserListComponent } from "./admin-user-list/admin-user-list.component";
+import { AdminUserListTableComponent } from "./admin-user-list/admin-user-list-table/admin-user-list-table.component";
+import { RegisterComponent } from "./password-actions/register/register.component";
+import { CreateComponent } from "./password-actions/create/create.component";
+import { ResetFromEmailComponent } from "./password-actions/reset-from-email/reset-from-email.component";
+import { ResetManualComponent } from "./password-actions/reset-manual/reset-manual.component";
 @NgModule({
   declarations: [
     AppComponent,
@@ -70,8 +77,14 @@ import { ResetPasswordComponent } from "./reset-password/reset-password.componen
     EditRosterComponent,
     AddStudentsDialogComponent,
     RosterTableComponent,
-    AdminDialogComponent,
-    ResetPasswordComponent
+    AdminUserListComponent,
+    AdminUserListTableComponent,
+    RegisterComponent,
+    CreateComponent,
+    PasswordActionsComponent,
+    ForgotComponent,
+    ResetFromEmailComponent,
+    ResetManualComponent
   ],
   imports: [
     BrowserModule,
@@ -95,6 +108,7 @@ import { ResetPasswordComponent } from "./reset-password/reset-password.componen
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireDatabaseModule,
     AngularFireAuthModule,
+    AngularFireStorageModule,
     MatProgressSpinnerModule,
     MatToolbarModule,
     MatTabsModule,
@@ -120,7 +134,8 @@ import { ResetPasswordComponent } from "./reset-password/reset-password.componen
     EditRosterComponent,
     AddStudentsDialogComponent,
     SubmitDialogComponent,
-    AdminDialogComponent
+    AdminUserListComponent,
+    ResetManualComponent
   ]
 })
 export class AppModule {}

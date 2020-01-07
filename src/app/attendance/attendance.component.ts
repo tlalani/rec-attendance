@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { MatDatepickerInputEvent, MatDialog } from "@angular/material";
-import { AttendanceService } from "./attendance.service";
+import { MatDatepickerInputEvent } from "@angular/material";
 import { Angular5Csv } from "angular5-csv/dist/Angular5-csv";
 import {
   Person,
@@ -12,12 +11,11 @@ import {
   Roles,
   getDay,
   Days,
-  isObjEmpty,
-  PersonDTO
+  isObjEmptyOrUndefined
 } from "src/constants";
 import { formatDate } from "@angular/common";
 import { AuthService } from "../auth.service";
-import { Router } from "@angular/router";
+import { DatabaseService } from "../database.service";
 @Component({
   selector: "app-attendance",
   templateUrl: "./attendance.component.html",
@@ -37,8 +35,8 @@ export class AttendanceComponent implements OnInit {
   public shifts: string[];
   currentConfig: any = {};
   constructor(
-    private attendanceService: AttendanceService,
-    private authService: AuthService
+    private authService: AuthService,
+    private databaseService: DatabaseService
   ) {}
 
   ngOnInit() {
@@ -65,8 +63,8 @@ export class AttendanceComponent implements OnInit {
   }
 
   public getPeopleQuery(schoolYear) {
-    this.attendanceService
-      .getPeopleFormatted(schoolYear, this.currentConfig)
+    this.databaseService
+      .getFormattedRoster(schoolYear, this.currentConfig)
       .then(result => {
         if (result) {
           this.people = result;
@@ -82,7 +80,7 @@ export class AttendanceComponent implements OnInit {
       this.getPeopleQuery(this.schoolYear);
     }
     this.result = [];
-    this.attendanceService
+    this.databaseService
       .queryAttendanceForSpecificDayFormatted(
         this.currentDate,
         this.currentConfig
@@ -90,7 +88,7 @@ export class AttendanceComponent implements OnInit {
       .then(totalResult => {
         if (totalResult) {
           Object.keys(this.people).forEach(role => {
-            if (!isObjEmpty(totalResult[role])) {
+            if (!isObjEmptyOrUndefined(totalResult[role])) {
               Object.keys(this.people[role]).forEach(key => {
                 for (let personInGrade of this.people[role][key]) {
                   personInGrade.Role = role;
@@ -115,7 +113,9 @@ export class AttendanceComponent implements OnInit {
                 }
               });
             } else {
+              totalResult[role] = {};
               Object.keys(this.people[role]).forEach(key => {
+                totalResult[role][key] = [];
                 this.people[role][key].forEach(person => {
                   let p = new Person(person);
                   p.editable = true;
@@ -210,7 +210,7 @@ export class AttendanceComponent implements OnInit {
   }
 
   public saveEdits(student: Person) {
-    const res = this.attendanceService.sendToDatabase(
+    const res = this.databaseService.sendToDatabase(
       this.currentDate,
       student,
       this.currentConfig

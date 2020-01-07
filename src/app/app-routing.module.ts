@@ -7,7 +7,7 @@ import { QrCreatorComponent } from "./qr-creator/qr-creator.component";
 import { ManualQrComponent } from "./qr-creator/manual-qr/manual-qr.component";
 import { ChartsComponent } from "./charts/charts.component";
 import { EditRosterComponent } from "./edit-roster/edit-roster.component";
-import { ResetPasswordComponent } from "./reset-password/reset-password.component";
+import { PasswordActionsComponent } from "./password-actions/password-actions.component";
 const routes: Routes = [
   { path: "login", component: LoginComponent },
   { path: "home", component: HomeComponent },
@@ -16,7 +16,8 @@ const routes: Routes = [
   { path: "attendance", component: AttendanceComponent },
   { path: "manual-qr", component: ManualQrComponent },
   { path: "edit-roster", component: EditRosterComponent },
-  { path: "reset", component: ResetPasswordComponent }
+  { path: "reset", component: PasswordActionsComponent },
+  { path: "register", component: PasswordActionsComponent }
 ];
 
 @NgModule({

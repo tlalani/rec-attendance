@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { AngularFireAuth } from "angularfire2/auth";
 import { AuthService } from "../auth.service";
 import { Type } from "src/constants";
 
@@ -12,10 +11,8 @@ import { Type } from "src/constants";
 export class LoginComponent implements OnInit {
   public email: string = "";
   public password: string = "";
-  public logoLink = "assets/pictures/logo.png";
   public type: string = Type.Password;
   public flipDiv: boolean = false;
-  public config: any = {};
   public currentConfig: any = {};
   public centers = [];
   public classes = [];
@@ -24,22 +21,19 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {}
 
-  public onLoginClick() {
-    this.authService.signIn(this.email, this.password).then(user => {
-      if (user) {
-        this.getOptions().then(res => {
-          if (res.config.admin && res.config.admin === "true") {
-            this.flip();
-            return;
-          }
-          this.authService.setAllOptions(res.config);
-          this.config = res.config;
-          this.centers = Object.keys(this.config);
-          this.flip();
-        });
-      } else {
-        alert("Could not sign you in");
-      }
+  public async onLoginClick() {
+    await this.authService.signIn(this.email, this.password);
+    this.centers = await this.authService.getCenters();
+    this.flip();
+  }
+
+  public goToRegister() {
+    this.router.navigate(["/reset"], { queryParams: { mode: "register" } });
+  }
+
+  public goToReset() {
+    this.router.navigate(["/reset"], {
+      queryParams: { mode: "forgotPassword" }
     });
   }
 
@@ -49,7 +43,6 @@ export class LoginComponent implements OnInit {
 
   public flip() {
     this.flipDiv = !this.flipDiv;
-    console.log(this.authService.isAdmin);
   }
 
   public changeType() {
@@ -60,19 +53,18 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  public getOptions() {
-    return this.authService.getRECOptions();
-  }
-
-  public makeChange(type) {
+  public async makeChange(type) {
     switch (type) {
       case 0:
-        this.classes = Object.keys(this.config[this.currentConfig.re_center]);
+        this.classes = await this.authService.getClasses(
+          this.currentConfig.re_center
+        );
         break;
       case 1:
-        this.shifts = this.config[this.currentConfig.re_center][
+        this.shifts = await this.authService.getShifts(
+          this.currentConfig.re_center,
           this.currentConfig.re_class
-        ];
+        );
         break;
       case 2:
         this.authService.setOptions(this.currentConfig);
@@ -84,6 +76,7 @@ export class LoginComponent implements OnInit {
     this.authService.signOut().then(() => {
       this.email = "";
       this.password = "";
+      this.currentConfig = {};
       this.flip();
     });
   }

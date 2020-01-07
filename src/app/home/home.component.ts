@@ -1,7 +1,6 @@
 import { Component, OnInit, AfterViewInit } from "@angular/core";
 import { GridsterConfig } from "angular-gridster2";
 import { AttendanceComponent } from "../attendance/attendance.component";
-import { AngularFireAuth } from "angularfire2/auth";
 import { Router } from "@angular/router";
 import { ChartsComponent } from "../charts/charts.component";
 import { TourService } from "ngx-tour-md-menu";
@@ -10,18 +9,62 @@ import { AuthService } from "../auth.service";
 import { MatDialog } from "@angular/material";
 import { RecOptionsDialogComponent } from "../rec-options-dialog/rec-options-dialog.component";
 import { EditRosterComponent } from "../edit-roster/edit-roster.component";
-import { AdminDialogComponent } from "../admin-dialog/admin-dialog.component";
+import { AdminUserListComponent } from "../admin-user-list/admin-user-list.component";
+import { ResetManualComponent } from "../password-actions/reset-manual/reset-manual.component";
 @Component({
   selector: "app-home",
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.scss"]
 })
 export class HomeComponent implements OnInit, AfterViewInit {
-  public options: GridsterConfig;
+  public options: GridsterConfig = {
+    itemChangeCallback: this.itemChange,
+    itemResizeCallback: this.itemResize,
+    resizable: {
+      enabled: false
+    },
+    draggable: {
+      enabled: false
+    }
+  };
   public dashboard;
   public tabActive;
   public cookieValue: string;
   public admin;
+  public activeDash;
+
+  public adminDash = [
+    {
+      x: 0,
+      y: 0,
+      rows: 10,
+      cols: 10,
+      component: AdminUserListComponent
+    }
+  ];
+  public standardDash = [
+    {
+      x: 0,
+      y: 0,
+      rows: 16,
+      cols: 10,
+      component: AttendanceComponent
+    },
+    {
+      x: 10,
+      y: 0,
+      rows: 8,
+      cols: 6,
+      component: EditRosterComponent
+    },
+    {
+      x: 10,
+      y: 8,
+      rows: 8,
+      cols: 6,
+      component: ChartsComponent
+    }
+  ];
   constructor(
     private authService: AuthService,
     public router: Router,
@@ -42,46 +85,19 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     if (this.admin) {
-      this.dashboard = [];
+      this.dashboard = this.adminDash;
+      this.activeDash = "admin";
     } else {
-      this.dashboard = [
-        {
-          x: 0,
-          y: 0,
-          rows: 16,
-          cols: 10,
-          component: AttendanceComponent
-        },
-        {
-          x: 10,
-          y: 0,
-          rows: 8,
-          cols: 6,
-          component: EditRosterComponent
-        },
-        {
-          x: 10,
-          y: 8,
-          rows: 8,
-          cols: 6,
-          component: ChartsComponent
-        }
-      ];
+      this.dashboard = this.standardDash;
+      this.activeDash = "standard";
     }
-    this.options = {
-      itemChangeCallback: this.itemChange,
-      itemResizeCallback: this.itemResize,
-      resizable: {
-        enabled: false
-      },
-      draggable: {
-        enabled: false
-      }
-    };
   }
 
   ngAfterViewInit() {
-    if (this.cookieService.check("tourComplete") !== true) {
+    if (
+      this.cookieService.check("tourComplete") !== true &&
+      !this.authService.isAdmin
+    ) {
       this.cookieService.set("tourComplete", "true");
       this.tourService.initialize([
         {
@@ -233,20 +249,38 @@ export class HomeComponent implements OnInit, AfterViewInit {
       case "options":
         this.dialog
           .open(RecOptionsDialogComponent, {
-            data: { config: this.authService.getFullConfig() }
+            data: { config: this.authService.getCenters() }
           })
           .afterClosed()
           .toPromise()
           .then(res => {
             this.authService.setOptions(res.currentConfig);
-            this.ngOnInit();
+            this.dashboard = this.standardDash;
           });
         break;
       case "qr":
         this.router.navigate(["/createqr"]);
         break;
-      case "add-user":
-        this.dialog.open(AdminDialogComponent);
+      case "change-password":
+        this.dialog.open(ResetManualComponent);
+        break;
+      case "switch":
+        if (this.activeDash === "admin") {
+          if (this.authService.hasCurrentConfig()) {
+            this.dashboard = this.standardDash;
+          } else {
+            this.dialog
+              .open(RecOptionsDialogComponent, {
+                data: { config: this.authService.getCenters() }
+              })
+              .afterClosed()
+              .toPromise()
+              .then(res => {
+                this.authService.setOptions(res.currentConfig);
+                this.dashboard = this.standardDash;
+              });
+          }
+        } else this.dashboard = this.adminDash;
     }
   }
 

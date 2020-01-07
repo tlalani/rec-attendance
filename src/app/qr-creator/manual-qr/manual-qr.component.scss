@@ -1,3 +1,18 @@
 button {
   margin: 5px;
 }
+
+.noPrint {
+  margin-left: 10px;
+}
+
+.link {
+  text-decoration: none;
+  color: white;
+}
+
+@media print {
+  .noPrint {
+    display: none;
+  }
+}

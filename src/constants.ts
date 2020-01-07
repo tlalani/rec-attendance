@@ -9,6 +9,11 @@ export interface Config {
   classes: string[];
 }
 
+export const AngularFireReturnTypes = {
+  Array: "0",
+  Object: "1"
+};
+
 export const Days = {
   Sunday: 0,
   Monday: 1,
@@ -38,6 +43,23 @@ export const Grades = {
     "12th Grade"
   ]
 };
+
+export const USER_ROLES = {
+  Admin: "admin",
+  User: "user"
+};
+
+export const MANAGEMENT_ROLES = [
+  "Principal",
+  "HOI",
+  "HOO",
+  "HOSS",
+  "HOPI",
+  "HDMAR",
+  "REC Management Team"
+];
+
+export const PASSWORD_STRING = "password";
 
 export const Type = {
   Text: "text",
@@ -458,6 +480,13 @@ export function makePeopleObject() {
   };
 }
 
-export function isObjEmpty(obj) {
-  return Object.keys(obj).length < 1;
+export function shiftStartTime(shift, withDay?: boolean) {
+  if (withDay) {
+    let shiftStart = shift.split("/")[1].split("-")[0];
+    return shiftStart;
+  }
+}
+
+export function isObjEmptyOrUndefined(obj) {
+  return !obj || Object.keys(obj).length < 1;
 }
