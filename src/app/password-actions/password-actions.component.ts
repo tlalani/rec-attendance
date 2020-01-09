@@ -28,9 +28,11 @@ export class PasswordActionsComponent implements OnInit {
         this.oobCode = params["oobCode"];
         let a = await this.authService.auth.checkActionCode(this.oobCode);
         this.email.next(a.data.email);
-      } else {
+      } else if (params["mode"]) {
         this.mode = params["mode"];
         this.oobCode = null;
+      } else {
+        this.router.navigate(["/login"]);
       }
     });
   }
