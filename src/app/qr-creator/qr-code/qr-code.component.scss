@@ -25,6 +25,9 @@
 }
 
 @media print {
+  .deleted {
+    display: none;
+  }
   .noPrint {
     display: none;
   }

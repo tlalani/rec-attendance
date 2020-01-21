@@ -8,6 +8,7 @@ import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 })
 export class ForgotComponent implements OnInit {
   public form: FormGroup;
+  public submitted: boolean = false;
   @Output() submit = new EventEmitter();
   constructor(private builder: FormBuilder) {}
 
@@ -18,6 +19,7 @@ export class ForgotComponent implements OnInit {
   }
 
   submitForm() {
+    this.submitted = true;
     this.submit.emit(this.form.value);
   }
 }

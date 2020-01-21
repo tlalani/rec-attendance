@@ -14,5 +14,6 @@ button {
 @media print {
   .noPrint {
     display: none;
+    visibility: hidden;
   }
 }

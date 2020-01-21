@@ -71,7 +71,8 @@ export const Roles = {
   Teacher: "Teacher",
   TA: "TA",
   Management: "Management",
-  Intern: "Intern"
+  Intern: "Intern",
+  Substitute: "Substitute"
 };
 
 export const Mgmt = {

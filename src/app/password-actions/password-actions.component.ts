@@ -39,6 +39,6 @@ export class PasswordActionsComponent implements OnInit {
 
   async handleSubmit(event) {
     await this.authService.handleUserFormSubmit(event, this.mode, this.oobCode);
-    this.router.navigate(["/login"]);
+    if (this.mode !== "forgotPassword") this.router.navigate(["/login"]);
   }
 }
