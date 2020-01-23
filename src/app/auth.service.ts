@@ -227,7 +227,6 @@ export class AuthService {
     try {
       switch (mode) {
         case "verifyEmail":
-          await this.auth.applyActionCode(oobCode);
           let sc1 =
             selectedCenter.substring(0, 1).toUpperCase() +
             selectedCenter.substr(1);
@@ -236,6 +235,7 @@ export class AuthService {
           a[sc1][selectedClass][selectedDay] = [
             startTime.replace(" ", "_") + "-" + endTime.replace(" ", "_")
           ];
+          await this.auth.applyActionCode(oobCode);
           let result = await this.auth.signInWithEmailAndPassword(
             email,
             PASSWORD_STRING

@@ -42,6 +42,7 @@ export class CreateComponent implements OnInit {
   }
 
   submitForm() {
+    this.form.get("email").enable();
     this.submit.emit(this.form.value);
   }
 }
