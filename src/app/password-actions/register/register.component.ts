@@ -9,6 +9,7 @@ import { MANAGEMENT_ROLES } from "src/constants";
 })
 export class RegisterComponent implements OnInit {
   public form: FormGroup;
+  public submitted: boolean = false;
   public user_roles = MANAGEMENT_ROLES;
   @Output() submit = new EventEmitter();
   constructor(private builder: FormBuilder) {}
@@ -23,6 +24,7 @@ export class RegisterComponent implements OnInit {
 
   registerUser() {
     this.submit.emit(this.form.value);
+    this.submitted = true;
     // alert(
     //   "Your request to register has been sent. You will be registered within the next 24 hours"
     // );

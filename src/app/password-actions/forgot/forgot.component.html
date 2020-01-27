@@ -5,6 +5,10 @@
   fxLayoutAlign="center"
   (ngSubmit)="submitForm()"
 >
+  <p *ngIf="submitted" style="text-align: center; color: teal;">
+    If you entered the correct email address, you should recieve an email within
+    the next 24 hours.
+  </p>
   <mat-form-field appearance="fill">
     <mat-label>Email</mat-label>
     <input
