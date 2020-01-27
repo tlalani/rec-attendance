@@ -31,4 +31,8 @@ export class ToolbarComponent implements OnInit {
   switchView() {
     this.itemClicked.emit("switch");
   }
+
+  addShift() {
+    this.itemClicked.emit("addShift");
+  }
 }

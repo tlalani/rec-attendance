@@ -1,0 +1,52 @@
+<header class="dialog-header">
+  Add a Shift
+</header>
+<br />
+<div fxLayout="column" fxLayoutAlign="center center">
+  <mat-form-field>
+    <mat-label>Re Center</mat-label>
+    <input disabled matInput [value]="config.re_center" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Re Level</mat-label>
+    <input disabled matInput [value]="config.re_class" />
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>School Year</mat-label>
+    <mat-select required (selectionChange)="changeYear($event)">
+      <mat-option *ngFor="let year of this.years" [value]="year">{{
+        year
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Shift Day</mat-label>
+    <mat-select required (selectionChange)="changeDay($event)">
+      <mat-option *ngFor="let day of this.days" [value]="day">{{
+        day
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <div
+    class="time-form"
+    fxLayout="row"
+    fxLayoutAlign="center center"
+    fxLayoutGap="5%"
+  >
+    <mat-form-field fxFlex="45%">
+      <mat-label>Start Time</mat-label>
+      <input matInput required type="time" [(ngModel)]="shift.startTime" />
+    </mat-form-field>
+    <mat-form-field fxFlex="45%">
+      <mat-label>End Time</mat-label>
+      <input matInput required type="time" [(ngModel)]="shift.endTime" />
+    </mat-form-field>
+  </div>
+  <button
+    mat-raised-button
+    (click)="closeDialog()"
+    [disabled]="this.config.re_shift !== null"
+  >
+    Submit
+  </button>
+</div>

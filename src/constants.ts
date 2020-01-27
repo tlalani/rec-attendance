@@ -491,3 +491,25 @@ export function shiftStartTime(shift, withDay?: boolean) {
 export function isObjEmptyOrUndefined(obj) {
   return !obj || Object.keys(obj).length < 1;
 }
+
+/** 
+returns the year previous to the entered school year.
+
+lastYear("2019-2020") returns "2018-2019"
+*/
+export function lastYear(schoolYear: String) {
+  let year = Number(schoolYear.split("-")[0]);
+  let prevYear = year - 1;
+  return prevYear + "-" + year;
+}
+
+/** 
+returns the year after the entered school year.
+
+nextYear("2019-2020") returns "2020-2021"
+*/
+export function nextYear(schoolYear: String) {
+  let year = Number(schoolYear.split("-")[1]);
+  let nextYear = year + 1;
+  return year + "-" + nextYear;
+}
