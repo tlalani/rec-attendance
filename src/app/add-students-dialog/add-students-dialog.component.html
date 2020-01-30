@@ -1,4 +1,4 @@
-<div class="form-container" fxLayout="row">
+<div class="form-container" fxLayout="row" fxLayoutAlign="space-between center">
   <mat-form-field>
     <mat-label>Role</mat-label>
     <mat-select [(ngModel)]="person.Role">
@@ -28,29 +28,25 @@
     Add
   </button>
 </div>
-<div>
-  <div *ngFor="let person of result; let i = index">
-    <p fxFlex="95%">
-      {{ print(person) }}
-    </p>
-    <button mat-icon-button (click)="undoAdd(i)">
-      <mat-icon color="warn">clear</mat-icon>
-    </button>
-  </div>
+<app-add-students-dialog-table
+  [source]="_dataSource"
+  (changes)="getChanges($event)"
+></app-add-students-dialog-table>
+<div class="actions">
+  <button
+    mat-raised-button
+    color="primary"
+    [disabled]="_dataSource.value.length < 1"
+    (click)="closeDialog(true)"
+  >
+    Save
+  </button>
+  <button
+    style="float:right;"
+    mat-raised-button
+    color="warn"
+    (click)="closeDialog(false)"
+  >
+    Cancel
+  </button>
 </div>
-<button
-  mat-raised-button
-  color="primary"
-  [disabled]="this.result.length < 1"
-  (click)="closeDialog(true)"
->
-  Save
-</button>
-<button
-  style="float:right"
-  mat-raised-button
-  color="warn"
-  (click)="closeDialog(false)"
->
-  Cancel
-</button>

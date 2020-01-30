@@ -54,7 +54,7 @@ export class AdminUserListComponent implements OnInit {
         this.databaseService.set("register/" + user.emailHash, null);
         this.databaseService.set("register/" + res.user.uid, data);
       } catch (err) {
-        console.log("ERROR on [getChanges]", err);
+        console.error("ERROR on [getChanges]", err);
         alert("There was an error please try again");
       }
     } else {
