@@ -60,6 +60,7 @@ import { CreateComponent } from "./password-actions/create/create.component";
 import { ResetFromEmailComponent } from "./password-actions/reset-from-email/reset-from-email.component";
 import { ResetManualComponent } from "./password-actions/reset-manual/reset-manual.component";
 import { AddShiftDialogComponent } from "./add-shift-dialog/add-shift-dialog.component";
+import { AddStudentsDialogTableComponent } from './add-students-dialog/add-students-dialog-table/add-students-dialog-table/add-students-dialog-table.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -86,7 +87,8 @@ import { AddShiftDialogComponent } from "./add-shift-dialog/add-shift-dialog.com
     ForgotComponent,
     ResetFromEmailComponent,
     ResetManualComponent,
-    AddShiftDialogComponent
+    AddShiftDialogComponent,
+    AddStudentsDialogTableComponent
   ],
   imports: [
     BrowserModule,

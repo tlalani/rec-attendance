@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject } from "@angular/core";
 import { Roles, Grades, Person, PersonDTO, Mgmt } from "src/constants";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
+import { BehaviorSubject } from "rxjs";
 
 @Component({
   selector: "app-add-students-dialog",
@@ -9,20 +10,19 @@ import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
 })
 export class AddStudentsDialogComponent implements OnInit {
   public roles = Object.keys(Roles);
-  public grades;
-  public person: PersonDTO = new PersonDTO({});
-  result: PersonDTO[] = [];
-  private re_class;
   public mgmt = Object.keys(Mgmt);
+  public grades;
+  public person;
+  public _dataSource: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   constructor(
     public dialogRef: MatDialogRef<AddStudentsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    this.re_class = data.re_class;
+    this.grades = Grades[data.re_class];
   }
 
   ngOnInit() {
-    this.grades = Grades[this.re_class];
+    this.person = new PersonDTO({});
   }
 
   hasGrade() {
@@ -38,28 +38,22 @@ export class AddStudentsDialogComponent implements OnInit {
     );
   }
 
+  getChanges(event) {
+    if (!event.target) {
+      let result = this._dataSource.value;
+      result.splice(event.remove, 1);
+      this._dataSource.next(result);
+    }
+  }
+
   submit() {
-    this.result.push(this.person);
+    this._dataSource.next([...this._dataSource.value, this.person]);
     this.person = new PersonDTO({});
-  }
-
-  print(obj) {
-    let s = "";
-    Object.entries(obj).forEach(([key, val]) => {
-      if (val) {
-        s += key + ":" + val + "      ";
-      }
-    });
-    return s;
-  }
-
-  undoAdd(i) {
-    this.result.splice(i, 1);
   }
 
   closeDialog(hasResult) {
     if (hasResult) {
-      this.dialogRef.close({ result: this.result });
+      this.dialogRef.close({ result: this._dataSource.value });
     } else {
       this.dialogRef.close();
     }
