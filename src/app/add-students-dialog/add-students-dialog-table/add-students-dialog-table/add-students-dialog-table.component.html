@@ -1,0 +1,41 @@
+<div class="table">
+  <mat-table #table [dataSource]="dataSource">
+    <ng-container matColumnDef="role">
+      <mat-header-cell *matHeaderCellDef>
+        Role
+      </mat-header-cell>
+      <mat-cell *matCellDef="let person">
+        <span>{{ person.Role }} </span>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef>
+        Name
+      </mat-header-cell>
+      <mat-cell *matCellDef="let person">
+        <span>{{ person.Name }} </span>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="grade">
+      <mat-header-cell *matHeaderCellDef> Grade </mat-header-cell>
+      <mat-cell *matCellDef="let person">
+        <span>{{ person.Grade || "No Grade" }}</span>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="remove">
+      <mat-header-cell *matHeaderCellDef>Remove</mat-header-cell>
+      <mat-cell *matCellDef="let person; let i = index">
+        <button mat-icon-button color="warn" (click)="removePerson(i)">
+          <mat-icon>clear</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
+    <mat-header-row
+      *matHeaderRowDef="displayedColumns; sticky: true"
+    ></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+  </mat-table>
+</div>

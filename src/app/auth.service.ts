@@ -60,7 +60,7 @@ export class AuthService {
   public getCurrentConfig() {
     if (this.currentConfig && !isObjEmptyOrUndefined(this.currentConfig)) {
       return this.currentConfig;
-    } else if (this.getCurrentConfigFromStorage()) {
+    } else if (this.hasCurrentConfig()) {
       this.currentConfig = this.getCurrentConfigFromStorage();
       return this.currentConfig;
     }
@@ -169,23 +169,13 @@ export class AuthService {
 
   private async _getShifts(center, re_class) {
     let shifts = [];
-    let queryString = "";
-    if (this.isAdmin) {
-      queryString = "REC/" + center + "/" + re_class + "/Shifts";
-    } else {
-      queryString =
-        "users/" + this.userId + "/permissions/" + center + "/" + re_class;
-    }
+    const queryString = "REC/" + center + "/" + re_class + "/Shifts";
     try {
       let res = await this.databaseService.get(queryString);
       if (res) {
         Object.keys(res).forEach(shiftDay => {
           Object.keys(res[shiftDay]).forEach(shiftTime => {
-            if (typeof res[shiftDay][shiftTime] === typeof {}) {
-              shifts.push(shiftDay + ", " + shiftTime);
-            } else {
-              shifts.push(shiftDay + ", " + res[shiftDay][shiftTime]);
-            }
+            shifts.push(shiftDay + ", " + shiftTime);
           });
         });
       }

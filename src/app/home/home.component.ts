@@ -11,6 +11,8 @@ import { RecOptionsDialogComponent } from "../rec-options-dialog/rec-options-dia
 import { EditRosterComponent } from "../edit-roster/edit-roster.component";
 import { AdminUserListComponent } from "../admin-user-list/admin-user-list.component";
 import { ResetManualComponent } from "../password-actions/reset-manual/reset-manual.component";
+import { DatabaseService } from "../database.service";
+import { AddShiftDialogComponent } from "../add-shift-dialog/add-shift-dialog.component";
 @Component({
   selector: "app-home",
   templateUrl: "./home.component.html",
@@ -70,7 +72,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
     public router: Router,
     private tourService: TourService,
     private cookieService: CookieService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private databaseService: DatabaseService
   ) {
     this.admin = this.authService.isAdmin;
   }
@@ -281,6 +284,18 @@ export class HomeComponent implements OnInit, AfterViewInit {
               });
           }
         } else this.dashboard = this.adminDash;
+      case "addShift":
+        this.dialog
+          .open(AddShiftDialogComponent, {
+            data: { config: this.authService.getCurrentConfig() }
+          })
+          .afterClosed()
+          .toPromise()
+          .then(res => {
+            if (res) {
+              this.databaseService.addNewShift(res);
+            }
+          });
     }
   }
 

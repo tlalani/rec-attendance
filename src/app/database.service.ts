@@ -210,4 +210,21 @@ export class DatabaseService {
     }
     this.set(queryString, obj);
   }
+
+  public addNewShift(config) {
+    const queryString =
+      "REC/" +
+      config.re_center +
+      "/" +
+      config.re_class +
+      "/Shifts/" +
+      config.re_shift.day +
+      "/" +
+      config.re_shift.startTime +
+      "-" +
+      config.re_shift.endTime +
+      "/People/" +
+      config.re_shift.schoolYear;
+    this.set(queryString, 0);
+  }
 }
