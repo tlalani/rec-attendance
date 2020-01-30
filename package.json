@@ -11,9 +11,9 @@
     "build:stats": "ng build --stats-json",
     "analyze": "webpack-bundle-analyzer dist/rec-attendance/stats.json",
     "build:dev": "ng build --base-href 'https://tlalani.github.io/rec-attendance/'",
-    "build:prod": "ng build --prod --base-href 'https://tlalani.github.io/rec-attendance/'",
+    "build:prod": "npm run build:dev; npm run deploy",
     "deploy": "sudo ngh --dir dist/rec-attendance",
-    "firebase-deploy": "ng build --prod;firebase deploy",
+    "firebase-deploy": "ng build --prod;firebase deploy"
   },
   "private": true,
   "dependencies": {
